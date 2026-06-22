@@ -1,0 +1,778 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Гайдлайн студента — Урок 1. ChatGPT, Gemini, NotebookLM">
+<title>Урок 1 · AI Bootcamp</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg:       #0A0A0F;
+    --bg2:      #10101A;
+    --bg3:      #16162A;
+    --acc:      #6B5CE7;
+    --acc2:     #9D8FF8;
+    --acc-dim:  rgba(107,92,231,0.12);
+    --acc-brd:  rgba(107,92,231,0.28);
+    --text:     #EEEAF8;
+    --muted:    #8886A0;
+    --line:     rgba(255,255,255,0.07);
+    --sans:     'Manrope', sans-serif;
+    --mono:     'JetBrains Mono', monospace;
+    --radius:   16px;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: var(--sans);
+    background: var(--bg);
+    color: var(--text);
+    font-size: 15px;
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ── LAYOUT ── */
+  .wrap {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 0 20px 80px;
+  }
+
+  /* ── HERO ── */
+  .hero {
+    padding: 60px 0 48px;
+    border-bottom: 1px solid var(--line);
+    margin-bottom: 48px;
+  }
+  .hero-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--acc2);
+    margin-bottom: 20px;
+  }
+  .hero-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--acc);
+  }
+  .hero-title {
+    font-size: clamp(32px, 7vw, 52px);
+    font-weight: 800;
+    line-height: 1.05;
+    letter-spacing: -0.025em;
+    color: var(--text);
+    margin-bottom: 12px;
+  }
+  .hero-title em {
+    font-style: normal;
+    color: var(--acc2);
+  }
+  .hero-sub {
+    font-size: 15px;
+    color: var(--muted);
+    font-weight: 400;
+    max-width: 480px;
+    line-height: 1.6;
+  }
+  .hero-pills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 28px;
+  }
+  .pill {
+    background: var(--acc-dim);
+    border: 1px solid var(--acc-brd);
+    border-radius: 100px;
+    padding: 5px 14px;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--acc2);
+    font-family: var(--mono);
+    letter-spacing: 0.03em;
+  }
+
+  /* ── TOC ── */
+  .toc {
+    background: var(--bg2);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: 22px 24px;
+    margin-bottom: 48px;
+  }
+  .toc-label {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.13em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 14px;
+  }
+  .toc-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .toc-list a {
+    color: var(--text);
+    text-decoration: none;
+    font-size: 13.5px;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 4px 0;
+    transition: color .2s;
+  }
+  .toc-list a:hover { color: var(--acc2); }
+  .toc-list a::before {
+    content: '';
+    display: block;
+    width: 18px; height: 1px;
+    background: var(--acc);
+    flex-shrink: 0;
+    transition: width .2s;
+  }
+  .toc-list a:hover::before { width: 28px; }
+
+  /* ── SECTION ── */
+  .section {
+    margin-bottom: 56px;
+    scroll-margin-top: 24px;
+  }
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 24px;
+  }
+  .section-num {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--acc);
+    letter-spacing: 0.1em;
+    flex-shrink: 0;
+  }
+  .section-title {
+    font-size: 22px;
+    font-weight: 800;
+    letter-spacing: -0.015em;
+    color: var(--text);
+  }
+  .section-divider {
+    height: 1px;
+    background: var(--line);
+    flex: 1;
+  }
+
+  /* ── BLOCK TYPES ── */
+  .principle {
+    background: var(--bg2);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: 20px 22px;
+    margin-bottom: 14px;
+    position: relative;
+    padding-left: 30px;
+  }
+  .principle::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 3px;
+    background: var(--acc);
+    border-radius: 3px 0 0 3px;
+  }
+  .principle-title {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--acc2);
+    font-family: var(--mono);
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+  .principle-body {
+    font-size: 14px;
+    color: var(--muted);
+    line-height: 1.65;
+  }
+  .principle-body strong {
+    color: var(--text);
+    font-weight: 600;
+  }
+
+  .callout {
+    background: linear-gradient(135deg, rgba(107,92,231,0.13), rgba(107,92,231,0.04));
+    border: 1px solid var(--acc-brd);
+    border-radius: var(--radius);
+    padding: 20px 22px;
+    margin: 20px 0;
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+  }
+  .callout-icon {
+    font-size: 18px;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+  .callout-text {
+    font-size: 14px;
+    color: var(--acc2);
+    font-weight: 500;
+    line-height: 1.6;
+  }
+
+  .meta-compare {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin: 18px 0;
+  }
+  .meta-card {
+    background: var(--bg2);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 16px;
+  }
+  .meta-card-label {
+    font-family: var(--mono);
+    font-size: 9px;
+    color: var(--muted);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+  .meta-card-val {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text);
+    line-height: 1.5;
+  }
+
+  .step-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin: 14px 0;
+  }
+  .step-item {
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+    background: var(--bg2);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 14px 16px;
+  }
+  .step-n {
+    font-family: var(--mono);
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--acc);
+    background: var(--acc-dim);
+    border-radius: 6px;
+    padding: 3px 8px;
+    flex-shrink: 0;
+    margin-top: 1px;
+    letter-spacing: 0.05em;
+  }
+  .step-text {
+    font-size: 13.5px;
+    color: var(--text);
+    line-height: 1.6;
+  }
+  .step-text em {
+    font-style: normal;
+    color: var(--muted);
+    font-size: 12.5px;
+    display: block;
+    margin-top: 3px;
+  }
+
+  .tag-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 14px;
+  }
+  .tag {
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 6px;
+    padding: 4px 10px;
+    font-size: 11px;
+    font-family: var(--mono);
+    color: rgba(238,234,248,0.6);
+  }
+
+  p.body {
+    font-size: 14.5px;
+    color: var(--muted);
+    line-height: 1.7;
+    margin-bottom: 14px;
+  }
+  p.body strong { color: var(--text); font-weight: 600; }
+
+  /* ── HW ── */
+  .hw-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-top: 8px;
+  }
+  @media (max-width: 520px) {
+    .hw-grid { grid-template-columns: 1fr; }
+    .meta-compare { grid-template-columns: 1fr; }
+  }
+  .hw-card {
+    background: var(--bg2);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: 20px;
+  }
+  .hw-n {
+    font-family: var(--mono);
+    font-size: 28px;
+    font-weight: 800;
+    color: rgba(107,92,231,0.2);
+    line-height: 1;
+    margin-bottom: 10px;
+  }
+  .hw-title {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 10px;
+    line-height: 1.35;
+  }
+  .hw-steps {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+  }
+  .hw-step {
+    font-size: 12.5px;
+    color: var(--muted);
+    display: flex;
+    gap: 7px;
+    line-height: 1.55;
+  }
+  .hw-step::before {
+    content: '·';
+    color: var(--acc);
+    font-size: 16px;
+    line-height: 1.3;
+    flex-shrink: 0;
+  }
+
+  /* ── FOOTER ── */
+  .footer {
+    border-top: 1px solid var(--line);
+    padding-top: 32px;
+    margin-top: 64px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  .footer-brand {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+  .footer-dot {
+    width: 4px; height: 4px;
+    border-radius: 50%;
+    background: var(--acc);
+    opacity: 0.5;
+  }
+
+  /* ── SCROLL PROGRESS ── */
+  .progress-bar {
+    position: fixed;
+    top: 0; left: 0;
+    height: 2px;
+    background: linear-gradient(90deg, var(--acc), var(--acc2));
+    z-index: 100;
+    transition: width .1s linear;
+    width: 0%;
+  }
+</style>
+</head>
+<body>
+
+<div class="progress-bar" id="prog"></div>
+
+<div class="wrap">
+
+  <!-- HERO -->
+  <div class="hero">
+    <div class="hero-tag">
+      <div class="hero-dot"></div>
+      AI Bootcamp · Bootcamp.kz · Business Track
+    </div>
+    <h1 class="hero-title">Урок 1<br><em>Гайдлайн студента</em></h1>
+    <p class="hero-sub">ChatGPT, Gemini, NotebookLM — как работает каждый и под какую задачу использовать</p>
+    <div class="hero-pills">
+      <span class="pill">ChatGPT</span>
+      <span class="pill">Gemini</span>
+      <span class="pill">NotebookLM</span>
+      <span class="pill">Индивидуальное занятие</span>
+    </div>
+  </div>
+
+  <!-- TOC -->
+  <nav class="toc">
+    <div class="toc-label">Содержание</div>
+    <ul class="toc-list">
+      <li><a href="#s1">Как работают LLM</a></li>
+      <li><a href="#s2">ChatGPT</a></li>
+      <li><a href="#s3">Gemini</a></li>
+      <li><a href="#s4">NotebookLM</a></li>
+      <li><a href="#s5">Домашнее задание</a></li>
+    </ul>
+  </nav>
+
+  <!-- SECTION 1 -->
+  <div class="section" id="s1">
+    <div class="section-header">
+      <span class="section-num">01</span>
+      <h2 class="section-title">Как работают LLM</h2>
+      <div class="section-divider"></div>
+    </div>
+
+    <p class="body">Нейросети обучены на огромных массивах текста и работают по принципу <strong>ассоциативного мышления</strong>. Слово «кружка» — автоматически чай, кофе, горячая вода. Это не поиск по тегам, а перифериное мышление.</p>
+
+    <div class="meta-compare">
+      <div class="meta-card">
+        <div class="meta-card-label">Google</div>
+        <div class="meta-card-val">Ищет по точным словам → находит популярное</div>
+      </div>
+      <div class="meta-card">
+        <div class="meta-card-label">LLM</div>
+        <div class="meta-card-val">Думает ассоциациями → находит подходящее</div>
+      </div>
+    </div>
+
+    <div class="principle">
+      <div class="principle-title">Главное правило контекста</div>
+      <div class="principle-body">Нейросеть — как специалист, которому нужно объяснить <strong>кто ты, что делаешь и какую задачу хочешь решить</strong>, прежде чем он начнёт работать. Чем больше контекста даёшь — тем точнее ответ.</div>
+    </div>
+
+    <div class="principle">
+      <div class="principle-title">Стратегия</div>
+      <div class="principle-body">Не привязывайся к одному инструменту. Рынок меняется еженедельно. <strong>Используй каждый под свою задачу</strong> — не «какой лучше», а «какой под эту конкретную задачу».</div>
+    </div>
+  </div>
+
+  <!-- SECTION 2 -->
+  <div class="section" id="s2">
+    <div class="section-header">
+      <span class="section-num">02</span>
+      <h2 class="section-title">ChatGPT</h2>
+      <div class="section-divider"></div>
+    </div>
+
+    <div class="callout">
+      <div class="callout-icon">🧪</div>
+      <div class="callout-text">Роль: <strong>Лаборант</strong> — исполнительный, универсальный. Делает что скажешь. Лучший для широких задач: написать, структурировать, сгенерировать.</div>
+    </div>
+
+    <p class="body"><strong>Заходи через браузер</strong> — в мобильных приложениях часть функций недоступна.</p>
+
+    <div class="step-list">
+      <div class="step-item">
+        <span class="step-n">01</span>
+        <div class="step-text">
+          <strong>Custom Instructions</strong> — системный промт, который работает на каждый запрос автоматически.
+          <em>Personalization → Custom Instructions → вставить промт → сохранить. Один раз — всегда активен.</em>
+        </div>
+      </div>
+      <div class="step-item">
+        <span class="step-n">02</span>
+        <div class="step-text">
+          <strong>Custom GPTs (Джипитизы)</strong> — преднастроенные чаты под конкретную задачу.
+          <em>Есть повторяющийся запрос каждый день? Это сигнал сделать отдельный GPT.</em>
+        </div>
+      </div>
+      <div class="step-item">
+        <span class="step-n">03</span>
+        <div class="step-text">
+          <strong>Глубокое исследование</strong> — серьёзный анализ с проверкой источников, занимает 10+ минут.
+          <em>Плюсик внизу → Глубокое исследование. Результат всегда перепроверяй.</em>
+        </div>
+      </div>
+      <div class="step-item">
+        <span class="step-n">04</span>
+        <div class="step-text">
+          <strong>Проекты</strong> — папки, где чаты привязаны к теме.
+          <em>Внутри проекта модель держит контекст этой темы — можно открывать новые чаты, они всё равно в контексте.</em>
+        </div>
+      </div>
+    </div>
+
+    <div class="principle">
+      <div class="principle-title">Как устроен Custom GPT</div>
+      <div class="principle-body">
+        <strong>Инструкции</strong> — библиотекарь, который знает правила: что делать, чего не делать, в каком формате отвечать.<br><br>
+        <strong>Знания</strong> — сами книги: файлы, методички, базы данных, стандарты — всё что ты загружаешь.<br><br>
+        Пример: фотографируешь холодильник → GPT без лишних вопросов анализирует продукты и выдаёт три варианта рецептов по твоим ограничениям, потому что правила уже зашиты внутри.
+      </div>
+    </div>
+
+    <div class="tag-row">
+      <span class="tag">Custom Instructions</span>
+      <span class="tag">Custom GPTs</span>
+      <span class="tag">Глубокое исследование</span>
+      <span class="tag">Проекты</span>
+    </div>
+  </div>
+
+  <!-- SECTION 3 -->
+  <div class="section" id="s3">
+    <div class="section-header">
+      <span class="section-num">03</span>
+      <h2 class="section-title">Gemini</h2>
+      <div class="section-divider"></div>
+    </div>
+
+    <div class="callout">
+      <div class="callout-icon">🎬</div>
+      <div class="callout-text">Роль: <strong>Режиссёр</strong> — видит всю картину. Всегда обращается к живой базе Google. Если нужен совет, стратегия или исследование — иди сюда, не в ChatGPT.</div>
+    </div>
+
+    <div class="meta-compare">
+      <div class="meta-card">
+        <div class="meta-card-label">ChatGPT</div>
+        <div class="meta-card-val">Исполнительный сотрудник — делает что скажешь, не лучший советчик</div>
+      </div>
+      <div class="meta-card">
+        <div class="meta-card-label">Gemini</div>
+        <div class="meta-card-val">Старший товарищ — видел много, знает общее, советует по делу</div>
+      </div>
+    </div>
+
+    <div class="step-list">
+      <div class="step-item">
+        <span class="step-n">01</span>
+        <div class="step-text">
+          <strong>Gembots</strong> — аналог Custom GPTs, та же логика: инструкция + база знаний + название.
+          <em>Создаётся один раз, используется постоянно. Один бот — одна задача.</em>
+        </div>
+      </div>
+      <div class="step-item">
+        <span class="step-n">02</span>
+        <div class="step-text">
+          <strong>Генерация изображений (Nano Banana)</strong> — до 14 элементов загружаешь отдельно, система держит консистентность.
+          <em>Промт: «стиль из фото 2, стол из фото 3, ковёр из фото 4». Не то вышло — редактируй конкретный запрос, не начинай заново.</em>
+        </div>
+      </div>
+      <div class="step-item">
+        <span class="step-n">03</span>
+        <div class="step-text">
+          <strong>Интеграция с Google Календарём</strong> — голосом или текстом описываешь расписание, Gemini вносит события автоматически.
+          <em>Можно попросить найти конфликты и накладки.</em>
+        </div>
+      </div>
+      <div class="step-item">
+        <span class="step-n">04</span>
+        <div class="step-text">
+          <strong>Блокноты</strong> — аналог проектов, с подключением файлов с Google Диска и сайтов напрямую.
+        </div>
+      </div>
+    </div>
+
+    <div class="principle">
+      <div class="principle-title">Про итерации с изображениями</div>
+      <div class="principle-body">
+        В нейросетях лучше говорить процентами — ему не с чем ориентироваться иначе. <strong>«Уменьши на 50%»</strong> понятнее, чем «сделай меньше». Либо давай конкретный референс: «чтобы был меньше этого стола в два раза».
+      </div>
+    </div>
+
+    <div class="principle">
+      <div class="principle-title">Запись встречи с клиентом</div>
+      <div class="principle-body">
+        Записывай каждую встречу на диктофон, переводи в текст, загружай в Gemini и проси: <strong>«Какие задачи вынести из этого разговора? Дай три варианта итераций»</strong>. Нейросеть может вытащить даже то, что клиент сказал вскользь — подсознательные упоминания цветов, настроений, предпочтений.
+      </div>
+    </div>
+
+    <div class="tag-row">
+      <span class="tag">Gembots</span>
+      <span class="tag">Nano Banana</span>
+      <span class="tag">Google Календарь</span>
+      <span class="tag">Блокноты</span>
+      <span class="tag">Deep Research</span>
+    </div>
+  </div>
+
+  <!-- SECTION 4 -->
+  <div class="section" id="s4">
+    <div class="section-header">
+      <span class="section-num">04</span>
+      <h2 class="section-title">NotebookLM</h2>
+      <div class="section-divider"></div>
+    </div>
+
+    <div class="callout">
+      <div class="callout-icon">📚</div>
+      <div class="callout-text">Роль: <strong>Личная база знаний без галлюцинаций</strong> — работает только с тем, что ты загрузил. Не уйдёт искать что-то на стороне, не выдумает.</div>
+    </div>
+
+    <p class="body"><strong>Что загружать:</strong> PDF, изображения, аудио, YouTube-ссылки, сайты, Google Docs, скопированный текст. До 50 источников в одном блокноте.</p>
+
+    <div class="principle">
+      <div class="principle-title">Галочки источников</div>
+      <div class="principle-body">Ты сам выбираешь, с какими файлами сейчас работает модель. Остальные лежат в архиве и <strong>не влияют на ответ</strong>. Можно переключаться: отключил один снип, включил другой — он вообще не видит первый файл.</div>
+    </div>
+
+    <p class="body" style="margin-top: 20px; margin-bottom: 10px; color: var(--text); font-weight: 600; font-size: 14px;">Форматы вывода (Студия):</p>
+
+    <div class="step-list">
+      <div class="step-item">
+        <span class="step-n">🎙</span>
+        <div class="step-text">
+          <strong>Подкаст</strong> — два AI-спикера обсуждают твои материалы.
+          <em>Можно задавать вопросы прямо во время воспроизведения.</em>
+        </div>
+      </div>
+      <div class="step-item">
+        <span class="step-n">📊</span>
+        <div class="step-text">
+          <strong>Инфографика</strong> — выбираешь стиль: Sketch Note, Kawaii, Professional, Anime, Clay, Bento Grid.
+          <em>Или пишешь свой стиль в свободной форме.</em>
+        </div>
+      </div>
+      <div class="step-item">
+        <span class="step-n">📝</span>
+        <div class="step-text">
+          <strong>Отчёт / конспект</strong> — тезисный, методичка, запись в блоге — на выбор.
+        </div>
+      </div>
+      <div class="step-item">
+        <span class="step-n">🃏</span>
+        <div class="step-text">
+          <strong>Флеш-карточки + тест</strong> — автоматически по твоим материалам.
+          <em>Отлично для подготовки к сложным встречам или перед презентацией клиенту.</em>
+        </div>
+      </div>
+      <div class="step-item">
+        <span class="step-n">🗺</span>
+        <div class="step-text">
+          <strong>Ментальная карта</strong> — интерактивная, с кликабельными источниками.
+        </div>
+      </div>
+    </div>
+
+    <div class="principle">
+      <div class="principle-title">Транскрибация видео и аудио</div>
+      <div class="principle-body">Загружаешь видео или YouTube-ссылку → просишь «переведи полностью в текст» → получаешь транскрипт. Потом можно вытащить главное, не пересматривая двухчасовое видео.</div>
+    </div>
+
+    <div class="principle">
+      <div class="principle-title">Клон себя</div>
+      <div class="principle-body">Загружаешь свои интервью, цели, материалы → получаешь ассистента, который отвечает исходя из твоих принципов. Пример: <strong>«Мне предлагают работу в крипте — насколько это сходится с моими целями?»</strong> — он берёт всё, что знает о тебе, и даёт честный ответ.</div>
+    </div>
+
+    <div class="tag-row">
+      <span class="tag">До 50 источников</span>
+      <span class="tag">Подкаст</span>
+      <span class="tag">Инфографика</span>
+      <span class="tag">Транскрибация</span>
+      <span class="tag">Без галлюцинаций</span>
+    </div>
+  </div>
+
+  <!-- SECTION 5 — HW -->
+  <div class="section" id="s5">
+    <div class="section-header">
+      <span class="section-num">ДЗ</span>
+      <h2 class="section-title">Домашнее задание</h2>
+      <div class="section-divider"></div>
+    </div>
+
+    <p class="body">4 задания до следующего занятия. Каждое даёт конкретный результат — не «поиграть», а забрать готовый инструмент.</p>
+
+    <div class="hw-grid">
+      <div class="hw-card">
+        <div class="hw-n">01</div>
+        <div class="hw-title">Распаковка в Gemini</div>
+        <div class="hw-steps">
+          <div class="hw-step">Зайди в Gemini, напиши: «Задай мне достаточное количество вопросов, чтобы узнать кто я, чем занимаюсь и каковы мои планы на этот год»</div>
+          <div class="hw-step">Ответь честно — это создаёт базовый контекст</div>
+        </div>
+      </div>
+
+      <div class="hw-card">
+        <div class="hw-n">02</div>
+        <div class="hw-title">Создать один Gembot</div>
+        <div class="hw-steps">
+          <div class="hw-step">Выбери одну повторяющуюся задачу в работе</div>
+          <div class="hw-step">Продумай: какие входные данные всегда даёшь, какой результат хочешь</div>
+          <div class="hw-step">Это и есть инструкция — пропиши и создай бота</div>
+        </div>
+      </div>
+
+      <div class="hw-card">
+        <div class="hw-n">03</div>
+        <div class="hw-title">Блокнот в NotebookLM</div>
+        <div class="hw-steps">
+          <div class="hw-step">Загрузи 3–5 источников по своей нише или рабочей теме</div>
+          <div class="hw-step">Сгенерируй подкаст</div>
+          <div class="hw-step">Скачай конспект</div>
+        </div>
+      </div>
+
+      <div class="hw-card">
+        <div class="hw-n">04</div>
+        <div class="hw-title">Найти следующую задачу</div>
+        <div class="hw-steps">
+          <div class="hw-step">Подумай: что ещё в работе можно автоматизировать через Gemini?</div>
+          <div class="hw-step">Запиши идею — разберём на следующем занятии вместе с Claude</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="callout" style="margin-top: 24px;">
+      <div class="callout-icon">💬</div>
+      <div class="callout-text">Вопросы — сразу в Telegram. Не жди следующей встречи если что-то не получается.</div>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <div class="footer">
+    <span class="footer-brand">bootcamp.kz</span>
+    <div class="footer-dot"></div>
+    <span class="footer-brand">@Anuar_nurpeisov</span>
+    <div class="footer-dot"></div>
+    <span class="footer-brand">Business Track · Урок 1</span>
+  </div>
+
+</div>
+
+<script>
+  const bar = document.getElementById('prog');
+  window.addEventListener('scroll', () => {
+    const h = document.documentElement;
+    const pct = (h.scrollTop / (h.scrollHeight - h.clientHeight)) * 100;
+    bar.style.width = pct + '%';
+  });
+</script>
+</body>
+</html>
