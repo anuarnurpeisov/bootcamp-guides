@@ -1,0 +1,942 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Модуль 1 — Creator Track</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap');
+
+  :root {
+    --bg: #0A0A0F;
+    --surface: #13131A;
+    --surface2: #1C1C26;
+    --border: #2A2A3A;
+    --accent: #6B5CE7;
+    --accent2: #E7625C;
+    --accent-dim: rgba(107,92,231,0.15);
+    --text: #E8E8F0;
+    --muted: #8888A8;
+    --green: #4ADE80;
+    --amber: #FCD34D;
+    --red: #F87171;
+    --white: #FFFFFF;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Manrope', sans-serif;
+    font-size: 16px;
+    line-height: 1.65;
+    min-height: 100vh;
+  }
+
+  .header {
+    padding: 48px 0 40px;
+    text-align: center;
+    border-bottom: 1px solid var(--border);
+    position: relative;
+    overflow: hidden;
+  }
+  .header::before {
+    content: '';
+    position: absolute;
+    top: -60px; left: 50%;
+    transform: translateX(-50%);
+    width: 600px; height: 300px;
+    background: radial-gradient(ellipse, rgba(231,98,92,0.15) 0%, rgba(107,92,231,0.1) 50%, transparent 70%);
+    pointer-events: none;
+  }
+  .header-track {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--accent2);
+    margin-bottom: 16px;
+  }
+  .header h1 {
+    font-size: clamp(28px, 5vw, 48px);
+    font-weight: 800;
+    color: var(--white);
+    letter-spacing: -0.02em;
+    line-height: 1.15;
+    margin-bottom: 12px;
+  }
+  .header-sub {
+    color: var(--muted);
+    font-size: 15px;
+    max-width: 520px;
+    margin: 0 auto;
+  }
+
+  .container {
+    max-width: 780px;
+    margin: 0 auto;
+    padding: 0 24px;
+  }
+
+  /* PIPELINE VISUAL */
+  .pipeline {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    margin: 40px 0;
+    overflow-x: auto;
+    padding-bottom: 8px;
+  }
+  .pipeline-step {
+    flex-shrink: 0;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 12px 16px;
+    text-align: center;
+    min-width: 110px;
+  }
+  .pipeline-step.active {
+    border-color: var(--accent2);
+    background: rgba(231,98,92,0.08);
+  }
+  .pipeline-step-icon { font-size: 22px; margin-bottom: 6px; display: block; }
+  .pipeline-step-label { font-size: 11px; color: var(--muted); font-weight: 600; }
+  .pipeline-step.active .pipeline-step-label { color: var(--accent2); }
+  .pipeline-arrow {
+    color: var(--border);
+    font-size: 18px;
+    padding: 0 6px;
+    flex-shrink: 0;
+  }
+
+  /* NAV PILLS */
+  .nav-pills {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    padding: 32px 0 24px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 48px;
+  }
+  .pill {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    color: var(--muted);
+    font-size: 12px;
+    font-weight: 600;
+    padding: 6px 14px;
+    border-radius: 100px;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-family: 'Manrope', sans-serif;
+  }
+  .pill:hover { color: var(--text); border-color: var(--accent); }
+  .pill.active { background: rgba(231,98,92,0.12); color: var(--accent2); border-color: var(--accent2); }
+
+  /* SECTION */
+  .section { margin-bottom: 56px; }
+  .section-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--accent2);
+    margin-bottom: 12px;
+  }
+  .section h2 {
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--white);
+    margin-bottom: 20px;
+    letter-spacing: -0.01em;
+  }
+  .section p { color: var(--muted); margin-bottom: 16px; font-size: 15px; }
+  .section p strong { color: var(--text); font-weight: 600; }
+
+  /* RESULT CARD */
+  .result-card {
+    background: linear-gradient(135deg, rgba(231,98,92,0.18) 0%, rgba(107,92,231,0.08) 100%);
+    border: 1px solid var(--accent2);
+    border-radius: 16px;
+    padding: 32px;
+    margin-bottom: 48px;
+    position: relative;
+    overflow: hidden;
+  }
+  .result-card::after {
+    content: '';
+    position: absolute;
+    top: -40px; right: -40px;
+    width: 200px; height: 200px;
+    background: radial-gradient(circle, rgba(231,98,92,0.12) 0%, transparent 70%);
+  }
+  .result-card-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--accent2);
+    margin-bottom: 10px;
+  }
+  .result-card h3 { font-size: 20px; font-weight: 700; color: var(--white); margin-bottom: 16px; }
+  .result-items { display: flex; flex-direction: column; gap: 8px; }
+  .result-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    font-size: 14px;
+    color: var(--text);
+  }
+  .result-item::before {
+    content: '✓';
+    color: var(--green);
+    font-weight: 700;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+
+  /* TOOL CARDS */
+  .tools-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 32px;
+  }
+  @media (max-width: 640px) { .tools-grid { grid-template-columns: 1fr; } }
+  .tool-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px;
+    transition: border-color 0.2s;
+  }
+  .tool-card:hover { border-color: var(--accent); }
+  .tool-icon { font-size: 28px; margin-bottom: 12px; display: block; }
+  .tool-name { font-size: 15px; font-weight: 700; color: var(--white); margin-bottom: 6px; }
+  .tool-role {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--accent2);
+    font-family: 'JetBrains Mono', monospace;
+    margin-bottom: 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+  .tool-desc { font-size: 13px; color: var(--muted); line-height: 1.5; }
+
+  /* 9 ELEMENTS GRID */
+  .elements-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 12px;
+    margin: 20px 0;
+  }
+  @media (max-width: 640px) { .elements-grid { grid-template-columns: 1fr 1fr; } }
+  .element-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 16px;
+    position: relative;
+  }
+  .element-card.key {
+    border-color: rgba(231,98,92,0.4);
+    background: rgba(231,98,92,0.05);
+  }
+  .element-num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    color: var(--accent2);
+    font-weight: 600;
+    margin-bottom: 6px;
+    letter-spacing: 0.1em;
+  }
+  .element-name { font-size: 14px; font-weight: 700; color: var(--white); margin-bottom: 4px; }
+  .element-desc { font-size: 12px; color: var(--muted); line-height: 1.5; }
+
+  /* SHOT SIZES */
+  .shots-row {
+    display: flex;
+    gap: 8px;
+    overflow-x: auto;
+    padding-bottom: 8px;
+    margin: 16px 0;
+  }
+  .shot-card {
+    flex-shrink: 0;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 12px 14px;
+    text-align: center;
+    min-width: 90px;
+  }
+  .shot-num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px;
+    color: var(--accent);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+  }
+  .shot-name { font-size: 12px; font-weight: 700; color: var(--white); margin-bottom: 4px; }
+  .shot-desc { font-size: 11px; color: var(--muted); }
+
+  /* CONCEPT BLOCKS */
+  .concept-block {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 24px;
+    margin-bottom: 16px;
+  }
+  .concept-block-header { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
+  .concept-number {
+    background: rgba(231,98,92,0.12);
+    color: var(--accent2);
+    border: 1px solid var(--accent2);
+    border-radius: 8px;
+    width: 32px; height: 32px;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    font-weight: 600;
+    flex-shrink: 0;
+  }
+  .concept-title { font-size: 16px; font-weight: 700; color: var(--white); }
+  .concept-body { font-size: 14px; color: var(--muted); line-height: 1.6; }
+  .concept-body strong { color: var(--text); }
+
+  /* PROMPT BOX */
+  .prompt-box {
+    background: #0D0D16;
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--accent2);
+    border-radius: 8px;
+    padding: 16px 20px;
+    margin: 16px 0;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    color: #A8A8D0;
+    line-height: 1.6;
+    white-space: pre-wrap;
+    word-break: break-word;
+  }
+  .prompt-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--accent2);
+    margin-bottom: 8px;
+  }
+
+  /* ANALOGY CARD */
+  .analogy-card {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px 24px;
+    margin: 16px 0;
+    position: relative;
+  }
+  .analogy-card::before {
+    content: '💡';
+    position: absolute;
+    top: -12px; left: 20px;
+    font-size: 20px;
+    background: var(--surface2);
+    padding: 0 6px;
+  }
+  .analogy-card p { font-size: 14px; color: var(--muted); margin: 0; font-style: italic; }
+  .analogy-card p strong { color: var(--text); font-style: normal; }
+
+  /* STEP LIST */
+  .step-list { display: flex; flex-direction: column; gap: 12px; margin: 16px 0; }
+  .step { display: flex; gap: 14px; align-items: flex-start; }
+  .step-num {
+    background: var(--surface2);
+    color: var(--accent2);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    width: 26px; height: 26px;
+    flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    font-weight: 600;
+    margin-top: 2px;
+  }
+  .step-text { font-size: 14px; color: var(--text); line-height: 1.6; }
+  .step-text em {
+    font-style: normal;
+    color: var(--muted);
+    font-size: 13px;
+    display: block;
+    margin-top: 2px;
+  }
+
+  /* PRINCIPLE BOX */
+  .principle-box {
+    background: rgba(107,92,231,0.08);
+    border: 1px solid rgba(107,92,231,0.3);
+    border-radius: 12px;
+    padding: 20px 24px;
+    margin: 20px 0;
+  }
+  .principle-box-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 8px;
+  }
+  .principle-box p { font-size: 14px; color: var(--text); margin: 0; line-height: 1.6; }
+
+  /* HOMEWORK */
+  .homework-card {
+    background: var(--surface);
+    border: 1px solid var(--amber);
+    border-radius: 12px;
+    padding: 24px;
+    margin-top: 48px;
+  }
+  .homework-header { display: flex; align-items: center; gap: 10px; margin-bottom: 16px; }
+  .homework-icon { font-size: 20px; }
+  .homework-title { font-size: 16px; font-weight: 700; color: var(--white); }
+  .hw-item {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .hw-item:last-child { border-bottom: none; }
+  .hw-num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--amber);
+    font-weight: 600;
+    flex-shrink: 0;
+    margin-top: 2px;
+    width: 20px;
+  }
+  .hw-text { font-size: 14px; color: var(--text); line-height: 1.5; }
+  .hw-text span { display: block; font-size: 12px; color: var(--muted); margin-top: 3px; }
+
+  /* NOTE */
+  .note {
+    background: rgba(252,211,77,0.06);
+    border: 1px solid rgba(252,211,77,0.25);
+    border-radius: 8px;
+    padding: 12px 16px;
+    font-size: 13px;
+    color: var(--muted);
+    margin: 12px 0;
+  }
+  .note strong { color: var(--amber); }
+
+  .warning {
+    background: rgba(231,98,92,0.06);
+    border: 1px solid rgba(231,98,92,0.25);
+    border-radius: 8px;
+    padding: 12px 16px;
+    font-size: 13px;
+    color: var(--muted);
+    margin: 12px 0;
+  }
+  .warning strong { color: var(--accent2); }
+
+  .divider { border: none; border-top: 1px solid var(--border); margin: 48px 0; }
+
+  .footer {
+    border-top: 1px solid var(--border);
+    padding: 32px 0;
+    text-align: center;
+    color: var(--muted);
+    font-size: 13px;
+    margin-top: 64px;
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="container">
+    <div class="header-track">AI Bootcamp · Creator Track</div>
+    <h1>Модуль 1<br>От идеи до первого персонажа</h1>
+    <p class="header-sub">LLM для креаторов, 9 элементов промпта, раскадровка и создание персонажа</p>
+  </div>
+</div>
+
+<div class="container">
+
+  <!-- PIPELINE -->
+  <div style="padding: 32px 0 0;">
+    <div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.15em;text-transform:uppercase;color:var(--muted);margin-bottom:12px;">AI Контент-пайплан — весь буткемп</div>
+    <div class="pipeline">
+      <div class="pipeline-step active">
+        <span class="pipeline-step-icon">💡</span>
+        <div class="pipeline-step-label">Идея + персонаж</div>
+      </div>
+      <div class="pipeline-arrow">→</div>
+      <div class="pipeline-step">
+        <span class="pipeline-step-icon">🎨</span>
+        <div class="pipeline-step-label">Nano Banana</div>
+      </div>
+      <div class="pipeline-arrow">→</div>
+      <div class="pipeline-step">
+        <span class="pipeline-step-icon">🎬</span>
+        <div class="pipeline-step-label">Видео</div>
+      </div>
+      <div class="pipeline-arrow">→</div>
+      <div class="pipeline-step">
+        <span class="pipeline-step-icon">🔊</span>
+        <div class="pipeline-step-label">Звук + аватар</div>
+      </div>
+      <div class="pipeline-arrow">→</div>
+      <div class="pipeline-step">
+        <span class="pipeline-step-icon">🚀</span>
+        <div class="pipeline-step-label">Публикация</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- NAV -->
+  <div class="nav-pills">
+    <button class="pill active">Всё</button>
+    <button class="pill">LLM для креаторов</button>
+    <button class="pill">Как мыслить промптами</button>
+    <button class="pill">9 элементов промпта</button>
+    <button class="pill">Раскадровка</button>
+    <button class="pill">Персонаж</button>
+    <button class="pill">Google AI Studio</button>
+    <button class="pill">Домашнее задание</button>
+  </div>
+
+  <!-- RESULT -->
+  <div class="result-card">
+    <div class="result-card-label">После этого модуля вы умеете</div>
+    <h3>Конкретный результат</h3>
+    <div class="result-items">
+      <div class="result-item">Объяснить, какая LLM для чего — ChatGPT, Claude, Gemini в контексте контент-производства</div>
+      <div class="result-item">Писать промпты по 9 элементам — от объекта до негативного промпта</div>
+      <div class="result-item">Сгенерировать первого персонажа — из своего фото или с нуля из текста</div>
+      <div class="result-item">Сделать раскадровку сценария через GPT-ассистента</div>
+      <div class="result-item">Надеть любой костюм/образ на персонажа — метод перевода фото в текст</div>
+      <div class="result-item">Редактировать изображение в Google AI Studio</div>
+    </div>
+  </div>
+
+  <!-- SECTION 1: LLM для креаторов -->
+  <div class="section">
+    <div class="section-label">01 · LLM для креаторов</div>
+    <h2>Три модели — три роли в контент-пайплане</h2>
+    <p>Не нужно выбирать одну модель навсегда. Каждая — отдельный инструмент на конкретном этапе производства.</p>
+
+    <div class="tools-grid">
+      <div class="tool-card">
+        <span class="tool-icon">⚡</span>
+        <div class="tool-name">ChatGPT</div>
+        <div class="tool-role">Разгон идеи</div>
+        <div class="tool-desc">Быстро генерирует идеи, сценарии, первые концепции. Старт любой творческой задачи — сюда. Не используйте как источник фактов.</div>
+      </div>
+      <div class="tool-card">
+        <span class="tool-icon">🧠</span>
+        <div class="tool-name">Claude</div>
+        <div class="tool-role">Глубина + детали</div>
+        <div class="tool-desc">Широкое контекстное окно — помнит детали долгих разговоров. Идеален для диалогов персонажей, сценариев, детальной проработки идей.</div>
+      </div>
+      <div class="tool-card">
+        <span class="tool-icon">🌐</span>
+        <div class="tool-name">Gemini</div>
+        <div class="tool-role">Оркестратор</div>
+        <div class="tool-desc">Организует задачи, работает с Google-экосистемой. Используйте как директора, который знает куда всё направить.</div>
+      </div>
+    </div>
+
+    <div class="analogy-card">
+      <p><strong>ChatGPT</strong> — ваш камеди-бади, с которым быстро набросали идею. <strong>Claude</strong> — расписали все трюки и детали сценария. <strong>Gemini</strong> — директор, который знает как это всё организовать.</p>
+    </div>
+
+    <div class="concept-block">
+      <div class="concept-block-header">
+        <div class="concept-number">!</div>
+        <div class="concept-title">ChatGPT — не источник информации</div>
+      </div>
+      <div class="concept-body">
+        Знания обновляются <strong>ежеквартально</strong>. Не спрашивайте курс валют, визовые правила, актуальные новости — там будут устаревшие данные. Никогда не говорите «ChatGPT сказал» — это то же самое, что «в Википедии написано». Используйте его как <strong>исполнительного помощника</strong>, которому вы сами даёте нужную информацию.
+      </div>
+    </div>
+
+    <div class="concept-block">
+      <div class="concept-block-header">
+        <div class="concept-number">★</div>
+        <div class="concept-title">Связка для контент-производства</div>
+      </div>
+      <div class="concept-body">
+        <strong>Шаг 1 → ChatGPT:</strong> синопсис, идея ролика, первый набросок сценария.<br>
+        <strong>Шаг 2 → Claude:</strong> прописать диалоги, развить персонажей, углубить сценарий.<br>
+        <strong>Шаг 3 → Gemini:</strong> верифицировать, запланировать, подключить Google-инструменты.
+      </div>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- SECTION 2: КАК МЫСЛИТЬ ПРОМПТАМИ -->
+  <div class="section">
+    <div class="section-label">02 · Принцип мышления</div>
+    <h2>Как правильно работать с нейросетью</h2>
+
+    <div class="concept-block">
+      <div class="concept-block-header">
+        <div class="concept-number">A</div>
+        <div class="concept-title">Интернет vs нейросеть — принципиальная разница</div>
+      </div>
+      <div class="concept-body">
+        В интернете вы вбиваете <strong>ключевые слова-теги</strong> и получаете конкретную страницу. Нейросеть работает иначе — у неё нет привязки к странице, у неё привязка к <strong>понятию</strong>.<br><br>
+        Стакан — это ёмкость, бумага, цвет, чай, вода, память о детстве одновременно. Нейросеть думает именно так — вокруг одного понятия строится облако связанных понятий.
+      </div>
+    </div>
+
+    <div class="principle-box">
+      <div class="principle-box-label">Главный принцип</div>
+      <p>Чем закрытее вопрос — тем беднее ответ. Спросили «какие цвета флага Италии» — получили три слова. Спросили «что повлияло на выбор этих цветов, что символизирует каждый» — получили историю, контекст, смысл.<br><br><strong>Заходите широкой сетью — вытаскивайте нужную рыбу.</strong> Не одна удочка с точным ответом, а огромная сеть — потом кристаллизуете лучшее.</p>
+    </div>
+
+    <div class="analogy-card">
+      <p>Миксуйте два понятия из разных областей — и на пересечении появляется нечто новое. Берёте понятие слева, понятие справа, строите между ними мост — и нейросеть выдаёт то, чего нет в шаблонных ответах.</p>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- SECTION 3: 9 ЭЛЕМЕНТОВ -->
+  <div class="section">
+    <div class="section-label">03 · Промпт для изображений</div>
+    <h2>9 элементов кинематографичного промпта</h2>
+
+    <p>Чем больше элементов используете — тем контролируемее результат. Оставляете пустые поля — нейросеть заполняет их самым банальным вариантом.</p>
+
+    <div class="elements-grid">
+      <div class="element-card">
+        <div class="element-num">01</div>
+        <div class="element-name">Объект</div>
+        <div class="element-desc">Кто или что главное в кадре. Описываете детально: возраст, внешность, одежда.</div>
+      </div>
+      <div class="element-card">
+        <div class="element-num">02</div>
+        <div class="element-name">Крупность</div>
+        <div class="element-desc">Один из 6 планов (см. ниже). Определяет, сколько персонажа видно в кадре.</div>
+      </div>
+      <div class="element-card">
+        <div class="element-num">03</div>
+        <div class="element-name">Ракурс</div>
+        <div class="element-desc">Куда смотрит герой. Прямо в камеру, три четверти, профиль, мимо камеры, снизу/сверху.</div>
+      </div>
+      <div class="element-card">
+        <div class="element-num">04</div>
+        <div class="element-name">Фон</div>
+        <div class="element-desc">Что происходит позади. Если не указать — нейросеть придумает сама, обычно банально.</div>
+      </div>
+      <div class="element-card">
+        <div class="element-num">05</div>
+        <div class="element-name">Стиль</div>
+        <div class="element-desc">Кинематограф, аниме, хоррор, нуар, мультипликация. Без стиля — выдаст гиперреализм по умолчанию.</div>
+      </div>
+      <div class="element-card">
+        <div class="element-num">06</div>
+        <div class="element-name">Свет</div>
+        <div class="element-desc">Студийный, уличный, драматический, золотой час (рассвет/закат), неон. Именно свет делает кадр «киношным».</div>
+      </div>
+      <div class="element-card">
+        <div class="element-num">07</div>
+        <div class="element-name">Детализация</div>
+        <div class="element-desc">Текстуры: пыль, дымовая завеса, капли воды. На крупных планах — естественные несовершенства кожи вместо пластиковости.</div>
+      </div>
+      <div class="element-card">
+        <div class="element-num">08</div>
+        <div class="element-name">Камера</div>
+        <div class="element-desc">Бренд камеры влияет на результат. Leica — ретро-тепло. ARRI — кино. iPhone — современный UGC. Дрон — аэросъёмка.</div>
+      </div>
+      <div class="element-card key">
+        <div class="element-num">09 ★</div>
+        <div class="element-name">Негативный промпт</div>
+        <div class="element-desc">Что блокировать в кадре. Написали «нет птиц» — птиц не будет. Железобетонный способ убрать нежелательные элементы.</div>
+      </div>
+    </div>
+
+    <div class="warning"><strong>Важно про негативный промпт:</strong> если вы пишете в тексте «без птиц», нейросеть может всё равно добавить птиц. Негативный промпт — отдельное поле, которое блокирует элемент принудительно.</div>
+
+    <p>6 планов крупности — учите язык кино:</p>
+    <div class="shots-row">
+      <div class="shot-card">
+        <div class="shot-num">06</div>
+        <div class="shot-name">Дальний</div>
+        <div class="shot-desc">Человек — точка на фоне</div>
+      </div>
+      <div class="shot-card">
+        <div class="shot-num">05</div>
+        <div class="shot-name">Общий</div>
+        <div class="shot-desc">В полный рост</div>
+      </div>
+      <div class="shot-card">
+        <div class="shot-num">04</div>
+        <div class="shot-name">Средний 2</div>
+        <div class="shot-desc">Кадр ниже пояса</div>
+      </div>
+      <div class="shot-card">
+        <div class="shot-num">03</div>
+        <div class="shot-name">Средний 1</div>
+        <div class="shot-desc">По пояс</div>
+      </div>
+      <div class="shot-card">
+        <div class="shot-num">02</div>
+        <div class="shot-name">Крупный</div>
+        <div class="shot-desc">Лицо и плечи</div>
+      </div>
+      <div class="shot-card">
+        <div class="shot-num">01</div>
+        <div class="shot-name">Деталь</div>
+        <div class="shot-desc">Глаз, рука, предмет</div>
+      </div>
+    </div>
+
+    <div class="prompt-label">Пример промпта по 9 элементам</div>
+    <div class="prompt-box">Hero identical to photo_1 and photo_2, wearing exact suit from photo_3, standing on background of Soviet garages, full shot (general plan), looking slightly past camera, dramatic brutal style, shot on Leica, natural dust particles in air, hyperrealism. Negative prompt: no birds, no cars in background.</div>
+
+    <div class="note"><strong>Язык промпта:</strong> пишите финальные промпты для генерации на английском. Нейросети обучены в первую очередь на английском — качество выше, токены тратятся эффективнее. Используйте GPT-ассистента-промтмейкера, чтобы автоматически переводить.</div>
+
+    <div class="concept-block">
+      <div class="concept-block-header">
+        <div class="concept-number">B</div>
+        <div class="concept-title">GPT-ассистент для промпт-генерации</div>
+      </div>
+      <div class="concept-body">
+        Специальный GPT настроен под кинематографичные промпты — вы пишете ему на русском несколько слов, он выдаёт развёрнутый промпт на английском с уже прописанной оптикой (24mm, f/1.4), светом, стилем и переводом для понимания. Ссылку получите в Telegram-группе.
+      </div>
+      <div class="prompt-label">Пример входного запроса</div>
+      <div class="prompt-box">Дрон фотография. Нью-Йорк, вид на Централ-Парк. Осень. На закате.</div>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- SECTION 4: РАСКАДРОВКА -->
+  <div class="section">
+    <div class="section-label">04 · Раскадровка</div>
+    <h2>Storyboard — дорожная карта перед генерацией</h2>
+
+    <p>Раскадровка в кино — подготовительный документ, по которому движется вся съёмочная группа. Экономит время и деньги на площадке. В AI-генерации — то же самое: экономит время и кредиты.</p>
+
+    <div class="analogy-card">
+      <p>Раньше художник рисовал раскадровку <strong>два дня</strong>, каждая картинка стоила 5–10 тысяч тенге. Сейчас GPT-ассистент генерирует её за 20 минут. Вы видите всю структуру видео заранее и не тратите кредиты на ненужные перегенерации.</p>
+    </div>
+
+    <div class="step-list">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-text">Напишите сценарий — через ChatGPT (GPT Рилсмейкер) или сами<em>Берёте идею, разгоняете в рилсмейкере, дорабатываете под себя</em></div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-text">Вставьте сценарий в GPT Раскадровщик<em>Он разбивает текст на сцены с описанием кадра, планом, ракурсом</em></div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-text">Запросите storyboard на нужное количество кадров<em>Для ролика 30 сек → минимум 10 кадров (каждый ~3 секунды)</em></div>
+      </div>
+      <div class="step">
+        <div class="step-num">4</div>
+        <div class="step-text">Просмотрите — скорректируйте нужные кадры<em>«Измени седьмой кадр» — он переделает только его, всё остальное останется</em></div>
+      </div>
+      <div class="step">
+        <div class="step-num">5</div>
+        <div class="step-text">Имея раскадровку — генерируйте изображения по каждому кадру<em>Вы знаете точно, что нужно. Никаких случайных генераций.</em></div>
+      </div>
+    </div>
+
+    <div class="note"><strong>Расчёт кадров:</strong> 30 сек ролик = 10–12 кадров по 3 сек. 60 сек = 18–20 кадров. Считайте заранее — это ваш бюджет генераций.</div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- SECTION 5: ПЕРСОНАЖ -->
+  <div class="section">
+    <div class="section-label">05 · Создание персонажа</div>
+    <h2>Три способа создать персонажа</h2>
+
+    <div class="concept-block">
+      <div class="concept-block-header">
+        <div class="concept-number">A</div>
+        <div class="concept-title">Способ 1 — Себя как персонажа (из фото)</div>
+      </div>
+      <div class="concept-body">
+        Загрузите минимум <strong>две фотографии</strong> с разных ракурсов: анфас + три четверти (полупрофиль). Этого достаточно, чтобы нейросеть понимала вашу внешность с разных сторон. Одна фотография — она не знает, как вы выглядите в профиль, и додумает сама (часто неточно).
+      </div>
+      <div class="prompt-label">Формула промпта</div>
+      <div class="prompt-box">Hero identical to photo_1 and photo_2. [описание действия/костюма/фона]. [крупность]. [ракурс]. [стиль]. [камера].</div>
+      <div class="note"><strong>Ключевое слово:</strong> используйте «identical» — не «similar», не «like». «Similar» = похожий. «Identical» = точная внешность.</div>
+    </div>
+
+    <div class="concept-block">
+      <div class="concept-block-header">
+        <div class="concept-number">B</div>
+        <div class="concept-title">Способ 2 — Персонаж из текста (с нуля)</div>
+      </div>
+      <div class="concept-body">
+        Описываете героя текстом: этническая принадлежность, возраст, черты лица, причёска, одежда, характер, детали. Чем больше деталей — тем более уникальный персонаж. Маленькая деталь меняет всё.
+      </div>
+      <div class="prompt-label">Пример описания персонажа</div>
+      <div class="prompt-box">Нарисуй героя. Азиат, 40 лет, длинные волосы цвета хаки, накачанный, в костюме мотобайкера, верхом на маленьком детском трёхколёсном велосипеде. Общий план. Драматический брутальный стиль. Пыль в воздухе. Снято на Leica.</div>
+      <div class="analogy-card">
+        <p>Деталь про трёхколёсный велосипед сразу добавляет <strong>комичности</strong> — нейросеть начинает вплетать юмористическую окраску в весь образ. Маленькое слово меняет интонацию всего кадра.</p>
+      </div>
+    </div>
+
+    <div class="concept-block">
+      <div class="concept-block-header">
+        <div class="concept-number">C</div>
+        <div class="concept-title">Способ 3 — Надеть чужой образ (без нарушения авторских прав)</div>
+      </div>
+      <div class="concept-body">
+        Нашли крутой костюм или образ, но он принадлежит бренду или персонажу? Переводите изображение в текст — и создаёте модифицированную версию.
+      </div>
+      <div class="step-list">
+        <div class="step">
+          <div class="step-num">1</div>
+          <div class="step-text">Найдите вдохновляющий образ (Pinterest, сохранённое изображение)</div>
+        </div>
+        <div class="step">
+          <div class="step-num">2</div>
+          <div class="step-text">Загрузите в ChatGPT, напишите: «Проанализируй фото и дай детальный промпт на костюм»<em>Он выдаст текстовое описание — материал, цвет, детали, стиль</em></div>
+        </div>
+        <div class="step">
+          <div class="step-num">3</div>
+          <div class="step-text">Скопируйте промпт костюма</div>
+        </div>
+        <div class="step">
+          <div class="step-num">4</div>
+          <div class="step-text">Загрузите ваши фото (анфас + три четверти) и вставьте промпт костюма<em>«Герой идентичен фото 1 и 2, в костюме: [вставьте описание костюма]»</em></div>
+        </div>
+      </div>
+      <div class="note"><strong>Почему это легально:</strong> вы берёте концепцию как вдохновение. На выходе — новый оригинальный персонаж в похожем стиле. За стиль и концепцию авторских прав не предъявляют.</div>
+    </div>
+
+    <div class="concept-block">
+      <div class="concept-block-header">
+        <div class="concept-number">D</div>
+        <div class="concept-title">ChatGPT vs Nano Banana — что выбрать</div>
+      </div>
+      <div class="concept-body">
+        <strong>ChatGPT (встроенная модель):</strong> сильнее в реализме, хорошо работает с текстовыми описаниями. Водяной знак на изображениях.<br><br>
+        <strong>Nano Banana Pro (Модуль 2):</strong> принимает до 14 независимых элементов одновременно — конкретный костюм, конкретный фон, конкретный предмет — всё через референс-фото. Для контролируемой консистентности персонажа это главный инструмент.<br><br>
+        На этом модуле — изучаем принципы на ChatGPT и Gemini. В Модуле 2 переходим на Nano Banana.
+      </div>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- SECTION 6: Google AI Studio -->
+  <div class="section">
+    <div class="section-label">06 · Редактирование</div>
+    <h2>Google AI Studio — быстрая правка изображений</h2>
+
+    <p>Сгенерировали изображение, но нужно поменять деталь — цвет пояса, добавить волосы, изменить фон. Заново генерировать дорого и долго. Google AI Studio — бесплатный инструмент для точечного редактирования.</p>
+
+    <div class="step-list">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-text">Зайдите на aistudio.google.com под Google-аккаунтом</div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-text">Image Generation → Playground<em>Выберите модель Nano Banana (бесплатная версия)</em></div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-text">Нажмите плюсик → Upload Files → загрузите изображение для редактирования</div>
+      </div>
+      <div class="step">
+        <div class="step-num">4</div>
+        <div class="step-text">Напишите текстом что изменить<em>«Поменяй цвет пояса на оранжевый», «Добавь зелёные волосы», «Замени фон на лесной»</em></div>
+      </div>
+      <div class="step">
+        <div class="step-num">5</div>
+        <div class="step-text">Выберите формат 9:16 для Stories/Reels → отправьте<em>Генерация занимает ~10 секунд</em></div>
+      </div>
+    </div>
+
+    <div class="note"><strong>Работает в контексте:</strong> пишете следующий запрос — он редактирует уже исправленное изображение, не оригинал. Итеративно доводите до нужного результата.</div>
+
+    <div class="warning"><strong>Ограничение:</strong> внешность при редактировании может немного плыть. Для первичных быстрых правок — отлично. Для финального персонажа используйте Nano Banana Pro.</div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- HOMEWORK -->
+  <div class="homework-card">
+    <div class="homework-header">
+      <span class="homework-icon">📋</span>
+      <div class="homework-title">Домашнее задание к следующему модулю</div>
+    </div>
+    <div class="hw-item">
+      <div class="hw-num">01</div>
+      <div class="hw-text">
+        Настройте ChatGPT: Custom Instructions + системный промпт
+        <span>Загрузите досье о себе в Персонализацию. Шаблон пришлём в Telegram.</span>
+      </div>
+    </div>
+    <div class="hw-item">
+      <div class="hw-num">02</div>
+      <div class="hw-text">
+        Придумайте идею ролика и разгоните через ChatGPT Рилсмейкер
+        <span>Идея о вашем бизнесе, вашей истории или просто творческая. Ссылка на GPT — в Telegram.</span>
+      </div>
+    </div>
+    <div class="hw-item">
+      <div class="hw-num">03</div>
+      <div class="hw-text">
+        Создайте первого персонажа — из себя или с нуля из текста
+        <span>Сфотографируйтесь анфас + три четверти. Или опишите придуманного персонажа с деталями.</span>
+      </div>
+    </div>
+    <div class="hw-item">
+      <div class="hw-num">04</div>
+      <div class="hw-text">
+        Возьмите образ с Pinterest — наденьте его на персонажа
+        <span>Метод: фото → ChatGPT → промпт костюма → генерация с вашим лицом.</span>
+      </div>
+    </div>
+    <div class="hw-item">
+      <div class="hw-num">05</div>
+      <div class="hw-text">
+        Поэкспериментируйте с редактированием в Google AI Studio
+        <span>Возьмите готовое изображение, поменяйте 2–3 детали итеративно.</span>
+      </div>
+    </div>
+    <div class="hw-item">
+      <div class="hw-num">—</div>
+      <div class="hw-text">
+        Результаты — в Telegram-группу: фото + промпт, на котором сделали
+        <span>Если что-то не получилось — пишите туда же. Разберём вместе.</span>
+      </div>
+    </div>
+    <div class="note" style="margin-top: 16px; margin-bottom: 0;"><strong>Следующий модуль:</strong> Nano Banana Pro — генерация сложнокомпозиционных изображений. Консистентность персонажа в каждом кадре.</div>
+  </div>
+
+</div>
+
+<div class="footer">
+  <div class="container">
+    AI Bootcamp · Creator Track · Модуль 1 из 4
+  </div>
+</div>
+
+</body>
+</html>
