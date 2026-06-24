@@ -1,0 +1,791 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Модуль 1 — Business Track</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap');
+
+  :root {
+    --bg: #0A0A0F;
+    --surface: #13131A;
+    --surface2: #1C1C26;
+    --border: #2A2A3A;
+    --accent: #6B5CE7;
+    --accent-dim: rgba(107,92,231,0.15);
+    --accent-glow: rgba(107,92,231,0.35);
+    --text: #E8E8F0;
+    --muted: #8888A8;
+    --green: #4ADE80;
+    --amber: #FCD34D;
+    --red: #F87171;
+    --white: #FFFFFF;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Manrope', sans-serif;
+    font-size: 16px;
+    line-height: 1.65;
+    min-height: 100vh;
+  }
+
+  /* HEADER */
+  .header {
+    padding: 48px 0 40px;
+    text-align: center;
+    border-bottom: 1px solid var(--border);
+    position: relative;
+    overflow: hidden;
+  }
+  .header::before {
+    content: '';
+    position: absolute;
+    top: -60px; left: 50%;
+    transform: translateX(-50%);
+    width: 600px; height: 300px;
+    background: radial-gradient(ellipse, rgba(107,92,231,0.18) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .header-track {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 16px;
+  }
+  .header h1 {
+    font-size: clamp(28px, 5vw, 48px);
+    font-weight: 800;
+    color: var(--white);
+    letter-spacing: -0.02em;
+    line-height: 1.15;
+    margin-bottom: 12px;
+  }
+  .header-sub {
+    color: var(--muted);
+    font-size: 15px;
+    max-width: 480px;
+    margin: 0 auto;
+  }
+
+  /* CONTAINER */
+  .container {
+    max-width: 780px;
+    margin: 0 auto;
+    padding: 0 24px;
+  }
+
+  /* NAV PILLS */
+  .nav-pills {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    padding: 32px 0 24px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 48px;
+  }
+  .pill {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    color: var(--muted);
+    font-size: 12px;
+    font-weight: 600;
+    padding: 6px 14px;
+    border-radius: 100px;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-family: 'Manrope', sans-serif;
+  }
+  .pill:hover { color: var(--text); border-color: var(--accent); }
+  .pill.active { background: var(--accent-dim); color: var(--accent); border-color: var(--accent); }
+
+  /* SECTION */
+  .section {
+    margin-bottom: 56px;
+  }
+  .section-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 12px;
+  }
+  .section h2 {
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--white);
+    margin-bottom: 20px;
+    letter-spacing: -0.01em;
+  }
+  .section p {
+    color: var(--muted);
+    margin-bottom: 16px;
+    font-size: 15px;
+  }
+  .section p strong {
+    color: var(--text);
+    font-weight: 600;
+  }
+
+  /* RESULT CARD — hero at top */
+  .result-card {
+    background: linear-gradient(135deg, rgba(107,92,231,0.2) 0%, rgba(107,92,231,0.05) 100%);
+    border: 1px solid var(--accent);
+    border-radius: 16px;
+    padding: 32px;
+    margin-bottom: 48px;
+    position: relative;
+    overflow: hidden;
+  }
+  .result-card::after {
+    content: '';
+    position: absolute;
+    top: -40px; right: -40px;
+    width: 200px; height: 200px;
+    background: radial-gradient(circle, rgba(107,92,231,0.15) 0%, transparent 70%);
+  }
+  .result-card-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 10px;
+  }
+  .result-card h3 {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--white);
+    margin-bottom: 16px;
+  }
+  .result-items {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .result-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    font-size: 14px;
+    color: var(--text);
+  }
+  .result-item::before {
+    content: '✓';
+    color: var(--green);
+    font-weight: 700;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+
+  /* TOOL CARDS */
+  .tools-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 32px;
+  }
+  @media (max-width: 640px) { .tools-grid { grid-template-columns: 1fr; } }
+  .tool-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px;
+    transition: border-color 0.2s;
+  }
+  .tool-card:hover { border-color: var(--accent); }
+  .tool-icon {
+    font-size: 28px;
+    margin-bottom: 12px;
+    display: block;
+  }
+  .tool-name {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--white);
+    margin-bottom: 6px;
+  }
+  .tool-role {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--accent);
+    font-family: 'JetBrains Mono', monospace;
+    margin-bottom: 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+  .tool-desc {
+    font-size: 13px;
+    color: var(--muted);
+    line-height: 1.5;
+  }
+
+  /* CONCEPT BLOCKS */
+  .concept-block {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 24px;
+    margin-bottom: 16px;
+  }
+  .concept-block-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 12px;
+  }
+  .concept-number {
+    background: var(--accent-dim);
+    color: var(--accent);
+    border: 1px solid var(--accent);
+    border-radius: 8px;
+    width: 32px; height: 32px;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    font-weight: 600;
+    flex-shrink: 0;
+  }
+  .concept-title {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--white);
+  }
+  .concept-body {
+    font-size: 14px;
+    color: var(--muted);
+    line-height: 1.6;
+  }
+  .concept-body strong { color: var(--text); }
+
+  /* CODE / PROMPT BOX */
+  .prompt-box {
+    background: #0D0D16;
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--accent);
+    border-radius: 8px;
+    padding: 16px 20px;
+    margin: 16px 0;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    color: #A8A8D0;
+    line-height: 1.6;
+    white-space: pre-wrap;
+    word-break: break-word;
+  }
+  .prompt-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 8px;
+  }
+
+  /* ANALOGY CARD */
+  .analogy-card {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px 24px;
+    margin: 16px 0;
+    position: relative;
+  }
+  .analogy-card::before {
+    content: '💡';
+    position: absolute;
+    top: -12px; left: 20px;
+    font-size: 20px;
+    background: var(--surface2);
+    padding: 0 6px;
+  }
+  .analogy-card p {
+    font-size: 14px;
+    color: var(--muted);
+    margin: 0;
+    font-style: italic;
+  }
+  .analogy-card p strong { color: var(--text); font-style: normal; }
+
+  /* STEP LIST */
+  .step-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin: 16px 0;
+  }
+  .step {
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+  }
+  .step-num {
+    background: var(--surface2);
+    color: var(--accent);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    width: 26px; height: 26px;
+    flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    font-weight: 600;
+    margin-top: 2px;
+  }
+  .step-text {
+    font-size: 14px;
+    color: var(--text);
+    line-height: 1.6;
+  }
+  .step-text em {
+    font-style: normal;
+    color: var(--muted);
+    font-size: 13px;
+    display: block;
+    margin-top: 2px;
+  }
+
+  /* HOMEWORK */
+  .homework-card {
+    background: var(--surface);
+    border: 1px solid var(--amber);
+    border-radius: 12px;
+    padding: 24px;
+    margin-top: 48px;
+  }
+  .homework-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 16px;
+  }
+  .homework-icon { font-size: 20px; }
+  .homework-title {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--white);
+  }
+  .hw-item {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .hw-item:last-child { border-bottom: none; }
+  .hw-num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--amber);
+    font-weight: 600;
+    flex-shrink: 0;
+    margin-top: 2px;
+    width: 20px;
+  }
+  .hw-text {
+    font-size: 14px;
+    color: var(--text);
+    line-height: 1.5;
+  }
+  .hw-text span {
+    display: block;
+    font-size: 12px;
+    color: var(--muted);
+    margin-top: 3px;
+  }
+
+  /* WARNING / NOTE */
+  .note {
+    background: rgba(252, 211, 77, 0.06);
+    border: 1px solid rgba(252, 211, 77, 0.25);
+    border-radius: 8px;
+    padding: 12px 16px;
+    font-size: 13px;
+    color: var(--muted);
+    margin: 12px 0;
+  }
+  .note strong { color: var(--amber); }
+
+  /* DIVIDER */
+  .divider {
+    border: none;
+    border-top: 1px solid var(--border);
+    margin: 48px 0;
+  }
+
+  /* FOOTER */
+  .footer {
+    border-top: 1px solid var(--border);
+    padding: 32px 0;
+    text-align: center;
+    color: var(--muted);
+    font-size: 13px;
+    margin-top: 64px;
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="container">
+    <div class="header-track">AI Bootcamp · Business Track</div>
+    <h1>Модуль 1<br>Три языковые модели для бизнеса</h1>
+    <p class="header-sub">ChatGPT, Gemini, NotebookLM — зачем они нужны и как настроить под себя</p>
+  </div>
+</div>
+
+<div class="container">
+
+  <!-- NAV -->
+  <div class="nav-pills">
+    <button class="pill active">Всё</button>
+    <button class="pill">LLM — что это</button>
+    <button class="pill">ChatGPT</button>
+    <button class="pill">Gemini</button>
+    <button class="pill">NotebookLM</button>
+    <button class="pill">Домашнее задание</button>
+  </div>
+
+  <!-- RESULT ANCHOR -->
+  <div class="result-card">
+    <div class="result-card-label">После этого модуля вы умеете</div>
+    <h3>Конкретный результат</h3>
+    <div class="result-items">
+      <div class="result-item">Объяснить разницу между ChatGPT, Gemini и NotebookLM — что куда идёт</div>
+      <div class="result-item">Настроить Custom Instructions в ChatGPT под свой бизнес</div>
+      <div class="result-item">Создать GPT-ассистента для одной рутинной задачи</div>
+      <div class="result-item">Загрузить бизнес-документы в NotebookLM и работать с ними</div>
+      <div class="result-item">Провести Deep Research — найти рутины для автоматизации в своей нише</div>
+    </div>
+  </div>
+
+  <!-- SECTION 1: LLM -->
+  <div class="section">
+    <div class="section-label">01 · Основы</div>
+    <h2>Что такое LLM и почему это точка входа в ИИ</h2>
+    <p>LLM (Large Language Model) — большие языковые модели. Их особенность: они обучены на огромных текстовых массивах и общаются на человеческом языке.</p>
+    <p><strong>Почему они — вход в мир ИИ:</strong> все остальные нейросети (генерация видео, кода, сайтов) управляются именно через текстовую команду. LLM стоит на входе любой ИИ-цепочки.</p>
+
+    <div class="analogy-card">
+      <p>LLM — это <strong>полиглот</strong>, который знает множество языков и понятий. Его главный инструмент — язык. Мы понимаем друг друга словами — и машина тоже обучена именно на них.</p>
+    </div>
+
+    <div class="tools-grid">
+      <div class="tool-card">
+        <span class="tool-icon">⚡</span>
+        <div class="tool-name">ChatGPT</div>
+        <div class="tool-role">Исполнитель</div>
+        <div class="tool-desc">Быстро делает конкретные задачи. Нужен чёткий промпт — иначе галлюцинирует. Лучший для рутины, настроенных GPT-ботов.</div>
+      </div>
+      <div class="tool-card">
+        <span class="tool-icon">🧠</span>
+        <div class="tool-name">Claude</div>
+        <div class="tool-role">Соавтор</div>
+        <div class="tool-desc">Глубокая работа с документами, структурирование, финансовые модели, стратегия. Здесь живёт «производственный конвейер» бизнеса.</div>
+      </div>
+      <div class="tool-card">
+        <span class="tool-icon">🌐</span>
+        <div class="tool-name">Gemini</div>
+        <div class="tool-role">Оркестратор</div>
+        <div class="tool-desc">Привязан к экосистеме Google. Подключает Calendar, Drive, Gmail. Хорош для верификации информации и широкого поиска.</div>
+      </div>
+    </div>
+
+    <div class="analogy-card">
+      <p><strong>ChatGPT</strong> — быстрый помощник, который нахватался знаний, но его нужно проверять. <strong>Claude</strong> — думающий соавтор, с которым разрабатываете продукт изнутри. <strong>Gemini</strong> — менеджер завода: знает, куда что отправить, и умеет возвращать в реальность.</p>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- SECTION 2: ChatGPT -->
+  <div class="section">
+    <div class="section-label">02 · ChatGPT</div>
+    <h2>ChatGPT: как настроить и не тратить время впустую</h2>
+
+    <div class="concept-block">
+      <div class="concept-block-header">
+        <div class="concept-number">A</div>
+        <div class="concept-title">Слабые места ChatGPT</div>
+      </div>
+      <div class="concept-body">
+        Знания обновляются <strong>поквартально</strong> — данные устаревают. Архитектура настроена угождать: если знаний не хватает — галлюцинирует, выдаёт убедительную ложь. Использовать только там, где вы его хорошо настроили и дали правильный контекст.
+      </div>
+    </div>
+
+    <div class="concept-block">
+      <div class="concept-block-header">
+        <div class="concept-number">B</div>
+        <div class="concept-title">Deep Research — поиск рутин для автоматизации</div>
+      </div>
+      <div class="concept-body">
+        Режим глубокого исследования: модель берёт до 20 источников и выдаёт аналитику. Используйте для поиска рутинных задач в вашей нише, которые уже автоматизируют другие.
+      </div>
+      <div class="prompt-label">Промпт для старта</div>
+      <div class="prompt-box">Сделай глубокое исследование на поиск рутинных задач в нише [ваша ниша], которые можно автоматизировать с помощью ИИ. Задай мне три уточняющих вопроса, чтобы подобрать наиболее популярный ответ из уже реализованных практик.</div>
+      <div class="note"><strong>Важно:</strong> ChatGPT уточнит детали перед исследованием — ответьте точнее, результат будет лучше.</div>
+    </div>
+
+    <div class="concept-block">
+      <div class="concept-block-header">
+        <div class="concept-number">C</div>
+        <div class="concept-title">GPTs — предустановленные ассистенты</div>
+      </div>
+      <div class="concept-body">
+        GPT — это чат с готовыми инструкциями под конкретную задачу. Один раз написали правила — больше не объясняете заново. Доступно на платной подписке (~$20/мес, ~10 000 тенге).
+      </div>
+      <div class="analogy-card">
+        <p>Представьте: вы говорите сотруднику — <strong>«ты проверяешь только почтовый ящик. Если пришло от налоговой — несёшь мне. Остальное не трогаешь»</strong>. Один раз объяснили — он работает постоянно. GPT работает так же.</p>
+      </div>
+    </div>
+
+    <p>Как создать GPT за 5 минут:</p>
+    <div class="step-list">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-text">Откройте ChatGPT → раздел GPTs → «Создать»<em>Выбираем вкладку «Конфигурация»</em></div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-text">Придумайте задачу — одну рутину, которую повторяете регулярно<em>Например: «генерирую темы рефератов», «рассчитываю стоимость лизинга», «пишу посты в Telegram»</em></div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-text">Попросите ChatGPT написать инструкцию для этого GPT<em>Промпт: «Напиши инструкцию для GPT, который [задача] для [ваша деятельность]»</em></div>
+      </div>
+      <div class="step">
+        <div class="step-num">4</div>
+        <div class="step-text">Вставьте инструкцию в поле «Инструкции», нажмите «Создать»<em>Опционально: загрузите файлы в «Знания» — методологии, списки, базы</em></div>
+      </div>
+      <div class="step">
+        <div class="step-num">5</div>
+        <div class="step-text">Протестируйте и найдите слабые места<em>Скажите GPT: «Найди слабые места этой инструкции» — он сам укажет на ошибки</em></div>
+      </div>
+    </div>
+
+    <div class="analogy-card">
+      <p><strong>Инструкция</strong> — это библиотекарь, который знает, где лежит нужная книга. <strong>Знания</strong> — это сами книги. Вместе они дают точные ответы без повторных объяснений.</p>
+    </div>
+
+    <div class="concept-block">
+      <div class="concept-block-header">
+        <div class="concept-number">D</div>
+        <div class="concept-title">Custom Instructions — досье о вашем бизнесе</div>
+      </div>
+      <div class="concept-body">
+        Профиль → Персонализация → Пользовательские инструкции. Загружаете сюда: кто вы, ваш продукт, ваша аудитория, их боли, ваш стиль общения, ваши цели от ИИ, где ведёте бизнес. ChatGPT запомнит это и будет учитывать в каждом ответе.
+      </div>
+      <div class="step-list">
+        <div class="step">
+          <div class="step-num">1</div>
+          <div class="step-text">Откройте чат и попросите сформировать досье<em>«Задай мне вопросы, чтобы получить весь контекст обо мне для пользовательских инструкций»</em></div>
+        </div>
+        <div class="step">
+          <div class="step-num">2</div>
+          <div class="step-text">Ответьте на вопросы развёрнуто</div>
+        </div>
+        <div class="step">
+          <div class="step-num">3</div>
+          <div class="step-text">Скопируйте результат → Персонализация → Пользовательские инструкции</div>
+        </div>
+      </div>
+      <div class="note"><strong>Зачем:</strong> ChatGPT забывает начало разговора (контекстное окно). Custom Instructions — постоянная память. Один раз загрузили — он всегда знает, кто вы.</div>
+    </div>
+
+    <div class="concept-block">
+      <div class="concept-block-header">
+        <div class="concept-number">E</div>
+        <div class="concept-title">Проекты — связанные чаты</div>
+      </div>
+      <div class="concept-body">
+        Чаты по одной теме группируйте в проект. Модель понимает контекст — что эти чаты связаны. В проект также загружаются источники и прописываются инструкции для всего проекта.
+      </div>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- SECTION 3: Gemini -->
+  <div class="section">
+    <div class="section-label">03 · Gemini</div>
+    <h2>Gemini: Google-экосистема и проверка реальностью</h2>
+
+    <p><strong>Главное отличие от ChatGPT:</strong> Gemini идёт сначала на серверы Google и ищет самую индексируемую статью под ваш запрос. ChatGPT идёт в свою базу. Из этого вытекают плюсы и минусы.</p>
+
+    <div class="tools-grid" style="grid-template-columns: 1fr 1fr;">
+      <div class="tool-card">
+        <div class="tool-name" style="color: var(--green);">✓ Плюс</div>
+        <div class="tool-desc" style="margin-top: 8px;">Актуальные данные из интернета. Хорошо для широких запросов, общеизвестных фактов, верификации.</div>
+      </div>
+      <div class="tool-card">
+        <div class="tool-name" style="color: var(--red);">✗ Минус</div>
+        <div class="tool-desc" style="margin-top: 8px;">На специфических темах даёт самый популярный результат, а не самый точный. Проваливается на узких задачах.</div>
+      </div>
+    </div>
+
+    <div class="analogy-card">
+      <p>Gemini — как <strong>помощник на базаре</strong>, который знает, где что продаётся. Но если нужен конкретный сорт клубники — придётся идти к продавцу напрямую.</p>
+    </div>
+
+    <div class="concept-block">
+      <div class="concept-block-header">
+        <div class="concept-number">A</div>
+        <div class="concept-title">Как использовать в работе</div>
+      </div>
+      <div class="concept-body">
+        <strong>Верификация:</strong> получили ответ в ChatGPT или Claude — идёте в Gemini, просите найти слабые места.<br><br>
+        <strong>Калибровка стратегии:</strong> когда нашли что-то нестандартное в Claude — проверяете в Gemini, не противоречит ли это законам рынка.<br><br>
+        <strong>Голосовой ввод + Calendar:</strong> «Внеси в план: завтра тренировка в 7:30, плавание» — добавляет в Google Календарь голосом.<br><br>
+        <strong>Режим обучения:</strong> включается в настройках. Любой вопрос получает пошаговый понятный ответ, без сухих данных.
+      </div>
+    </div>
+
+    <div class="concept-block">
+      <div class="concept-block-header">
+        <div class="concept-number">B</div>
+        <div class="concept-title">Gems — аналог GPTs</div>
+      </div>
+      <div class="concept-body">
+        Те же предустановленные ассистенты, только внутри Gemini. Создаётся так же: название, инструкция, база знаний. Плюс — можно добавлять файлы прямо из Google Drive.
+      </div>
+    </div>
+
+    <div class="note"><strong>Рекомендация:</strong> не выбирайте один инструмент навсегда. Жонглируйте: ChatGPT для конкретных задач, Claude для глубокой работы, Gemini для проверки и Google-экосистемы.</div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- SECTION 4: NotebookLM -->
+  <div class="section">
+    <div class="section-label">04 · NotebookLM</div>
+    <h2>NotebookLM: закрытая нейросеть на ваших документах</h2>
+
+    <p>NotebookLM (Google) — это языковая модель, которую вы <strong>закрываете в ограниченное пространство</strong>. Вы загружаете источники и говорите: «работай только с ними».</p>
+
+    <div class="analogy-card">
+      <p>Представьте: у вас есть нейросеть уровня ChatGPT, но она видит только те книги, которые вы ей дали. Не лезет в интернет. Не придумывает. Работает с вашей реальностью.</p>
+    </div>
+
+    <div class="concept-block">
+      <div class="concept-block-header">
+        <div class="concept-number">A</div>
+        <div class="concept-title">Какие источники можно загрузить</div>
+      </div>
+      <div class="concept-body">
+        PDF / изображения / документы · Ссылки на сайты и YouTube-ролики · Файлы с Google Диска · Скопированный текст — вставили и всё.
+      </div>
+    </div>
+
+    <div class="concept-block">
+      <div class="concept-block-header">
+        <div class="concept-number">B</div>
+        <div class="concept-title">Как выглядит интерфейс</div>
+      </div>
+      <div class="concept-body">
+        <strong>Слева</strong> — список загруженных источников.<br>
+        <strong>По центру</strong> — чат: пишете запросы, NotebookLM отвечает только по источникам.<br>
+        <strong>Справа</strong> — мультимедийная студия: можно вывести в аудиоподкаст, инфографику, ментальную карту, таблицу, тест, видеопересказ.
+      </div>
+    </div>
+
+    <div class="concept-block">
+      <div class="concept-block-header">
+        <div class="concept-number">C</div>
+        <div class="concept-title">Где применять в бизнесе</div>
+      </div>
+      <div class="concept-body">
+        — Налоговый кодекс + статьи → задаёте вопросы по налогам без звонка бухгалтеру<br>
+        — Методология вашей компании + инструкции → быстрые ответы для команды<br>
+        — Финансовые отчёты → аналитика, таблицы, выводы<br>
+        — Учебные материалы → автоматические тесты для проверки знаний<br>
+        — Вся информация о проекте → ментальная карта структуры
+      </div>
+    </div>
+
+    <div class="concept-block">
+      <div class="concept-block-header">
+        <div class="concept-number">D</div>
+        <div class="concept-title">Конфиденциальность</div>
+      </div>
+      <div class="concept-body">
+        Данные хранятся в вашем Google-аккаунте. Google гарантирует защиту. Документы наружу не выходят — единственный риск это взлом вашего аккаунта. По степени доверия — такой же уровень, как к Google Drive.
+      </div>
+    </div>
+
+    <p>Практическое задание для NotebookLM:</p>
+    <div class="step-list">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-text">Создайте новый блокнот</div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-text">Загрузите информацию о вашем бизнесе/проекте<em>Описание, услуги, отзывы, методология — что есть</em></div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-text">Сгенерируйте аудиоподкаст в стиле «прожарки»<em>В мультимедийной студии → выберите подкаст → укажите стиль «прожарка»</em></div>
+      </div>
+      <div class="step">
+        <div class="step-num">4</div>
+        <div class="step-text">Послушайте — поймёте, как NotebookLM работает с вашим контентом</div>
+      </div>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- HOMEWORK -->
+  <div class="homework-card">
+    <div class="homework-header">
+      <span class="homework-icon">📋</span>
+      <div class="homework-title">Домашнее задание — 3 задачи</div>
+    </div>
+    <div class="hw-item">
+      <div class="hw-num">01</div>
+      <div class="hw-text">
+        Запустите Deep Research в ChatGPT на поиск рутин в вашей нише
+        <span>Промпт из раздела 02-B. Результат скиньте в телеграм-группу — разберём вместе.</span>
+      </div>
+    </div>
+    <div class="hw-item">
+      <div class="hw-num">02</div>
+      <div class="hw-text">
+        Создайте одного GPT-ассистента под свою рутину
+        <span>Требуется подписка ChatGPT Plus (~$20). Если нет — попробуйте чужой GPT из магазина и протестируйте его.</span>
+      </div>
+    </div>
+    <div class="hw-item">
+      <div class="hw-num">03</div>
+      <div class="hw-text">
+        Заполните Custom Instructions досье о себе
+        <span>Используйте шаблон из чата или попросите ChatGPT задать вам вопросы. Вставьте результат в Персонализацию.</span>
+      </div>
+    </div>
+    <div class="hw-item">
+      <div class="hw-num">04</div>
+      <div class="hw-text">
+        Загрузите материалы о бизнесе в NotebookLM и поработайте с ними
+        <span>Бонус: сгенерируйте аудиоподкаст-прожарку своего бизнеса 😄</span>
+      </div>
+    </div>
+    <div class="note" style="margin-top: 16px; margin-bottom: 0;"><strong>Следующий модуль:</strong> ManyChat — настройка воронок для продаж и лидогенерации из Instagram в Telegram.</div>
+  </div>
+
+</div>
+
+<div class="footer">
+  <div class="container">
+    AI Bootcamp · Business Track · Модуль 1 из 4
+  </div>
+</div>
+
+</body>
+</html>
