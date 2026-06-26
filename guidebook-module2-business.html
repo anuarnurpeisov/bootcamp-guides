@@ -1,0 +1,751 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Гайдбук — Модуль 2: ManyChat · AI Bootcamp</title>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0A0A0F;--surface:#11111C;--surface2:#161622;--border:#1C1C2E;
+  --accent:#6B5CE7;--al:#9B8EF5;--ag:rgba(107,92,231,0.12);
+  --green:#10B981;--gg:rgba(16,185,129,0.1);--gb:rgba(16,185,129,0.2);
+  --yellow:#F59E0B;--yg:rgba(245,158,11,0.08);--yb:rgba(245,158,11,0.2);
+  --red:#EF4444;--rg:rgba(239,68,68,0.08);
+  --text:#F0F0F8;--muted:#6B6B8A;--subtle:rgba(240,240,248,0.55);
+}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:'Manrope',sans-serif;font-size:16px;line-height:1.7;min-height:100vh}
+
+/* LAYOUT */
+.container{max-width:860px;margin:0 auto;padding:0 32px 120px}
+
+/* TOP BAR */
+.topbar{background:rgba(10,10,15,0.92);backdrop-filter:blur(16px);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:100;padding:14px 32px;display:flex;align-items:center;justify-content:space-between}
+.topbar-left{display:flex;align-items:center;gap:12px}
+.topbar-logo{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--green);font-weight:700;letter-spacing:.08em}
+.topbar-sep{color:var(--border);font-size:14px}
+.topbar-title{font-size:13px;color:var(--muted)}
+.topbar-badge{font-family:'JetBrains Mono',monospace;font-size:10px;background:var(--gg);border:1px solid var(--gb);color:var(--green);border-radius:100px;padding:3px 10px;letter-spacing:.06em}
+
+/* HERO */
+.hero{padding:72px 0 48px;border-bottom:1px solid var(--border);margin-bottom:56px}
+.hero-eyebrow{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--green);margin-bottom:16px;opacity:.9}
+.hero h1{font-size:clamp(32px,5vw,52px);font-weight:800;letter-spacing:-0.03em;line-height:1.08;margin-bottom:20px}
+.hero h1 span{color:var(--green)}
+.hero-lead{font-size:17px;color:var(--subtle);line-height:1.65;max-width:620px;margin-bottom:28px}
+.hero-meta{display:flex;flex-wrap:wrap;gap:10px}
+.meta-tag{display:flex;align-items:center;gap:6px;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:6px 12px;font-size:13px;color:var(--muted)}
+.meta-tag span{font-weight:600;color:var(--text)}
+
+/* TABLE OF CONTENTS */
+.toc{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:28px 32px;margin-bottom:56px}
+.toc-title{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);margin-bottom:16px}
+.toc-list{list-style:none;display:flex;flex-direction:column;gap:4px}
+.toc-list li a{display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--subtle);font-size:14px;padding:6px 8px;border-radius:8px;transition:all .2s}
+.toc-list li a:hover{color:var(--text);background:var(--border)}
+.toc-list li a .toc-num{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--green);min-width:24px}
+
+/* SECTIONS */
+.section{margin-bottom:64px;scroll-margin-top:72px}
+.section-label{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--green);margin-bottom:10px;display:flex;align-items:center;gap:8px}
+.section-label::after{content:'';flex:1;height:1px;background:var(--border)}
+.section h2{font-size:clamp(22px,3vw,30px);font-weight:800;letter-spacing:-0.02em;line-height:1.2;margin-bottom:20px}
+.section h3{font-size:18px;font-weight:700;margin:28px 0 12px;color:var(--text)}
+.section p{color:var(--subtle);margin-bottom:16px;line-height:1.75}
+.section p strong{color:var(--text);font-weight:700}
+
+/* STEPS */
+.steps{display:flex;flex-direction:column;gap:12px;margin:20px 0}
+.step{display:flex;gap:16px;background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:18px 20px;position:relative;overflow:hidden;transition:border-color .2s}
+.step:hover{border-color:rgba(16,185,129,.3)}
+.step::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--green)}
+.step-num{font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:700;color:var(--green);min-width:28px;padding-top:1px}
+.step-body h4{font-size:15px;font-weight:700;margin-bottom:4px}
+.step-body p{font-size:13px;color:var(--subtle);line-height:1.6;margin:0}
+
+/* CODE / PATH BLOCK */
+.code-block{background:#080810;border:1px solid var(--border);border-left:3px solid var(--green);border-radius:12px;padding:16px 20px;font-family:'JetBrains Mono',monospace;font-size:13px;color:var(--green);line-height:1.8;margin:16px 0;overflow-x:auto}
+.code-block .comment{color:var(--muted);font-size:11px}
+.code-block .path{color:var(--al)}
+
+/* INFO BOXES */
+.box{border-radius:14px;padding:18px 22px;margin:20px 0}
+.box-label{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.14em;margin-bottom:8px;font-weight:700}
+.box p,.box li{font-size:14px;line-height:1.65}
+.box.green{background:var(--gg);border:1px solid var(--gb)}
+.box.green .box-label{color:var(--green)}
+.box.yellow{background:var(--yg);border:1px solid var(--yb)}
+.box.yellow .box-label{color:var(--yellow)}
+.box.purple{background:var(--ag);border:1px solid rgba(107,92,231,.25)}
+.box.purple .box-label{color:var(--al)}
+.box ul{list-style:none;display:flex;flex-direction:column;gap:6px;padding:0}
+.box ul li{padding-left:16px;position:relative;color:var(--subtle)}
+.box ul li::before{content:'→';position:absolute;left:0;font-size:12px}
+.box.green ul li::before{color:var(--green)}
+.box.yellow ul li::before{color:var(--yellow)}
+.box.purple ul li::before{color:var(--al)}
+
+/* CONCEPT CARDS */
+.concepts{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin:20px 0}
+.concept{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:20px}
+.concept-icon{font-size:22px;margin-bottom:10px}
+.concept h4{font-size:14px;font-weight:800;margin-bottom:6px;color:var(--green)}
+.concept p{font-size:13px;color:var(--subtle);line-height:1.6;margin:0}
+
+/* FLOW DIAGRAM */
+.flow{display:flex;align-items:center;flex-wrap:wrap;gap:8px;margin:20px 0;padding:20px;background:var(--surface);border:1px solid var(--border);border-radius:14px}
+.flow-node{background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:10px 16px;font-size:13px;font-weight:600;text-align:center}
+.flow-node.trigger{border-color:rgba(16,185,129,.4);color:var(--green)}
+.flow-node.action{border-color:rgba(107,92,231,.4);color:var(--al)}
+.flow-node.result{border-color:rgba(245,158,11,.4);color:var(--yellow)}
+.flow-arrow{color:var(--muted);font-size:16px;flex-shrink:0}
+.flow-label{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--muted);text-align:center;margin-top:4px}
+
+/* DIVIDER */
+.divider{height:1px;background:var(--border);margin:48px 0}
+
+/* HOMEWORK */
+.homework{background:linear-gradient(135deg,rgba(16,185,129,.08),rgba(16,185,129,.03));border:1px solid rgba(16,185,129,.25);border-radius:20px;padding:32px}
+.homework h3{font-size:22px;font-weight:800;margin-bottom:8px}
+.homework-sub{font-size:14px;color:var(--subtle);margin-bottom:24px}
+.hw-items{display:flex;flex-direction:column;gap:12px}
+.hw-item{display:flex;gap:14px;background:rgba(255,255,255,.03);border:1px solid rgba(16,185,129,.12);border-radius:12px;padding:16px 18px}
+.hw-check{width:22px;height:22px;border-radius:6px;border:2px solid rgba(16,185,129,.4);flex-shrink:0;margin-top:1px}
+.hw-body h5{font-size:14px;font-weight:700;margin-bottom:3px}
+.hw-body p{font-size:12px;color:var(--subtle);line-height:1.55;margin:0}
+
+/* FOOTER */
+.footer{border-top:1px solid var(--border);padding:32px 0;text-align:center}
+.footer p{font-size:13px;color:var(--muted)}
+.footer a{color:var(--green);text-decoration:none}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-left">
+    <span class="topbar-logo">BOOTCAMP.KZ</span>
+    <span class="topbar-sep">/</span>
+    <span class="topbar-title">Бизнес-трек · Модуль 2</span>
+  </div>
+  <span class="topbar-badge">⚙️ БИЗНЕС-ТРЕК</span>
+</div>
+
+<div class="container">
+
+  <!-- HERO -->
+  <div class="hero">
+    <div class="hero-eyebrow">Модуль 2 · Гайдбук · Поток 15</div>
+    <h1>ManyChat:<br><span>Автоматизация</span><br>продаж</h1>
+    <p class="hero-lead">Полный разбор занятия — от архитектуры чат-бота до работающей воронки в Instagram и Telegram. Читай параллельно с записью или вместо неё.</p>
+    <div class="hero-meta">
+      <div class="meta-tag">📅 <span>25 июня 2026</span></div>
+      <div class="meta-tag">⏱ <span>78 минут</span></div>
+      <div class="meta-tag">🛠 <span>ManyChat · Instagram · Telegram</span></div>
+      <div class="meta-tag">🎯 <span>Уровень: с нуля</span></div>
+    </div>
+  </div>
+
+  <!-- TOC -->
+  <div class="toc">
+    <div class="toc-title">Содержание</div>
+    <ul class="toc-list">
+      <li><a href="#what"><span class="toc-num">01</span>Что такое ManyChat и зачем он нужен</a></li>
+      <li><a href="#interface"><span class="toc-num">02</span>Интерфейс и навигация</a></li>
+      <li><a href="#architecture"><span class="toc-num">03</span>Архитектура: как работают триггеры и Flow</a></li>
+      <li><a href="#instagram"><span class="toc-num">04</span>Подключение Instagram и первый триггер</a></li>
+      <li><a href="#telegram"><span class="toc-num">05</span>Создание Telegram-бота через BotFather</a></li>
+      <li><a href="#qualification"><span class="toc-num">06</span>Квалификация лидов и теги</a></li>
+      <li><a href="#cta"><span class="toc-num">07</span>Call to Action — ссылка на оплату</a></li>
+      <li><a href="#analytics"><span class="toc-num">08</span>Аналитика и статистика</a></li>
+      <li><a href="#followup"><span class="toc-num">09</span>Дожим и follow-up</a></li>
+      <li><a href="#broadcast"><span class="toc-num">10</span>Broadcast — рассылка по базе</a></li>
+      <li><a href="#aiworkflow"><span class="toc-num">11</span>AI-воркфлоу: как писать скрипты для бота</a></li>
+      <li><a href="#homework"><span class="toc-num">12</span>Домашнее задание</a></li>
+    </ul>
+  </div>
+
+  <!-- S1: ЧТО ТАКОЕ MANYCHAT -->
+  <div class="section" id="what">
+    <div class="section-label">01</div>
+    <h2>Что такое ManyChat и зачем он нужен</h2>
+    <p>ManyChat — это платформа для автоматизации переписки в мессенджерах. Она умеет подключаться к Instagram, Telegram, WhatsApp, Facebook и отвечать на сообщения и комментарии автоматически, без твоего участия.</p>
+    <p>Ты наверняка видел в Reels: «Оставь комментарий — пришлю в личку». Это ManyChat. Человек пишет кодовое слово → бот мгновенно отвечает → ведёт к покупке. Всё без тебя.</p>
+
+    <div class="box green">
+      <div class="box-label">ПОЧЕМУ MANYCHAT — ФЛАГМАН РЫНКА</div>
+      <ul>
+        <li>Официальный партнёр Meta — не банят, работает стабильно</li>
+        <li>Подключается к Instagram, Telegram, WhatsApp, Facebook одновременно</li>
+        <li>Бесплатный план — до 1 000 контактов без оплаты</li>
+        <li>Визуальный редактор Flow — не нужно программирование</li>
+        <li>Встроенная аналитика — видишь где люди отваливаются</li>
+      </ul>
+    </div>
+
+    <div class="box yellow">
+      <div class="box-label">ВАЖНО ПОНЯТЬ</div>
+      <p style="color:var(--subtle)">ManyChat сейчас — это не настоящий AI. Это заранее написанные сценарии, где ты сам придумываешь диалоги и направляешь разговор. ManyChat AI (их встроенный инструмент) — отдельная функция, которая даёт боту возможность отвечать более свободно. Начинаем со сценариев.</p>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- S2: ИНТЕРФЕЙС -->
+  <div class="section" id="interface">
+    <div class="section-label">02</div>
+    <h2>Интерфейс и навигация</h2>
+    <p>После входа на <strong>manychat.com</strong> слева находится рабочее меню. Три главных раздела которые используем постоянно:</p>
+
+    <div class="concepts">
+      <div class="concept">
+        <div class="concept-icon">👥</div>
+        <h4>Contacts (Контакты)</h4>
+        <p>Все люди которые хоть раз взаимодействовали с твоим ботом — написали, нажали кнопку, оставили комментарий. Здесь видишь кто они, их теги и историю.</p>
+      </div>
+      <div class="concept">
+        <div class="concept-icon">⚡</div>
+        <h4>Automation (Автоматизация)</h4>
+        <p>Сердце ManyChat. Здесь создаёшь все Flow — цепочки сообщений, которые бот отправляет автоматически по триггерам.</p>
+      </div>
+      <div class="concept">
+        <div class="concept-icon">🤖</div>
+        <h4>ManyChat AI</h4>
+        <p>Новый раздел — искусственный интеллект который может отвечать самостоятельно. Пока не трогаем — сначала осваиваем базовые сценарии.</p>
+      </div>
+      <div class="concept">
+        <div class="concept-icon">📢</div>
+        <h4>Broadcasting</h4>
+        <p>Массовая рассылка по всей базе контактов. Полезно когда накопились тёплые лиды и нужно сделать оффер сразу всем.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- S3: АРХИТЕКТУРА -->
+  <div class="section" id="architecture">
+    <div class="section-label">03</div>
+    <h2>Архитектура: как работают триггеры и Flow</h2>
+    <p>Вся логика ManyChat строится на одной схеме: <strong>Триггер запускает Flow, Flow отправляет сообщения</strong>. Понял это — понял всё.</p>
+
+    <h3>Основная схема</h3>
+    <div class="flow">
+      <div>
+        <div class="flow-node trigger">Триггер</div>
+        <div class="flow-label">Ключевое слово / Комментарий</div>
+      </div>
+      <div class="flow-arrow">→</div>
+      <div>
+        <div class="flow-node action">Flow запускается</div>
+        <div class="flow-label">Цепочка сообщений</div>
+      </div>
+      <div class="flow-arrow">→</div>
+      <div>
+        <div class="flow-node action">Сообщение 1</div>
+        <div class="flow-label">Квалификация</div>
+      </div>
+      <div class="flow-arrow">→</div>
+      <div>
+        <div class="flow-node action">Ветка: Да / Нет</div>
+        <div class="flow-label">Сегментация</div>
+      </div>
+      <div class="flow-arrow">→</div>
+      <div>
+        <div class="flow-node result">CTA + Ссылка</div>
+        <div class="flow-label">Продажа</div>
+      </div>
+    </div>
+
+    <h3>Типы триггеров</h3>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">01</div>
+        <div class="step-body">
+          <h4>Ключевое слово в директ (DM)</h4>
+          <p>Человек пишет тебе в директ определённое слово → бот отвечает автоматически. Пример: написал «ХОЧУ» → получил сообщение с описанием услуги и ссылкой.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">02</div>
+        <div class="step-body">
+          <h4>Комментарий под постом</h4>
+          <p>Человек оставляет комментарий с ключевым словом → бот пишет ему в директ. Именно это видишь в Reels: «Напиши СТАРТ в комменты — пришлю в личку».</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">03</div>
+        <div class="step-body">
+          <h4>Реакция на Stories</h4>
+          <p>Человек реагирует на твою Stories → срабатывает автоответ. Хорошо работает для прогрева — люди уже видели тебя и реагируют.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">04</div>
+        <div class="step-body">
+          <h4>Ссылка (Referral URL)</h4>
+          <p>Человек переходит по специальной ссылке → автоматически попадает в Flow. Используется в таргете, у Анурара так настроена реклама буткемпа.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="box purple">
+      <div class="box-label">ГЛАВНЫЙ ПРИНЦИП</div>
+      <p style="color:var(--subtle)">Не перегружай человека. Задавай один вопрос за раз. Чем короче и понятнее сообщение — тем выше конверсия. Люди не читают длинные автоответы — они их закрывают.</p>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- S4: INSTAGRAM -->
+  <div class="section" id="instagram">
+    <div class="section-label">04</div>
+    <h2>Подключение Instagram и первый триггер</h2>
+    <p>Перед созданием Flow нужно подключить Instagram-аккаунт к ManyChat. Делается один раз.</p>
+
+    <h3>Подключение аккаунта</h3>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">01</div>
+        <div class="step-body">
+          <h4>Settings → Channels → Instagram</h4>
+          <p>В левом меню ManyChat → Settings → Connect Instagram. Нужен бизнес-аккаунт или аккаунт автора (Creator).</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">02</div>
+        <div class="step-body">
+          <h4>Авторизация через Facebook</h4>
+          <p>Instagram подключается через Facebook Business. Если аккаунт не привязан к Facebook — привяжи в настройках Instagram заранее.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">03</div>
+        <div class="step-body">
+          <h4>Выбор страницы</h4>
+          <p>Выбираешь нужный Instagram-аккаунт → подтверждаешь разрешения → аккаунт подключён. Зелёная галочка = готово.</p>
+        </div>
+      </div>
+    </div>
+
+    <h3>Создание первого Flow</h3>
+    <div class="code-block">
+      <span class="comment">// Путь в ManyChat</span><br>
+      <span class="path">Automation → Flows → New Flow</span><br><br>
+      <span class="comment">// Дай название под свой бизнес</span><br>
+      Пример: «Instagram — входящие заявки»
+    </div>
+
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">01</div>
+        <div class="step-body">
+          <h4>Добавляешь триггер</h4>
+          <p>В Flow нажимаешь «Add Trigger» → выбираешь «Instagram Direct Message» → вводишь ключевое слово. Пример: ХОЧУ, СТАРТ, ЗАПИСАТЬСЯ.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">02</div>
+        <div class="step-body">
+          <h4>Первое сообщение бота</h4>
+          <p>Добавляешь блок «Send Message» → пишешь текст первого автоответа. Коротко: кто ты, что предлагаешь, один вопрос для квалификации.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">03</div>
+        <div class="step-body">
+          <h4>Добавляешь кнопки</h4>
+          <p>Блок «Quick Replies» — две кнопки: «Да, интересно» и «Расскажи подробнее». Каждая кнопка ведёт в свою ветку Flow.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">04</div>
+        <div class="step-body">
+          <h4>Тест на живом аккаунте</h4>
+          <p>Нажимаешь «Preview» → ManyChat показывает как выглядит в директ. Затем с другого аккаунта пишешь своё ключевое слово → проверяешь что бот отвечает.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="box green">
+      <div class="box-label">ПРИМЕР ПЕРВОГО СООБЩЕНИЯ</div>
+      <p style="color:var(--subtle);font-style:italic;font-family:'JetBrains Mono',monospace;font-size:13px;line-height:1.8">"Привет! 👋 Спасибо что написал.<br>Я занимаюсь [что ты делаешь].<br>Скажи — тебе нужен результат быстро или есть время разобраться?"</p>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- S5: TELEGRAM -->
+  <div class="section" id="telegram">
+    <div class="section-label">05</div>
+    <h2>Создание Telegram-бота через BotFather</h2>
+    <p>Telegram-бот создаётся за 2 минуты через официального бота <strong>@BotFather</strong>. Потом подключается к ManyChat — и ты управляешь Instagram и Telegram из одного места.</p>
+
+    <h3>Создание бота в Telegram</h3>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">01</div>
+        <div class="step-body">
+          <h4>Открываешь @BotFather в Telegram</h4>
+          <p>Ищешь в Telegram «BotFather» — официальный синий аккаунт с галочкой. Нажимаешь Start.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">02</div>
+        <div class="step-body">
+          <h4>Команда /newbot</h4>
+          <p>Пишешь /newbot → BotFather спрашивает имя бота (то что видят люди) → потом username бота (заканчивается на _bot). Пример: anuarbot_bot</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">03</div>
+        <div class="step-body">
+          <h4>Копируешь API Token</h4>
+          <p>BotFather выдаёт длинный токен — строку вида 123456789:AAFxxxxxxxx. Копируешь. Это ключ к твоему боту — никому не давай.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">04</div>
+        <div class="step-body">
+          <h4>Вставляешь токен в ManyChat</h4>
+          <p>ManyChat → Settings → Channels → Telegram → вставляешь токен → Connect. Бот подключён.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="code-block">
+      <span class="comment">// Как выглядит API Token</span><br>
+      1234567890:AAFabcdef1234567890-XXXXXXXXXXX<br><br>
+      <span class="comment">// Формат username бота</span><br>
+      @your_business_bot <span class="comment">// всегда заканчивается на _bot или Bot</span>
+    </div>
+
+    <h3>Welcome Message — первое впечатление</h3>
+    <p>Когда человек нажимает Start в твоём Telegram-боте — он должен сразу понять кто ты и что делать дальше. Первое сообщение решает останется он или уйдёт.</p>
+
+    <div class="box green">
+      <div class="box-label">СТРУКТУРА WELCOME MESSAGE</div>
+      <ul>
+        <li>Кто ты — одна строка без воды</li>
+        <li>Что получит человек — конкретный результат</li>
+        <li>Один призыв к действию — кнопка или вопрос</li>
+        <li>Длина — не больше 3-4 предложений</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- S6: КВАЛИФИКАЦИЯ -->
+  <div class="section" id="qualification">
+    <div class="section-label">06</div>
+    <h2>Квалификация лидов и теги</h2>
+    <p>Не все кто пишут — твоя аудитория. Квалификация помогает автоматически отсеять нецелевых и направить нужных людей к покупке.</p>
+
+    <h3>Логика квалификации</h3>
+    <div class="flow">
+      <div>
+        <div class="flow-node trigger">Человек написал</div>
+      </div>
+      <div class="flow-arrow">→</div>
+      <div>
+        <div class="flow-node action">Вопрос-квалификатор</div>
+        <div class="flow-label">«Ты занимаешься бизнесом?»</div>
+      </div>
+      <div class="flow-arrow">→</div>
+      <div>
+        <div class="flow-node action">Да</div>
+        <div class="flow-label">→ оффер + ссылка</div>
+      </div>
+      <div class="flow-arrow">+</div>
+      <div>
+        <div class="flow-node result">Нет</div>
+        <div class="flow-label">→ полезный контент</div>
+      </div>
+    </div>
+
+    <h3>Теги — как сегментировать базу</h3>
+    <p>Теги в ManyChat — это метки которые ты навешиваешь на контакты. Позволяют потом делать рассылки только нужному сегменту.</p>
+
+    <div class="concepts">
+      <div class="concept">
+        <div class="concept-icon">🔥</div>
+        <h4>Тёплый лид</h4>
+        <p>Нажал кнопку «Да, интересно», прочитал оффер, но не купил. Ставишь тег «тёплый» → через день шлёшь дожим.</p>
+      </div>
+      <div class="concept">
+        <div class="concept-icon">❄️</div>
+        <h4>Холодный лид</h4>
+        <p>Написал кодовое слово, прочитал первое сообщение, не ответил. Тег «холодный» → шлёшь полезный контент, не оффер.</p>
+      </div>
+      <div class="concept">
+        <div class="concept-icon">✅</div>
+        <h4>Купил</h4>
+        <p>Оплатил услугу. Тег «клиент» → не шлёшь ему продающие сообщения, шлёшь материалы для клиентов.</p>
+      </div>
+      <div class="concept">
+        <div class="concept-icon">🤔</div>
+        <h4>Думает</h4>
+        <p>Ответил «мне нужно подумать». Тег «сомневается» → через 2 дня шлёшь кейс или отзыв.</p>
+      </div>
+    </div>
+
+    <div class="code-block">
+      <span class="comment">// Как добавить тег в Flow</span><br>
+      <span class="path">Flow → Add Action → Add Tag → «тёплый»</span><br><br>
+      <span class="comment">// Как отправить рассылку по тегу</span><br>
+      <span class="path">Broadcasting → New Broadcast → Filter by Tag → «тёплый»</span>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- S7: CTA -->
+  <div class="section" id="cta">
+    <div class="section-label">07</div>
+    <h2>Call to Action — ссылка на оплату</h2>
+    <p>Финальный шаг любой воронки — ссылка которая ведёт к оплате. В ManyChat это кнопка или текст со ссылкой в последнем сообщении Flow.</p>
+
+    <h3>Откуда брать ссылку на оплату</h3>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">01</div>
+        <div class="step-body">
+          <h4>Kaspi Pay (для Казахстана)</h4>
+          <p>Самый быстрый старт. В приложении Kaspi → Бизнес → Получить оплату → копируешь ссылку. Человек переходит → платит через Kaspi без регистрации.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">02</div>
+        <div class="step-body">
+          <h4>Ссылка на Kwiga / GetCourse</h4>
+          <p>Если продаёшь курс — берёшь ссылку на страницу оплаты в своей LMS. Вставляешь в кнопку Flow.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">03</div>
+        <div class="step-body">
+          <h4>Форма Google</h4>
+          <p>Если сначала нужна заявка — Google Form → потом ты вручную высылаешь счёт. Подходит на старте когда нет платёжной системы.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="box yellow">
+      <div class="box-label">СОВЕТ ОТ АНУРАРА</div>
+      <p style="color:var(--subtle)">Цену ставь отдельным сообщением — не вместе с описанием услуги. Так видишь в аналитике: если человек дошёл до цены и остановился — значит цена не подходит, а не оффер. Это разные проблемы с разными решениями.</p>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- S8: АНАЛИТИКА -->
+  <div class="section" id="analytics">
+    <div class="section-label">08</div>
+    <h2>Аналитика и статистика</h2>
+    <p>ManyChat показывает по каждому Flow сколько людей прошли каждый шаг. Это главный инструмент для улучшения воронки.</p>
+
+    <div class="concepts">
+      <div class="concept">
+        <div class="concept-icon">👁️</div>
+        <h4>Delivered / Seen</h4>
+        <p>Сколько получили сообщение и сколько открыли. Если Seen низкий — проблема в первом сообщении, люди не открывают.</p>
+      </div>
+      <div class="concept">
+        <div class="concept-icon">🖱️</div>
+        <h4>Clicked</h4>
+        <p>Сколько нажали кнопку. Если Seen высокий, а Clicked низкий — проблема в тексте сообщения или в самих кнопках.</p>
+      </div>
+      <div class="concept">
+        <div class="concept-icon">📊</div>
+        <h4>Conversion</h4>
+        <p>Процент тех кто дошёл до финала Flow. Отслеживаешь на каком шаге люди уходят — именно там и нужно работать.</p>
+      </div>
+      <div class="concept">
+        <div class="concept-icon">🔗</div>
+        <h4>Link Clicks</h4>
+        <p>Сколько перешли по ссылке на оплату. Разрыв между Clicked (кнопка) и Link Clicks (ссылка) — это люди которые открыли но не перешли.</p>
+      </div>
+    </div>
+
+    <div class="box purple">
+      <div class="box-label">КАК ЧИТАТЬ АНАЛИТИКУ</div>
+      <ul>
+        <li>Низкий Seen → переписывай тему/первую строку сообщения</li>
+        <li>Высокий Seen, низкий Clicked → переписывай текст и кнопки</li>
+        <li>Высокий Clicked, низкий Link Clicks → проблема в оффере или цене</li>
+        <li>Дошли до цены и остановились → цена не соответствует ожиданиям</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- S9: ДОЖИМ -->
+  <div class="section" id="followup">
+    <div class="section-label">09</div>
+    <h2>Дожим и follow-up</h2>
+    <p>Большинство людей не покупают с первого касания. Follow-up — это автоматическое сообщение через время тем кто не ответил или не дошёл до оплаты.</p>
+
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">01</div>
+        <div class="step-body">
+          <h4>Smart Delay — пауза в Flow</h4>
+          <p>В Flow добавляешь блок «Smart Delay» → ставишь 24 часа → после паузы бот отправляет следующее сообщение если человек не ответил.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">02</div>
+        <div class="step-body">
+          <h4>Условие: если не ответил</h4>
+          <p>«Если человек не нажал кнопку за 24 часа → отправь другое сообщение». Например кейс или отзыв клиента — социальное доказательство.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">03</div>
+        <div class="step-body">
+          <h4>Финальный дожим через 48 часов</h4>
+          <p>Если и второе сообщение проигнорировано → через 48 часов шлёшь последнее: «Место ещё доступно, но осталось до пятницы». Дедлайн работает.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="box yellow">
+      <div class="box-label">ВАЖНО</div>
+      <p style="color:var(--subtle)">Не более 3 follow-up сообщений. Больше — человек помечает как спам. 24 часа → 48 часов → финал. После финала — только если сам напишет.</p>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- S10: BROADCAST -->
+  <div class="section" id="broadcast">
+    <div class="section-label">10</div>
+    <h2>Broadcast — рассылка по базе</h2>
+    <p>Broadcast — это разовая рассылка по всем контактам или по отфильтрованному сегменту. Используй когда есть новый оффер, акция или важная новость.</p>
+
+    <div class="code-block">
+      <span class="comment">// Путь к Broadcast</span><br>
+      <span class="path">Broadcasting → New Broadcast → выбираешь канал (Instagram / Telegram)</span><br><br>
+      <span class="comment">// Фильтрация получателей</span><br>
+      <span class="path">Audience → Add Filter → Tag → «тёплый»</span><br><br>
+      <span class="comment">// Планирование</span><br>
+      <span class="path">Schedule → выбираешь дату и время → Send</span>
+    </div>
+
+    <div class="box green">
+      <div class="box-label">КОГДА ИСПОЛЬЗОВАТЬ BROADCAST</div>
+      <ul>
+        <li>Анонс нового потока буктемпа — рассылаешь по всей базе</li>
+        <li>Дожим перед закрытием набора — только тегу «тёплый»</li>
+        <li>Полезный контент — по всей базе, без продажи</li>
+        <li>Эксклюзивный оффер — только тегу «клиент» (лояльная база)</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- S11: AI WORKFLOW -->
+  <div class="section" id="aiworkflow">
+    <div class="section-label">11</div>
+    <h2>AI-воркфлоу: как писать скрипты для бота</h2>
+    <p>Анурар поделился своим реальным методом как писать тексты для ManyChat с помощью AI. Не один инструмент, а связка трёх.</p>
+
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">01</div>
+        <div class="step-body">
+          <h4>Gemini — первый черновик</h4>
+          <p>Идёшь в Gemini, объясняешь задачу: «Напиши сценарий для чат-бота. Моя аудитория — [кто]. Продукт — [что]. Цель — [записаться/купить].» Делаешь 2-3 итерации, просишь улучшить.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">02</div>
+        <div class="step-body">
+          <h4>Claude — проверка и усиление</h4>
+          <p>Берёшь лучший вариант от Gemini → вставляешь в Claude и пишешь: «Проверь этот скрипт. Где слабые места? Что можно усилить? Какие возражения не закрыты?» Claude критикует жёстче — используй это.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">03</div>
+        <div class="step-body">
+          <h4>Gemini — финальная верификация</h4>
+          <p>Берёшь улучшенный вариант от Claude → возвращаешься к Gemini: «Сравни это с предыдущим вариантом. Что здесь лучше?» Если Gemini подтверждает — этот вариант берёшь в работу.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="flow">
+      <div>
+        <div class="flow-node trigger">Gemini</div>
+        <div class="flow-label">черновик + итерации</div>
+      </div>
+      <div class="flow-arrow">→</div>
+      <div>
+        <div class="flow-node action">Claude</div>
+        <div class="flow-label">критика + усиление</div>
+      </div>
+      <div class="flow-arrow">→</div>
+      <div>
+        <div class="flow-node action">Gemini</div>
+        <div class="flow-label">верификация</div>
+      </div>
+      <div class="flow-arrow">→</div>
+      <div>
+        <div class="flow-node result">ManyChat</div>
+        <div class="flow-label">публикуешь</div>
+      </div>
+    </div>
+
+    <div class="box purple">
+      <div class="box-label">ПОЧЕМУ ЭТА СВЯЗКА РАБОТАЕТ</div>
+      <p style="color:var(--subtle)">Разные модели имеют разные сильные стороны. Gemini хорошо генерирует структуры, Claude лучше находит слабые места и логические дыры. Верификация Gemini в финале даёт уверенность что улучшение действительно улучшение, а не просто другой вариант.</p>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- HOMEWORK -->
+  <div class="section" id="homework">
+    <div class="section-label">12</div>
+    <div class="homework">
+      <h3>Домашнее задание</h3>
+      <p class="homework-sub">Сделай сегодня — пока всё свежо. Первые часы в ManyChat могут быть непривычными, но именно они экономят потом десятки часов.</p>
+      <div class="hw-items">
+        <div class="hw-item">
+          <div class="hw-check"></div>
+          <div class="hw-body">
+            <h5>Создай базовую автоматизацию в Instagram</h5>
+            <p>Flow с ключевым словом → первое сообщение → кнопки «Да / Нет» → тест с другого аккаунта. Скриншот входящего сообщения через бота — в чат группы.</p>
+          </div>
+        </div>
+        <div class="hw-item">
+          <div class="hw-check"></div>
+          <div class="hw-body">
+            <h5>Создай Telegram-бота и подключи к ManyChat</h5>
+            <p>@BotFather → /newbot → копируешь токен → вставляешь в ManyChat → пишешь Welcome Message. Скинь ссылку на бота (@username) в чат.</p>
+          </div>
+        </div>
+        <div class="hw-item">
+          <div class="hw-check"></div>
+          <div class="hw-body">
+            <h5>Настрой один Flow для продажи своей услуги или товара</h5>
+            <p>Trigger → квалификация → ответ «Да» → описание → CTA со ссылкой. Может быть Kaspi Pay, Google Form или что есть. Не идеально — рабочий вариант важнее.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer">
+    <p>AI Bootcamp · Поток 15 · Бизнес-трек · Модуль 2 — ManyChat<br>
+    Гайдбук создан на основе транскрипции занятия от 25 июня 2026</p>
+  </div>
+
+</div>
+</body>
+</html>
