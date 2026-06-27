@@ -1,0 +1,935 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Гайдбук — Модуль 2: Weavy + NotebookLM · Creator Track</title>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0A0A0F;--surface:#11111C;--surface2:#161622;--border:#1C1C2E;
+  --accent:#6B5CE7;--al:#9B8EF5;--ag:rgba(107,92,231,0.12);--ab:rgba(107,92,231,0.25);
+  --green:#10B981;--gg:rgba(16,185,129,0.08);--gb:rgba(16,185,129,0.2);
+  --yellow:#F59E0B;--yg:rgba(245,158,11,0.08);--yb:rgba(245,158,11,0.2);
+  --text:#F0F0F8;--muted:#6B6B8A;--subtle:rgba(240,240,248,0.55);
+}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:'Manrope',sans-serif;font-size:16px;line-height:1.7;min-height:100vh}
+.container{max-width:860px;margin:0 auto;padding:0 32px 120px}
+
+/* TOPBAR */
+.topbar{background:rgba(10,10,15,0.92);backdrop-filter:blur(16px);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:100;padding:14px 32px;display:flex;align-items:center;justify-content:space-between}
+.topbar-left{display:flex;align-items:center;gap:12px}
+.topbar-logo{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--al);font-weight:700;letter-spacing:.08em}
+.topbar-sep{color:var(--border);font-size:14px}
+.topbar-title{font-size:13px;color:var(--muted)}
+.topbar-badge{font-family:'JetBrains Mono',monospace;font-size:10px;background:var(--ag);border:1px solid var(--ab);color:var(--al);border-radius:100px;padding:3px 10px;letter-spacing:.06em}
+
+/* HERO */
+.hero{padding:72px 0 48px;border-bottom:1px solid var(--border);margin-bottom:56px}
+.hero-eyebrow{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--al);margin-bottom:16px;opacity:.9}
+.hero h1{font-size:clamp(32px,5vw,52px);font-weight:800;letter-spacing:-0.03em;line-height:1.08;margin-bottom:20px}
+.hero h1 span{color:var(--al)}
+.hero-lead{font-size:17px;color:var(--subtle);line-height:1.65;max-width:620px;margin-bottom:28px}
+.hero-meta{display:flex;flex-wrap:wrap;gap:10px}
+.meta-tag{display:flex;align-items:center;gap:6px;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:6px 12px;font-size:13px;color:var(--muted)}
+.meta-tag span{font-weight:600;color:var(--text)}
+
+/* TOC */
+.toc{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:28px 32px;margin-bottom:56px}
+.toc-title{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);margin-bottom:16px}
+.toc-list{list-style:none;display:flex;flex-direction:column;gap:2px}
+.toc-list li a{display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--subtle);font-size:14px;padding:6px 8px;border-radius:8px;transition:all .2s}
+.toc-list li a:hover{color:var(--text);background:var(--border)}
+.toc-num{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--al);min-width:24px}
+
+/* SECTIONS */
+.section{margin-bottom:64px;scroll-margin-top:72px}
+.section-label{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--al);margin-bottom:10px;display:flex;align-items:center;gap:8px}
+.section-label::after{content:'';flex:1;height:1px;background:var(--border)}
+.section h2{font-size:clamp(22px,3vw,30px);font-weight:800;letter-spacing:-0.02em;line-height:1.2;margin-bottom:20px}
+.section h3{font-size:18px;font-weight:700;margin:28px 0 12px;color:var(--text)}
+.section p{color:var(--subtle);margin-bottom:16px;line-height:1.75}
+.section p strong{color:var(--text);font-weight:700}
+
+/* STEPS */
+.steps{display:flex;flex-direction:column;gap:12px;margin:20px 0}
+.step{display:flex;gap:16px;background:var(--surface);border:1px solid var(--border);border-left:3px solid var(--accent);border-radius:14px;padding:18px 20px;transition:border-color .2s}
+.step:hover{border-color:rgba(107,92,231,.5)}
+.step-num{font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:700;color:var(--al);min-width:28px;padding-top:1px}
+.step-body h4{font-size:15px;font-weight:700;margin-bottom:4px}
+.step-body p{font-size:13px;color:var(--subtle);line-height:1.6;margin:0}
+
+/* CODE BLOCK */
+.code-block{background:#080810;border:1px solid var(--border);border-left:3px solid var(--accent);border-radius:12px;padding:16px 20px;font-family:'JetBrains Mono',monospace;font-size:13px;color:var(--al);line-height:1.8;margin:16px 0;overflow-x:auto}
+.code-block .comment{color:var(--muted);font-size:11px}
+.code-block .path{color:var(--green)}
+.code-block .key{color:var(--yellow)}
+
+/* BOXES */
+.box{border-radius:14px;padding:18px 22px;margin:20px 0}
+.box-label{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.14em;margin-bottom:8px;font-weight:700}
+.box p,.box li{font-size:14px;line-height:1.65}
+.box.purple{background:var(--ag);border:1px solid var(--ab)}
+.box.purple .box-label{color:var(--al)}
+.box.green{background:var(--gg);border:1px solid var(--gb)}
+.box.green .box-label{color:var(--green)}
+.box.yellow{background:var(--yg);border:1px solid var(--yb)}
+.box.yellow .box-label{color:var(--yellow)}
+.box ul{list-style:none;display:flex;flex-direction:column;gap:6px;padding:0}
+.box ul li{padding-left:16px;position:relative;color:var(--subtle)}
+.box ul li::before{content:'→';position:absolute;left:0;font-size:12px}
+.box.purple ul li::before{color:var(--al)}
+.box.green ul li::before{color:var(--green)}
+.box.yellow ul li::before{color:var(--yellow)}
+
+/* CONCEPT CARDS */
+.concepts{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin:20px 0}
+.concept{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:20px}
+.concept-icon{font-size:22px;margin-bottom:10px}
+.concept h4{font-size:14px;font-weight:800;margin-bottom:6px;color:var(--al)}
+.concept p{font-size:13px;color:var(--subtle);line-height:1.6;margin:0}
+
+/* NODE DIAGRAM */
+.node-diagram{display:flex;align-items:flex-start;flex-wrap:wrap;gap:8px;margin:20px 0;padding:24px;background:var(--surface);border:1px solid var(--border);border-radius:16px;justify-content:center}
+.node{background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:10px 16px;font-size:12px;font-weight:600;text-align:center;min-width:110px}
+.node.image{border-color:rgba(107,92,231,.4);color:var(--al)}
+.node.prompt{border-color:rgba(16,185,129,.4);color:var(--green)}
+.node.output{border-color:rgba(245,158,11,.4);color:var(--yellow)}
+.node-label{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--muted);margin-top:4px}
+.node-arrow{color:var(--muted);font-size:16px;align-self:center}
+.node-group{display:flex;flex-direction:column;gap:6px;align-items:center}
+
+/* RULE CARD */
+.rule{display:flex;gap:16px;background:var(--surface);border:1px solid var(--ab);border-radius:14px;padding:18px 20px;margin:10px 0}
+.rule-icon{font-size:22px;flex-shrink:0}
+.rule-body h4{font-size:14px;font-weight:800;color:var(--al);margin-bottom:4px}
+.rule-body p{font-size:13px;color:var(--subtle);line-height:1.55;margin:0}
+
+/* TOOL PILL */
+.tools-row{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0}
+.tool-pill{background:var(--ag);border:1px solid var(--ab);border-radius:8px;padding:5px 12px;font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--al)}
+
+/* COMPARISON */
+.compare{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:20px 0}
+.compare-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:20px}
+.compare-card.bad{border-top:2px solid var(--yellow)}
+.compare-card.good{border-top:2px solid var(--green)}
+.compare-label{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.12em;margin-bottom:10px;font-weight:700}
+.compare-card.bad .compare-label{color:var(--yellow)}
+.compare-card.good .compare-label{color:var(--green)}
+.compare-card ul{list-style:none;display:flex;flex-direction:column;gap:6px}
+.compare-card ul li{font-size:13px;color:var(--subtle);padding-left:16px;position:relative;line-height:1.5}
+.compare-card.bad ul li::before{content:'✗';position:absolute;left:0;color:var(--yellow);font-weight:700}
+.compare-card.good ul li::before{content:'✓';position:absolute;left:0;color:var(--green);font-weight:700}
+
+/* DIVIDER */
+.divider{height:1px;background:var(--border);margin:48px 0}
+
+/* HOMEWORK */
+.homework{background:linear-gradient(135deg,rgba(107,92,231,.1),rgba(107,92,231,.03));border:1px solid var(--ab);border-radius:20px;padding:32px}
+.homework h3{font-size:22px;font-weight:800;margin-bottom:8px}
+.homework-sub{font-size:14px;color:var(--subtle);margin-bottom:24px}
+.hw-items{display:flex;flex-direction:column;gap:12px}
+.hw-item{display:flex;gap:14px;background:rgba(255,255,255,.03);border:1px solid rgba(107,92,231,.15);border-radius:12px;padding:16px 18px}
+.hw-check{width:22px;height:22px;border-radius:6px;border:2px solid var(--ab);flex-shrink:0;margin-top:1px}
+.hw-body h5{font-size:14px;font-weight:700;margin-bottom:3px}
+.hw-body p{font-size:12px;color:var(--subtle);line-height:1.55;margin:0}
+
+/* QUOTE */
+.quote{background:var(--surface);border-left:3px solid var(--accent);border-radius:0 12px 12px 0;padding:16px 20px;margin:20px 0}
+.quote p{font-size:15px;color:var(--text);font-style:italic;line-height:1.7;margin:0}
+.quote-author{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--muted);margin-top:8px}
+
+/* FOOTER */
+.footer{border-top:1px solid var(--border);padding:32px 0;text-align:center}
+.footer p{font-size:13px;color:var(--muted)}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-left">
+    <span class="topbar-logo">BOOTCAMP.KZ</span>
+    <span class="topbar-sep">/</span>
+    <span class="topbar-title">Creator Track · Модуль 2</span>
+  </div>
+  <span class="topbar-badge">🎬 CREATOR TRACK</span>
+</div>
+
+<div class="container">
+
+  <!-- HERO -->
+  <div class="hero">
+    <div class="hero-eyebrow">Модуль 2 · Гайдбук · Поток 15</div>
+    <h1>Weavy +<br><span>NotebookLM</span></h1>
+    <p class="hero-lead">Полный разбор занятия — нодовая система для консистентных кадров, создание персонажей с нуля и коробочная нейросеть для самообразования. Читай вместе с записью или вместо неё.</p>
+    <div class="hero-meta">
+      <div class="meta-tag">📅 <span>25 июня 2026</span></div>
+      <div class="meta-tag">⏱ <span>90 минут</span></div>
+      <div class="meta-tag">🛠 <span>Weavy · Nano Banana Pro · NotebookLM</span></div>
+      <div class="meta-tag">🎯 <span>Уровень: с нуля</span></div>
+    </div>
+  </div>
+
+  <!-- TOC -->
+  <div class="toc">
+    <div class="toc-title">Содержание</div>
+    <ul class="toc-list">
+      <li><a href="#philosophy"><span class="toc-num">01</span>Почему первый кадр решает всё</a></li>
+      <li><a href="#weavy-intro"><span class="toc-num">02</span>Что такое Weavy и система нодов</a></li>
+      <li><a href="#nodes"><span class="toc-num">03</span>Как подключать элементы: имиджи и промпт</a></li>
+      <li><a href="#nanobananapro"><span class="toc-num">04</span>Nano Banana Pro в Weavy</a></li>
+      <li><a href="#compositing"><span class="toc-num">05</span>Компоновка сцены: несколько элементов в одном кадре</a></li>
+      <li><a href="#multicam"><span class="toc-num">06</span>Несколько кадров из одной сцены</a></li>
+      <li><a href="#negativeprompt"><span class="toc-num">07</span>Негативный промпт в Weavy</a></li>
+      <li><a href="#charactersheet"><span class="toc-num">08</span>Character Sheet — персонаж с нуля</a></li>
+      <li><a href="#tools"><span class="toc-num">09</span>Инструменты: Weavy Prompts GPT и Whisper Flow</a></li>
+      <li><a href="#notebooklm"><span class="toc-num">10</span>NotebookLM — коробочная нейросеть для обучения</a></li>
+      <li><a href="#sources"><span class="toc-num">11</span>Как добавлять источники</a></li>
+      <li><a href="#studio"><span class="toc-num">12</span>Studio — форматы вывода</a></li>
+      <li><a href="#usecases"><span class="toc-num">13</span>Практические кейсы NotebookLM</a></li>
+      <li><a href="#homework"><span class="toc-num">14</span>Домашнее задание</a></li>
+    </ul>
+  </div>
+
+  <!-- S1: ФИЛОСОФИЯ ПЕРВОГО КАДРА -->
+  <div class="section" id="philosophy">
+    <div class="section-label">01</div>
+    <h2>Почему первый кадр решает всё</h2>
+    <p>Весь конвейер AI-видео строится на одном принципе: нейросети для генерации видео принимают на вход <strong>начальный кадр (start frame)</strong> — статичное изображение, из которого рождается движение. Раньше видео генерировали только по тексту, и каждый кадр был независим от предыдущего. Это ломало иллюзию кинематографа.</p>
+    <p>С августа прошлого года, после Veo 3.1 от Google, технология image-to-video перевернула индустрию. Теперь <strong>качество видео полностью зависит от качества исходного кадра</strong>.</p>
+
+    <div class="quote">
+      <p>Вы не можете сделать хорошее видео из плохого кадра. Но вы можете сделать плохой кадр из хорошего видео. Запомните это правило.</p>
+      <div class="quote-author">— Ануар Нурпеисов, занятие 25 июня 2026</div>
+    </div>
+
+    <h3>Главная задача Модуля 2</h3>
+    <p>Научиться делать <strong>консистентные кадры</strong> — серию изображений с одним и тем же персонажем, в одной локации, с одним световым решением. Именно из таких кадров потом монтируется видео.</p>
+
+    <div class="box purple">
+      <div class="box-label">ПРОБЛЕМА КОТОРУЮ РЕШАЕТ WEAVY</div>
+      <ul>
+        <li>LLM-модели не имеют памяти между запросами — каждый кадр генерируется заново</li>
+        <li>Один изменившийся элемент ломает весь кинематографический ряд</li>
+        <li>Weavy держит все референсы одновременно и применяет их к каждому новому кадру</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- S2: ЧТО ТАКОЕ WEAVY -->
+  <div class="section" id="weavy-intro">
+    <div class="section-label">02</div>
+    <h2>Что такое Weavy и система нодов</h2>
+    <p>Weavy (imagine.art) — платформа где собраны лучшие нейросети по генерации изображений. В отличие от LLM (ChatGPT, Claude) где ты пишешь в чат — Weavy работает через <strong>систему нодов</strong>.</p>
+    <p>При регистрации через Google-аккаунт ты получаешь <strong>200 бесплатных кредитов</strong> — это около 70 фотографий в качестве 2K.</p>
+
+    <h3>Ноды — что это такое</h3>
+    <div class="concepts">
+      <div class="concept">
+        <div class="concept-icon">📦</div>
+        <h4>Image-нод</h4>
+        <p>Узел с изображением. Загружаешь фото (лицо, объект, локацию) — оно становится элементом который нейросеть будет воспроизводить в новом кадре.</p>
+      </div>
+      <div class="concept">
+        <div class="concept-icon">📝</div>
+        <h4>Prompt-нод</h4>
+        <p>Текстовый узел. Описываешь сцену — кто где стоит, какой план, ракурс, свет. Указываешь из какого имиджа брать каждый элемент.</p>
+      </div>
+      <div class="concept">
+        <div class="concept-icon">🎛️</div>
+        <h4>Model-нод (выходной)</h4>
+        <p>Окно куда приходит результат. Здесь настраиваешь качество (2K/4K), соотношение сторон (9:16/16:9), и запускаешь генерацию кнопкой Run.</p>
+      </div>
+      <div class="concept">
+        <div class="concept-icon">🔗</div>
+        <h4>Связи (коннекторы)</h4>
+        <p>Линии которые соединяют ноды. Зажимаешь точку на краю нода, тянешь к другому — элемент подключён. Справа на промпте появляется список подключённых имиджей.</p>
+      </div>
+    </div>
+
+    <h3>Сравнение с LLM</h3>
+    <div class="compare">
+      <div class="compare-card bad">
+        <div class="compare-label">❌ ChatGPT / Claude (LLM)</div>
+        <ul>
+          <li>Пишешь в чат — получаешь результат</li>
+          <li>Нет памяти между запросами</li>
+          <li>Каждый кадр — новая интерпретация</li>
+          <li>Персонаж меняется от кадра к кадру</li>
+        </ul>
+      </div>
+      <div class="compare-card good">
+        <div class="compare-label">✓ Weavy (Нодовая система)</div>
+        <ul>
+          <li>Загружаешь элементы как ноды</li>
+          <li>Референсы зафиксированы навсегда</li>
+          <li>Один и тот же персонаж в любой сцене</li>
+          <li>До 14 элементов одновременно</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- S3: КАК ПОДКЛЮЧАТЬ ЭЛЕМЕНТЫ -->
+  <div class="section" id="nodes">
+    <div class="section-label">03</div>
+    <h2>Как подключать элементы: имиджи и промпт</h2>
+
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">01</div>
+        <div class="step-body">
+          <h4>Создаёшь пустой нод (правая кнопка мыши)</h4>
+          <p>В рабочей области нажимаешь правую кнопку → появляется меню → набираешь «Nano Banana Pro» → выбираешь модель. Появляется пустое выходное окно.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">02</div>
+        <div class="step-body">
+          <h4>Загружаешь имиджи (Image Inputs)</h4>
+          <p>С левой стороны нода есть точки подключения. Нажимаешь «+» → появляются слоты для Image 1, Image 2 и т.д. Либо правая кнопка → Import → выбираешь файл с компьютера. Можно перетащить файл прямо в рабочую область.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">03</div>
+        <div class="step-body">
+          <h4>Подключаешь промпт-нод</h4>
+          <p>Правая кнопка → Prompt → появляется текстовое поле. Зажимаешь правую точку промпт-нода → тянешь линию → прикрепляешь к левой точке выходного нода. Промпт подключён.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">04</div>
+        <div class="step-body">
+          <h4>Подключаешь имиджи к ноду</h4>
+          <p>Берёшь image-нод → тянешь линию с правой точки → прикрепляешь к слоту image 1 / image 2 / image 3 на левой стороне выходного нода. Порядок важен — он указывается в промпте.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">05</div>
+        <div class="step-body">
+          <h4>Настраиваешь параметры (нажав на выходной нод)</h4>
+          <p>Справа появляется панель настроек: Quality (2K = 1 кредит, 4K = 23 кредита), Aspect Ratio (Auto/9:16/16:9), и кнопка Run Model.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">06</div>
+        <div class="step-body">
+          <h4>Запускаешь генерацию</h4>
+          <p>Нажимаешь Run Model. Если понял что что-то не так — можно остановить в любой момент, даже на 50% — кредиты вернутся.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="code-block">
+      <span class="comment">// Правило именования в промпте</span><br>
+      <span class="key">Image 1</span> = всегда главный герой (лицо)<br>
+      <span class="key">Image 2</span> = реквизит / второстепенный элемент<br>
+      <span class="key">Image 3</span> = локация / опорный кадр / поза<br>
+      <span class="key">Image 4</span> = дополнительный персонаж<br><br>
+      <span class="comment">// Как упоминать в промпте</span><br>
+      «Hero from image 1 stands next to the car from image 2»<br>
+      «Location and arrangement of objects from image 3»
+    </div>
+
+    <div class="box yellow">
+      <div class="box-label">ВАЖНО — СИСТЕМНЫЙ ПОДХОД</div>
+      <p style="color:var(--subtle)">Когда подключаешь элементы — помни кто куда подключён. Запутаешься в имиджах — промпт даст неправильный результат. Сначала герой (image 1), потом реквизит (image 2), потом локация (image 3) — держи этот порядок всегда.</p>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- S4: NANO BANANA PRO -->
+  <div class="section" id="nanobananapro">
+    <div class="section-label">04</div>
+    <h2>Nano Banana Pro в Weavy</h2>
+    <p>В Weavy доступны разные модели. Нас интересует <strong>Nano Banana Pro</strong> — это Gemini 2.5 Flash от Google, самая продвинутая модель для фотореализма.</p>
+
+    <div class="concepts">
+      <div class="concept">
+        <div class="concept-icon">🏆</div>
+        <h4>До 14 элементов в кадре</h4>
+        <p>Nano Banana Pro держит до 14 подключённых элементов одновременно без потери консистентности. Тексты, логотипы, детали одежды — всё сохраняется.</p>
+      </div>
+      <div class="concept">
+        <div class="concept-icon">🔬</div>
+        <h4>Гиперреализм</h4>
+        <p>Поры кожи, текстура ткани, отражения — уровень детализации который был невозможен даже год назад. Разница с обычной Nano Banana видна невооружённым глазом.</p>
+      </div>
+      <div class="concept">
+        <div class="concept-icon">💡</div>
+        <h4>Логика элементов</h4>
+        <p>Когда добавляешь новые элементы — Pro лучше понимает как их разместить и не теряет уже установленные детали. Обычная Nano Banana здесь начинает «глючить».</p>
+      </div>
+      <div class="concept">
+        <div class="concept-icon">💰</div>
+        <h4>Стоимость</h4>
+        <p>2K = 1 кредит, 4K = 23 кредита. Начинай с 2K — разрабатывай концепцию, потом апскейли лучший кадр в 4K для финального использования.</p>
+      </div>
+    </div>
+
+    <div class="box green">
+      <div class="box-label">СООТНОШЕНИЯ СТОРОН</div>
+      <ul>
+        <li><strong>9:16</strong> — Reels, Stories, TikTok (вертикальный)</li>
+        <li><strong>16:9</strong> — YouTube, горизонтальное видео</li>
+        <li><strong>1:1</strong> — квадрат (посты в Instagram)</li>
+        <li><strong>Auto</strong> — Weavy сам выбирает под контент</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- S5: КОМПОНОВКА СЦЕНЫ -->
+  <div class="section" id="compositing">
+    <div class="section-label">05</div>
+    <h2>Компоновка сцены: несколько элементов в одном кадре</h2>
+
+    <p>Главная суперсила Weavy — объединение нескольких элементов в одном кадре с сохранением каждого. На занятии Ануар показал пример: герой + автомобиль + антарктида — три независимых элемента, объединённых в одну сцену.</p>
+
+    <h3>Пример: герой + машина + локация</h3>
+    <div class="node-diagram">
+      <div class="node-group">
+        <div class="node image">📸 Герой<br><span style="font-size:10px;color:var(--muted)">Image 1</span></div>
+        <div class="node image">🚗 Автомобиль<br><span style="font-size:10px;color:var(--muted)">Image 2</span></div>
+      </div>
+      <div class="node-arrow">→</div>
+      <div class="node prompt">📝 Промпт<br><span style="font-size:10px;color:var(--muted)">Текст описания</span></div>
+      <div class="node-arrow">→</div>
+      <div class="node output">🖼️ Nano Banana Pro<br><span style="font-size:10px;color:var(--muted)">Выходной нод</span></div>
+      <div class="node-arrow">→</div>
+      <div class="node output" style="border-color:rgba(16,185,129,.4);color:var(--green)">✨ Результат<br><span style="font-size:10px;color:var(--muted)">Готовый кадр</span></div>
+    </div>
+
+    <div class="code-block">
+      <span class="comment">// Пример промпта — Общий план</span><br>
+      <br>
+      Subject: hero from image 1 stands next to the car<br>
+      from image 2 on his left side.<br>
+      <br>
+      Environment: Antarctic landscape, wide shot,<br>
+      daylight, overcast sky.<br>
+      <br>
+      <span class="comment">// Ultra-realistic option</span><br>
+      Ultrarealistic, photographic quality,<br>
+      cinematic lighting, 8K detail
+    </div>
+
+    <h3>Правила расположения элементов</h3>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">📍</div>
+        <div class="step-body">
+          <h4>Указывай точную позицию каждого элемента</h4>
+          <p>«Слева от героя», «справа», «за ним», «перед ним» — Weavy понимает пространственные отношения. Чем точнее — тем меньше итераций.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">🎬</div>
+        <div class="step-body">
+          <h4>Указывай план и ракурс</h4>
+          <p>Общий план / средний план / крупный план / деталь. Ракурс: фронтальный, 3/4, сбоку. Это влияет на то какую часть тела/объекта нейросеть покажет.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">💡</div>
+        <div class="step-body">
+          <h4>Указывай световой режим</h4>
+          <p>«Дневной свет», «золотой час», «неоновое освещение», «студийный свет». Без указания света нейросеть выбирает сама — результат непредсказуем.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">⚠️</div>
+        <div class="step-body">
+          <h4>Если не работает дважды — проблема в промпте</h4>
+          <p>Если два раза подряд результат не тот — ищи противоречие в промпте. Возможно два условия конфликтуют между собой. Перепиши с нуля, короче.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="box yellow">
+      <div class="box-label">ПРОБЛЕМА С CHATGPT В WEAVY</div>
+      <p style="color:var(--subtle)">ChatGPT теперь умеет генерировать изображения прямо в чате. Если просишь написать промпт для Weavy — он может случайно нарисовать картинку вместо текста. Всегда добавляй в конце запроса: <strong>«не рисуй, только напиши промпт»</strong>.</p>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- S6: НЕСКОЛЬКО КАДРОВ -->
+  <div class="section" id="multicam">
+    <div class="section-label">06</div>
+    <h2>Несколько кадров из одной сцены</h2>
+    <p>Раскадровка видео — это серия кадров из одной сцены с разными планами и ракурсами. В Weavy можно быстро создать 4–5 кадров, скопировав ноды и изменив только промпт.</p>
+
+    <h3>Как копировать ноды</h3>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">01</div>
+        <div class="step-body">
+          <h4>Выделяешь оба нода (промпт + выходной)</h4>
+          <p>Зажимаешь и выделяешь оба нода одновременно — промпт-нод и model-нод. Нажимаешь Ctrl+C → Ctrl+V.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">02</div>
+        <div class="step-body">
+          <h4>Переподключаешь имиджи вручную</h4>
+          <p>Связи при копировании не копируются — их нужно переподключить заново. Это занимает 30 секунд — выделяешь скопированный нод и тянешь новые линии от имиджей.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">03</div>
+        <div class="step-body">
+          <h4>Добавляешь Image 3 — опорный кадр</h4>
+          <p>Для второго и последующих кадров подключай первый успешный результат как Image 3 — «локация и расположение предметов из image 3». Так сцена остаётся консистентной.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">04</div>
+        <div class="step-body">
+          <h4>Меняешь только план/ракурс в промпте</h4>
+          <p>«Medium shot» вместо «wide shot», «close-up of the hero» — всё остальное остаётся тем же. Так получаешь разные планы одной сцены.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="code-block">
+      <span class="comment">// Кадр 1 — Общий план</span><br>
+      Wide shot. Hero from image 1, car from image 2,<br>
+      Antarctic landscape. Daylight.<br><br>
+      <span class="comment">// Кадр 2 — Средний план</span><br>
+      Medium shot. Hero from image 1, car from image 2 blurred<br>
+      in background. Same location from image 3.<br><br>
+      <span class="comment">// Кадр 3 — Крупный план</span><br>
+      Close-up of hero from image 1.<br>
+      Same spatial arrangement from image 3.
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- S7: НЕГАТИВНЫЙ ПРОМПТ -->
+  <div class="section" id="negativeprompt">
+    <div class="section-label">07</div>
+    <h2>Негативный промпт в Weavy</h2>
+    <p>Негативный промпт — это инструкция что <strong>НЕ должно появляться</strong> в кадре. Один из 9 ключевых элементов хорошего промпта. В Weavy добавляется через Claude или прямо в текст промпта.</p>
+
+    <h3>Как добавить негативный промпт</h3>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">01</div>
+        <div class="step-body">
+          <h4>Берёшь текущий промпт из выходного нода</h4>
+          <p>Ctrl+A → Ctrl+C — скопировал весь промпт.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">02</div>
+        <div class="step-body">
+          <h4>Идёшь в Claude или ChatGPT</h4>
+          <p>Вставляешь промпт и пишешь: «Измени промпт — добавь негативный промпт: [что не должно появиться]».</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">03</div>
+        <div class="step-body">
+          <h4>Копируешь обновлённый промпт обратно в Weavy</h4>
+          <p>Вставляешь в промпт-нод → запускаешь генерацию заново.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="code-block">
+      <span class="comment">// Примеры негативных промптов</span><br>
+      <br>
+      Negative prompt: no blur, no artifacts,<br>
+      no extra limbs, no text in frame,<br>
+      no distorted faces, no unrealistic proportions<br><br>
+      <span class="comment">// Для позиционирования объектов</span><br>
+      Negative prompt: cars must not be angled,<br>
+      cars must not face different directions
+    </div>
+
+    <div class="box purple">
+      <div class="box-label">9 ЭЛЕМЕНТОВ ХОРОШЕГО ПРОМПТА</div>
+      <ul>
+        <li><strong>Объект</strong> — кто или что главное в кадре</li>
+        <li><strong>Крупность</strong> — общий / средний / крупный план / деталь</li>
+        <li><strong>Ракурс</strong> — фронтальный / 3/4 / сбоку / сверху</li>
+        <li><strong>Фон</strong> — локация и её детали</li>
+        <li><strong>Стиль</strong> — реализм / кинематографик / эдиториал</li>
+        <li><strong>Свет</strong> — студийный / дневной / неон / золотой час</li>
+        <li><strong>Детализация</strong> — поры, текстуры, материалы</li>
+        <li><strong>Камера</strong> — 85mm f/1.4 / Sony A7 / Leica</li>
+        <li><strong>Негативный промпт</strong> — что убрать из кадра</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- S8: CHARACTER SHEET -->
+  <div class="section" id="charactersheet">
+    <div class="section-label">08</div>
+    <h2>Character Sheet — персонаж с нуля</h2>
+    <p>Character Sheet — это набор фотографий персонажа с разных сторон на зелёном фоне. Он нужен чтобы в будущих кадрах нейросеть точно знала как выглядит твой герой с любого угла.</p>
+
+    <div class="box yellow">
+      <div class="box-label">ПОЧЕМУ НУЖЕН ОБЩИЙ ПЛАН (НЕ СРЕДНИЙ)</div>
+      <p style="color:var(--subtle)">Если дать нейросети только фронтальный средний план — она не знает как выглядят ноги персонажа. И при каждой генерации будет придумывать низ тела по-своему. Результат: разные костюмы, разные пропорции. Решение: <strong>всегда начинай с full body (полный рост)</strong>.</p>
+    </div>
+
+    <h3>Способ 1: Character Sheet из реальных фото</h3>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">01</div>
+        <div class="step-body">
+          <h4>Делаешь 3 фото себя с разных ракурсов</h4>
+          <p>Анфас (фронтально), три четверти, профиль (сбоку). Хорошее освещение, нейтральный фон — чем чище исходник, тем лучше результат.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">02</div>
+        <div class="step-body">
+          <h4>Загружаешь в ChatGPT (Character Generator GPT)</h4>
+          <p>Специальный Custom GPT от Ануара. Загружаешь 3 фото с разных ракурсов + 4-е фото — персонаж в костюме которого хочешь надеть. GPT берёт лицо с твоих фото и надевает на него костюм с 4-го фото.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">03</div>
+        <div class="step-body">
+          <h4>Получаешь персонажа на зелёном фоне</h4>
+          <p>GPT выдаёт тебя в выбранном костюме на зелёном фоне — это и есть Character Sheet. Сохраняешь как Image 1 для всех будущих сцен.</p>
+        </div>
+      </div>
+    </div>
+
+    <h3>Способ 2: Персонаж с нуля через шаблон Weavy</h3>
+    <p>Ануар поделится шаблоном — готовую структуру нодов можно скопировать и использовать. Принцип:</p>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">01</div>
+        <div class="step-body">
+          <h4>Заполняешь микропромпты по характеристикам</h4>
+          <p>Пол (Female/Male), возраст, расовая принадлежность (Asian / European и т.д.), тип тела (Athletic / Slim), стиль одежды, причёска. Каждое поле — отдельный нод.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">02</div>
+        <div class="step-body">
+          <h4>Prompt Container собирает всё воедино</h4>
+          <p>Специальный нод объединяет все микропромпты в один. Мета-промпт сверху добавляет стиль реализма — трогать не нужно.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">03</div>
+        <div class="step-body">
+          <h4>Генерируешь в полный рост (Full Body)</h4>
+          <p>Step 2 в шаблоне: нажимаешь Run — получаешь персонажа в полный рост. Это матрица из которой потом делаешь все ракурсы.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">04</div>
+        <div class="step-body">
+          <h4>Роутер раздаёт на 5 ракурсов</h4>
+          <p>Step 3: подключаешь утверждённую фото к роутеру — он автоматически создаёт 5 вариантов: macro shot / close-up / medium shot / full body / wide shot. Один кадр → пять ракурсов.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">05</div>
+        <div class="step-body">
+          <h4>Сохраняешь и загружаешь обратно в Character Generator</h4>
+          <p>Берёшь лучшие 3 ракурса (анфас, 3/4, профиль) → загружаешь в ChatGPT Character Generator → получаешь зелёный фон с выбранным костюмом → это финальный Character Sheet.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="box green">
+      <div class="box-label">ГЛАВНОЕ ПРАВИЛО CHARACTER SHEET</div>
+      <ul>
+        <li>Image 1 = всегда лицо / главный ракурс персонажа</li>
+        <li>Трёхточечный Character Sheet = три ракурса одного человека</li>
+        <li>Нейросеть не знает как выглядит бок если видела только фронт</li>
+        <li>Чем больше ракурсов — тем консистентнее результат в сценах</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- S9: ИНСТРУМЕНТЫ -->
+  <div class="section" id="tools">
+    <div class="section-label">09</div>
+    <h2>Инструменты: Weavy Prompts GPT и Whisper Flow</h2>
+
+    <h3>Weavy Prompts GPT (Custom GPT Ануара)</h3>
+    <p>Специально обученный ChatGPT который пишет промпты для Weavy. Главная особенность — понимает синтаксис «from image 1/2/3» и правильно описывает пространственные отношения элементов.</p>
+
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">→</div>
+        <div class="step-body">
+          <h4>Как использовать</h4>
+          <p>Описываешь сцену голосом или текстом: «Напиши промпт для Weavy: герой из Image 1 стоит рядом с автомобилем из Image 2 на фоне антарктиды, общий план, дневной свет». GPT выдаёт готовый промпт на английском с правильной структурой.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="code-block">
+      <span class="comment">// Формат запроса к Weavy Prompts GPT</span><br>
+      <br>
+      «Напиши промпт для Weavy.<br>
+      Герой из Image 1 стоит рядом с автомобилем из Image 2.<br>
+      Локация из Image 3.<br>
+      Средний план, дневной свет, реализм»<br><br>
+      <span class="comment">// + нажимаешь / и выбираешь skill «Weavy Prompts»</span><br>
+      <span class="comment">// Claude понимает контекст без лишних объяснений</span>
+    </div>
+
+    <h3>Whisper Flow — голосовой ввод</h3>
+    <p>Приложение которое позволяет диктовать промпты голосом в любое поле на Mac. Нажимаешь кнопку → говоришь → текст появляется. Ануар активно использует его чтобы не печатать длинные промпты.</p>
+
+    <div class="box purple">
+      <div class="box-label">СВЯЗКА CLAUDE + WEAVY PROMPTS</div>
+      <p style="color:var(--subtle)">Ануар показал рабочий воркфлоу: описываешь изменение в Weavy Prompts GPT → нажимаешь слэш «/» → выбираешь skill «Weavy Nano Banana» → Claude понимает контекст из проекта и пишет точный промпт. В клоде нет проблемы с «не рисуй» как в ChatGPT — он пишет только текст, чётко и без лирики.</p>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- S10: NOTEBOOKLM -->
+  <div class="section" id="notebooklm">
+    <div class="section-label">10</div>
+    <h2>NotebookLM — коробочная нейросеть для обучения</h2>
+    <p>NotebookLM — продукт от Google. Бесплатен при наличии Google-аккаунта. Это <strong>коробочная нейросеть</strong>: ты загружаешь свои источники, и модель работает <em>только с ними</em> — без выхода в интернет, без галлюцинаций, только твои данные.</p>
+
+    <div class="quote">
+      <p>Ноутбук ЛМ не ходит на Википедию. Про Окленд он скажет только то что написано в том ролике который ты загрузил. Это делает его единственным инструментом где ты уверен в источнике каждого ответа.</p>
+      <div class="quote-author">— Ануар Нурпеисов, занятие 25 июня 2026</div>
+    </div>
+
+    <h3>Чем отличается от ChatGPT и Gemini</h3>
+    <div class="compare">
+      <div class="compare-card bad">
+        <div class="compare-label">❌ ChatGPT / Gemini</div>
+        <ul>
+          <li>Ищет информацию по всему интернету</li>
+          <li>Может галлюцинировать источники</li>
+          <li>Не знает твоих конкретных материалов</li>
+          <li>Контекст теряется между сессиями</li>
+        </ul>
+      </div>
+      <div class="compare-card good">
+        <div class="compare-label">✓ NotebookLM</div>
+        <ul>
+          <li>Работает только с загруженными тобой источниками</li>
+          <li>Всегда указывает откуда взял информацию</li>
+          <li>Знает твои книги, записи, транскрипты</li>
+          <li>Хранит библиотеку навсегда</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- S11: ИСТОЧНИКИ -->
+  <div class="section" id="sources">
+    <div class="section-label">11</div>
+    <h2>Как добавлять источники</h2>
+    <p>Заходишь на <strong>notebooklm.google.com</strong> → нажимаешь «+» (новый блокнот) → открывается окно загрузки источников.</p>
+
+    <h3>4 способа добавить источники</h3>
+    <div class="concepts">
+      <div class="concept">
+        <div class="concept-icon">📄</div>
+        <h4>Файлы</h4>
+        <p>PDF, изображения, Word-документы, аудиофайлы. Загружаешь напрямую — NotebookLM извлекает текст и анализирует.</p>
+      </div>
+      <div class="concept">
+        <div class="concept-icon">🌐</div>
+        <h4>Сайт или YouTube</h4>
+        <p>Вставляешь ссылку на страницу или YouTube-ролик. NotebookLM транскрибирует видео, извлекает текст и добавляет как источник.</p>
+      </div>
+      <div class="concept">
+        <div class="concept-icon">☁️</div>
+        <h4>Google Drive</h4>
+        <p>Подключаешь напрямую из своего Drive — Docs, Sheets, Slides. Не нужно скачивать и загружать заново.</p>
+      </div>
+      <div class="concept">
+        <div class="concept-icon">📋</div>
+        <h4>Скопированный текст</h4>
+        <p>Берёшь любой текст (статья, Википедия, выжимка) → Ctrl+C → вставляешь в поле. Мгновенно добавляется как источник.</p>
+      </div>
+    </div>
+
+    <h3>Три панели интерфейса</h3>
+    <div class="concepts">
+      <div class="concept">
+        <div class="concept-icon">📚</div>
+        <h4>Источники (слева)</h4>
+        <p>Все добавленные файлы и ссылки. Можно выбрать конкретные источники для работы — NotebookLM будет отвечать только по ним.</p>
+      </div>
+      <div class="concept">
+        <div class="concept-icon">💬</div>
+        <h4>Чат (в центре)</h4>
+        <p>Задаёшь вопросы как обычному AI. Разница: ответы всегда со ссылкой на конкретное место в конкретном источнике.</p>
+      </div>
+      <div class="concept">
+        <div class="concept-icon">🎨</div>
+        <h4>Studio (справа)</h4>
+        <p>Форматы вывода: подкаст, презентация, инфографика, ментальная карта, тест, таблица. Один источник → много форматов.</p>
+      </div>
+    </div>
+
+    <div class="box green">
+      <div class="box-label">МОЩНАЯ ФУНКЦИЯ — ВЫБОР КОНКРЕТНОГО ИСТОЧНИКА</div>
+      <p style="color:var(--subtle)">Если загрузил 10 источников — можно выбрать работу только с одним конкретным. Пример: «Задать вопрос только по этому YouTube-ролику». NotebookLM не будет смешивать информацию из других источников.</p>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- S12: STUDIO -->
+  <div class="section" id="studio">
+    <div class="section-label">12</div>
+    <h2>Studio — форматы вывода</h2>
+    <p>Studio — правая панель NotebookLM. Позволяет вывести загруженный материал в разных форматах. Не просто пересказ — полноценные артефакты.</p>
+
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">🎙️</div>
+        <div class="step-body">
+          <h4>Подкаст (Audio Overview)</h4>
+          <p>Два голоса обсуждают твой материал в формате разговора. Можно выбрать стиль: подробный анализ, краткий пересказ, дискуссия, рецензия. Ануар даже сделал подкаст в стиле прожарки на основе своей биографии.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">📊</div>
+        <div class="step-body">
+          <h4>Инфографика</h4>
+          <p>Структурированный визуальный вывод. За 10 минут делает приятную инфографику из текстового материала. Ануар показал пример: «10 вещей которые нужно привезти из Шри-Ланки».</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">🧠</div>
+        <div class="step-body">
+          <h4>Ментальная карта</h4>
+          <p>Визуальная структура материала с ветками и связями. Хорошо для сложных тем где нужно увидеть целое.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">📝</div>
+        <div class="step-body">
+          <h4>Тест</h4>
+          <p>NotebookLM составляет вопросы по материалу и проверяет твои знания. Идеально для подготовки к экзаменам или проверки после прочтения книги.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">🎞️</div>
+        <div class="step-body">
+          <h4>Презентация / Видеопересказ</h4>
+          <p>Собирает структуру презентации из материала. Стиль можно задать в запросе. Ануар отмечает что Claude делает презентации лучше — но для быстрого прототипа NotebookLM работает.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- S13: КЕЙСЫ -->
+  <div class="section" id="usecases">
+    <div class="section-label">13</div>
+    <h2>Практические кейсы NotebookLM</h2>
+
+    <div class="rule">
+      <div class="rule-icon">📚</div>
+      <div class="rule-body">
+        <h4>Библиотека книг</h4>
+        <p>Загружаешь все книги которые прочитал (PDF) → задаёшь вопросы по конкретным урокам или главам. «Что было в 5-м уроке книги Тридцать Уроков Жизни?» — без пролистывания всей книги.</p>
+      </div>
+    </div>
+
+    <div class="rule">
+      <div class="rule-icon">🌍</div>
+      <div class="rule-body">
+        <h4>Блокнот по теме</h4>
+        <p>Ануар показал: блокнот «Новая Зеландия» — текст с Википедии + YouTube-ролик. Можно спросить «что говорится про Окленд» — и получить ответ только из этих двух источников, с указанием откуда.</p>
+      </div>
+    </div>
+
+    <div class="rule">
+      <div class="rule-icon">🎭</div>
+      <div class="rule-body">
+        <h4>Личный клон-блокнот</h4>
+        <p>Ануар сделал блокнот «Мой клон»: биография + лучшие Reels + сценарии + цели. Попросил сделать подкаст в формате «прожарки» по своим материалам — результат: стендап-комедия о себе.</p>
+      </div>
+    </div>
+
+    <div class="rule">
+      <div class="rule-icon">🎓</div>
+      <div class="rule-body">
+        <h4>Блокнот буткемпа</h4>
+        <p>Ануар создаёт блокнот для каждой группы буткемпа. После занятия загружает транскрипт — и студенты могут задавать вопросы по материалу вместо того чтобы переспрашивать куратора. Ссылкой поделится после обработки записи.</p>
+      </div>
+    </div>
+
+    <div class="rule">
+      <div class="rule-icon">✈️</div>
+      <div class="rule-body">
+        <h4>Инфографика для путешественников</h4>
+        <p>Нашёл текст «10 вещей которые нужно привезти из Шри-Ланки» → вставил в NotebookLM → нажал «Инфографика» → готово за 10 минут. Можно отправить гостям вместо длинного текстового сообщения.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- HOMEWORK -->
+  <div class="section" id="homework">
+    <div class="section-label">14</div>
+    <div class="homework">
+      <h3>Домашнее задание</h3>
+      <p class="homework-sub">К следующему занятию нужны готовые кадры — из них мы будем делать видео. Начни сегодня, пока 200 кредитов Weavy ещё не потрачены.</p>
+      <div class="hw-items">
+        <div class="hw-item">
+          <div class="hw-check"></div>
+          <div class="hw-body">
+            <h5>Сгенерируй минимум 4–5 кадров твоего ролика в Weavy</h5>
+            <p>Разные планы (общий, средний, крупный), разные ракурсы. Используй Nano Banana Pro. Скинь лучшие 3 кадра в чат группы.</p>
+          </div>
+        </div>
+        <div class="hw-item">
+          <div class="hw-check"></div>
+          <div class="hw-body">
+            <h5>Создай Character Sheet своего персонажа</h5>
+            <p>Либо через ChatGPT Character Generator (свои фото + костюм), либо через шаблон Weavy с нуля. Нужны минимум 3 ракурса на зелёном фоне.</p>
+          </div>
+        </div>
+        <div class="hw-item">
+          <div class="hw-check"></div>
+          <div class="hw-body">
+            <h5>Создай первый блокнот в NotebookLM</h5>
+            <p>Любая тема которая интересна — книга, YouTube-ролик, статья. Задай 5 вопросов. Нажми Audio Overview. Скриншот в чат.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer">
+    <p>AI Bootcamp · Поток 15 · Creator Track · Модуль 2 — Weavy + NotebookLM<br>
+    Гайдбук создан на основе транскрипции занятия от 25 июня 2026</p>
+  </div>
+
+</div>
+</body>
+</html>
