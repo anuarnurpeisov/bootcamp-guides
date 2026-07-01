@@ -1,0 +1,853 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Сессия 01 — AI Production Pipeline для бренда</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#080b10;
+  --surface:#0f1218;
+  --surface2:#161b23;
+  --border:#1e2530;
+  --border2:#252d3a;
+  --text:#dfe3ea;
+  --dim:#8590a0;
+  --faint:#404856;
+  --gold:#e8b84b;
+  --gold-d:#e8b84b25;
+  --green:#4ec99a;
+  --green-d:#4ec99a22;
+  --blue:#5a9cf5;
+  --blue-d:#5a9cf522;
+  --red:#f06060;
+  --red-d:#f0606022;
+  --purple:#b07ef8;
+  --purple-d:#b07ef822;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{
+  background:var(--bg);
+  color:var(--text);
+  font-family:'Inter',sans-serif;
+  font-size:15.5px;
+  line-height:1.65;
+}
+a{color:var(--gold);text-decoration:none;}
+
+/* GRID NOISE */
+body::before{
+  content:"";
+  position:fixed;top:0;left:0;right:0;bottom:0;
+  background-image:radial-gradient(circle at 1px 1px,#ffffff07 1px,transparent 0);
+  background-size:24px 24px;
+  pointer-events:none;z-index:0;
+}
+
+/* SIDEBAR NAV */
+nav{
+  position:fixed;top:0;left:0;width:220px;height:100vh;
+  background:var(--surface);
+  border-right:1px solid var(--border);
+  padding:28px 0;
+  overflow-y:auto;
+  z-index:10;
+}
+.nav-logo{
+  padding:0 20px 22px;
+  border-bottom:1px solid var(--border);
+  margin-bottom:16px;
+}
+.nav-logo .sess{
+  font-family:'JetBrains Mono',monospace;
+  font-size:10px;
+  color:var(--gold);
+  letter-spacing:0.1em;
+  text-transform:uppercase;
+  display:block;
+  margin-bottom:4px;
+}
+.nav-logo .title{
+  font-family:'Space Grotesk',sans-serif;
+  font-weight:600;
+  font-size:13.5px;
+  color:var(--text);
+  line-height:1.3;
+}
+nav a{
+  display:flex;align-items:center;gap:10px;
+  padding:9px 20px;
+  color:var(--dim);
+  font-size:13px;
+  transition:color .15s,background .15s;
+  border-left:2px solid transparent;
+}
+nav a:hover{color:var(--text);background:var(--surface2);}
+nav a.active{color:var(--gold);border-left-color:var(--gold);}
+.nav-dot{
+  width:5px;height:5px;border-radius:50%;
+  background:currentColor;flex:0 0 5px;
+  opacity:.5;
+}
+
+/* MAIN */
+main{
+  margin-left:220px;
+  max-width:860px;
+  padding:60px 48px 120px;
+  position:relative;z-index:1;
+}
+
+/* HEADER */
+.hero{
+  padding-bottom:44px;
+  border-bottom:1px solid var(--border);
+  margin-bottom:56px;
+}
+.eyebrow{
+  font-family:'JetBrains Mono',monospace;
+  font-size:11px;
+  color:var(--gold);
+  letter-spacing:0.12em;
+  text-transform:uppercase;
+  display:flex;align-items:center;gap:8px;
+  margin-bottom:16px;
+}
+.eyebrow::before{
+  content:"";width:7px;height:7px;border-radius:50%;
+  background:var(--gold);box-shadow:0 0 10px var(--gold);
+}
+.hero h1{
+  font-family:'Space Grotesk',sans-serif;
+  font-size:38px;font-weight:700;
+  line-height:1.15;letter-spacing:-.02em;
+  max-width:620px;margin-bottom:16px;
+}
+.hero p{color:var(--dim);max-width:560px;font-size:15px;}
+.meta-row{
+  display:flex;gap:10px;flex-wrap:wrap;
+  margin-top:24px;
+}
+.chip{
+  font-family:'JetBrains Mono',monospace;
+  font-size:11px;color:var(--dim);
+  border:1px solid var(--border2);
+  padding:4px 10px;border-radius:4px;
+}
+
+/* SECTION */
+section{margin-bottom:64px;}
+.sec-head{
+  display:flex;align-items:center;gap:14px;
+  margin-bottom:20px;
+}
+.tag{
+  font-family:'JetBrains Mono',monospace;
+  font-size:10.5px;font-weight:600;
+  letter-spacing:.04em;text-transform:uppercase;
+  padding:3px 8px;border-radius:4px;
+  white-space:nowrap;
+}
+.tag.gold{background:var(--gold-d);color:var(--gold);}
+.tag.green{background:var(--green-d);color:var(--green);}
+.tag.blue{background:var(--blue-d);color:var(--blue);}
+.tag.purple{background:var(--purple-d);color:var(--purple);}
+.tag.red{background:var(--red-d);color:var(--red);}
+h2{
+  font-family:'Space Grotesk',sans-serif;
+  font-weight:600;font-size:22px;letter-spacing:-.01em;
+}
+.intro{color:var(--dim);margin-bottom:22px;max-width:640px;font-size:14.5px;}
+
+/* TOOL CARDS ROW */
+.tools-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(190px,1fr));
+  gap:10px;
+  margin-bottom:4px;
+}
+.tool-card{
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:10px;
+  padding:16px;
+}
+.tool-card .tc-icon{
+  font-size:22px;margin-bottom:10px;
+}
+.tool-card .tc-name{
+  font-family:'Space Grotesk',sans-serif;
+  font-weight:600;font-size:14.5px;
+  margin-bottom:5px;
+}
+.tool-card .tc-role{
+  font-size:13px;color:var(--dim);
+  line-height:1.45;
+}
+.tool-card.highlight{
+  border-color:var(--gold);
+  background:linear-gradient(135deg,var(--gold-d),transparent);
+}
+
+/* THREE STAGE */
+.stages{
+  display:grid;
+  grid-template-columns:1fr 1fr 1fr;
+  gap:2px;
+  border-radius:10px;overflow:hidden;
+  margin-bottom:18px;
+}
+.stage{
+  background:var(--surface);
+  padding:18px 16px;
+  text-align:center;
+}
+.stage .s-pct{
+  font-family:'Space Grotesk',sans-serif;
+  font-size:30px;font-weight:700;
+  color:var(--gold);
+  line-height:1;
+}
+.stage .s-label{
+  font-size:13px;color:var(--dim);margin-top:6px;
+}
+.stage .s-name{
+  font-family:'Space Grotesk',sans-serif;
+  font-weight:600;font-size:15px;
+  margin-top:8px;
+}
+.stage .s-tools{
+  margin-top:8px;
+  font-family:'JetBrains Mono',monospace;
+  font-size:11px;color:var(--faint);
+}
+
+/* STEPS */
+ol.steps{
+  counter-reset:s;list-style:none;
+  padding-left:14px;
+  border-left:1px solid var(--border);
+}
+ol.steps li{
+  counter-increment:s;
+  position:relative;
+  padding:0 0 20px 28px;
+  font-size:14.5px;color:var(--dim);
+}
+ol.steps li:last-child{padding-bottom:0;}
+ol.steps li::before{
+  content:counter(s);
+  position:absolute;left:-14px;top:1px;
+  width:26px;height:26px;
+  border-radius:50%;
+  background:var(--surface2);
+  border:1px solid var(--gold);
+  color:var(--gold);
+  font-family:'JetBrains Mono',monospace;
+  font-size:11px;font-weight:600;
+  display:flex;align-items:center;justify-content:center;
+}
+ol.steps li strong{color:var(--text);}
+code{
+  background:var(--surface2);
+  border:1px solid var(--border2);
+  padding:1px 6px;border-radius:4px;
+  color:var(--green);
+  font-family:'JetBrains Mono',monospace;
+  font-size:12.5px;
+}
+
+/* NODE DIAGRAM */
+.node-diagram{
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:12px;
+  padding:24px;
+  margin-bottom:18px;
+}
+.nd-title{
+  font-family:'JetBrains Mono',monospace;
+  font-size:11px;color:var(--dim);
+  text-transform:uppercase;letter-spacing:.08em;
+  margin-bottom:18px;
+}
+.nd-row{
+  display:flex;align-items:center;gap:0;
+}
+.nd-inputs{
+  display:flex;flex-direction:column;gap:8px;
+  flex:0 0 auto;
+}
+.nd-inp{
+  background:var(--surface2);
+  border:1px solid var(--border2);
+  border-radius:8px;
+  padding:8px 12px;
+  font-size:13px;
+  min-width:160px;
+}
+.nd-inp .ni-num{
+  font-family:'JetBrains Mono',monospace;
+  font-size:10px;color:var(--faint);
+  display:block;margin-bottom:2px;
+}
+.nd-inp .ni-name{color:var(--text);font-weight:600;}
+.nd-inp .ni-sub{color:var(--dim);font-size:12px;}
+.nd-connector{
+  flex:1;
+  height:1px;
+  background:repeating-linear-gradient(90deg,var(--faint) 0,var(--faint) 4px,transparent 4px,transparent 8px);
+  margin:0 16px;
+  position:relative;
+}
+.nd-center{
+  background:linear-gradient(135deg,var(--gold-d),var(--surface2));
+  border:1px solid var(--gold);
+  border-radius:10px;
+  padding:16px 20px;
+  text-align:center;
+  flex:0 0 auto;
+}
+.nd-center .nc-icon{font-size:24px;}
+.nd-center .nc-name{
+  font-family:'Space Grotesk',sans-serif;
+  font-weight:600;font-size:14px;
+  color:var(--gold);
+  margin-top:6px;
+}
+.nd-center .nc-sub{
+  font-family:'JetBrains Mono',monospace;
+  font-size:10.5px;color:var(--dim);
+  margin-top:3px;
+}
+.nd-out{
+  flex:0 0 120px;
+  text-align:center;
+}
+.nd-out .no-label{
+  font-size:12px;color:var(--dim);margin-bottom:4px;
+}
+.nd-out .no-res{
+  display:inline-block;
+  background:var(--green-d);
+  border:1px solid var(--green);
+  color:var(--green);
+  padding:4px 10px;border-radius:6px;
+  font-size:12px;font-weight:600;
+}
+
+/* CARDS */
+.card{
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:10px;
+  padding:18px 20px;
+  margin-bottom:10px;
+}
+.card h3{
+  font-family:'Space Grotesk',sans-serif;
+  font-weight:600;font-size:15px;
+  margin-bottom:7px;
+}
+.card p{font-size:14px;color:var(--dim);}
+.card .badge{
+  display:inline-block;
+  font-family:'JetBrains Mono',monospace;
+  font-size:10.5px;
+  padding:2px 8px;border-radius:4px;
+  margin-bottom:8px;
+}
+.badge.gold{background:var(--gold-d);color:var(--gold);}
+.badge.green{background:var(--green-d);color:var(--green);}
+.badge.blue{background:var(--blue-d);color:var(--blue);}
+.badge.red{background:var(--red-d);color:var(--red);}
+
+/* PAIR FIX */
+.pair{
+  border-left:2px solid var(--border2);
+  padding-left:16px;
+  margin-bottom:20px;
+}
+.pair .err,.pair .fix{
+  border-radius:8px;padding:13px 16px;
+  font-size:14px;margin-bottom:8px;
+}
+.pair .err{background:var(--red-d);border:1px solid #f0606033;}
+.pair .fix{background:var(--green-d);border:1px solid #4ec99a33;}
+.pair .k{
+  font-family:'JetBrains Mono',monospace;
+  font-size:10.5px;text-transform:uppercase;
+  letter-spacing:.08em;display:block;margin-bottom:5px;
+}
+.pair .err .k{color:var(--red);}
+.pair .fix .k{color:var(--green);}
+
+/* QUOTE */
+blockquote{
+  padding:14px 18px;
+  border-left:2px solid var(--gold);
+  background:var(--surface);
+  color:var(--dim);
+  font-size:14.5px;
+  font-style:italic;
+  margin:18px 0;
+  border-radius:0 8px 8px 0;
+}
+
+/* CHECKLIST */
+.checklist{
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:10px;
+  overflow:hidden;
+}
+.cl-item{
+  display:flex;align-items:flex-start;gap:12px;
+  padding:14px 20px;
+  border-bottom:1px solid var(--border);
+  font-size:14.5px;color:var(--dim);
+}
+.cl-item:last-child{border-bottom:none;}
+.cl-item input{
+  margin-top:2px;accent-color:var(--gold);
+  width:15px;height:15px;flex:0 0 15px;cursor:pointer;
+}
+.cl-item strong{color:var(--text);}
+
+/* GRID 2 */
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+
+/* DIVIDER */
+.div{
+  height:1px;background:var(--border);
+  margin:48px 0;
+}
+
+/* HW BOX */
+.hw{
+  background:linear-gradient(135deg,var(--purple-d),var(--surface));
+  border:1px solid var(--purple);
+  border-radius:12px;
+  padding:22px 24px;
+}
+.hw h3{
+  font-family:'Space Grotesk',sans-serif;
+  font-weight:600;font-size:17px;
+  color:var(--purple);
+  margin-bottom:14px;
+}
+.hw ol{
+  padding-left:18px;
+  color:var(--dim);
+  font-size:14.5px;
+}
+.hw ol li{margin-bottom:8px;}
+.hw ol li strong{color:var(--text);}
+
+footer{
+  margin-left:220px;
+  padding:20px 48px 40px;
+  color:var(--faint);
+  font-family:'JetBrains Mono',monospace;
+  font-size:11px;
+  border-top:1px solid var(--border);
+  position:relative;z-index:1;
+}
+
+@media(max-width:800px){
+  nav{display:none;}
+  main{margin-left:0;padding:32px 20px 80px;}
+  footer{margin-left:0;padding:20px;}
+  .stages{grid-template-columns:1fr;}
+  .tools-grid{grid-template-columns:1fr 1fr;}
+  .g2{grid-template-columns:1fr;}
+  .nd-row{flex-direction:column;gap:12px;}
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-logo">
+    <span class="sess">Сессия 01</span>
+    <span class="title">AI Production Pipeline</span>
+  </div>
+  <a href="#tools"><span class="nav-dot"></span>Инструменты</a>
+  <a href="#project"><span class="nav-dot"></span>Claude Project</a>
+  <a href="#stages"><span class="nav-dot"></span>3 этапа работы</a>
+  <a href="#whisper"><span class="nav-dot"></span>Whisper Flow</a>
+  <a href="#character"><span class="nav-dot"></span>Создание героя</a>
+  <a href="#nodes"><span class="nav-dot"></span>Нода в Weavy</a>
+  <a href="#prompts"><span class="nav-dot"></span>Промты для кадров</a>
+  <a href="#continuity"><span class="nav-dot"></span>Консистентность</a>
+  <a href="#startframe"><span class="nav-dot"></span>Start frame</a>
+  <a href="#fixes"><span class="nav-dot"></span>Частые ошибки</a>
+  <a href="#hw"><span class="nav-dot"></span>Домашнее задание</a>
+</nav>
+
+<main>
+
+  <div class="hero">
+    <div class="eyebrow">ai bootcamp · 1-on-1</div>
+    <h1>Сессия 01: AI Production Pipeline для бренда</h1>
+    <p>Как собрать полный конвейер от идеи до кадров для рекламного ролика — через Claude Project, ChatGPT, Gemini и Weavy с нодами Nano Banana Pro.</p>
+    <div class="meta-row">
+      <span class="chip">Claude Projects</span>
+      <span class="chip">Weavy · Nano Banana Pro</span>
+      <span class="chip">ChatGPT · Gemini</span>
+      <span class="chip">Whisper Flow</span>
+      <span class="chip">Brand: Atomi</span>
+    </div>
+  </div>
+
+  <!-- TOOLS -->
+  <section id="tools">
+    <div class="sec-head">
+      <span class="tag gold">стек</span>
+      <h2>Инструменты и их роли</h2>
+    </div>
+    <p class="intro">Каждый инструмент отвечает за свой уровень. Не пытаться делать всё в одном месте.</p>
+    <div class="tools-grid">
+      <div class="tool-card highlight">
+        <div class="tc-icon">◆</div>
+        <div class="tc-name">Claude</div>
+        <div class="tc-role">Главный мозг проекта. Держит контекст бренда, пишет сценарии, рефайнит промты, работает внутри Project со всеми файлами.</div>
+      </div>
+      <div class="tool-card">
+        <div class="tc-icon">✦</div>
+        <div class="tc-name">Gemini</div>
+        <div class="tc-role">«Возврат в реальность». Широкое поле — общая информация, проверка рыночной логики, исследование продукта по открытым источникам.</div>
+      </div>
+      <div class="tool-card">
+        <div class="tc-icon">◈</div>
+        <div class="tc-name">ChatGPT</div>
+        <div class="tc-role">Исполнительный инструмент. Хорошо делает конкретные задачи при правильной настройке: промты для Weavy, стторибординг, первые кадры.</div>
+      </div>
+      <div class="tool-card">
+        <div class="tc-icon">⬡</div>
+        <div class="tc-name">Weavy (imagine.art)</div>
+        <div class="tc-role">Нодовый редактор для генерации изображений. Nano Banana Pro — самая выгодная модель по соотношению цена/качество.</div>
+      </div>
+      <div class="tool-card">
+        <div class="tc-icon">◎</div>
+        <div class="tc-name">Whisper Flow</div>
+        <div class="tc-role">Диктофон-транскрайбер прямо в браузере. Зажать кнопку → надиктовать → отпустить → текст в поле. Ускоряет ввод промтов.</div>
+      </div>
+    </div>
+    <blockquote>«Gemini — это из общего в частное. Он даёт общий ответ, потом уходим в Claude в частное, и потом снова проверяем через общее.»</blockquote>
+  </section>
+
+  <div class="div"></div>
+
+  <!-- CLAUDE PROJECT -->
+  <section id="project">
+    <div class="sec-head">
+      <span class="tag gold">claude · project</span>
+      <h2>Настройка Claude Project под бренд</h2>
+    </div>
+    <p class="intro">Project = долгосрочный контейнер для всей работы с одним брендом. Все чаты внутри видят один контекст, не нужно каждый раз заново объяснять кто такой бренд.</p>
+
+    <ol class="steps">
+      <li><strong>Создать проект.</strong> New Project → название = имя бренда (например <code>Atomi</code>) → краткое описание.</li>
+      <li><strong>Project Instructions.</strong> Это как Custom Instructions в ChatGPT — предустановка поведения для всего проекта. Попросить Gemini написать черновик инструкции: <em>«Напиши инструкцию к проекту Claude, в котором будут генерироваться идеи для рекламных кампаний для соцсетей бренда Atomi»</em>. Получить → вставить в Instructions → заполнить пустые поля: целевая аудитория, форматы контента, тон голоса.</li>
+      <li><strong>Knowledge — файлы о бренде.</strong> Сюда грузить: досье компании (миссия, ценности, продукты), логотип, описания продуктов, портрет аудитории. Формат — <code>.md</code>, не PDF: занимает меньше токенов, быстрее обрабатывается.</li>
+      <li><strong>Как получить досье продукта.</strong> Запросить в Gemini информацию о продукте (например HimaChim) → сохранить как .md → загрузить в Knowledge проекта. Claude не нужно будет искать инфо в интернете — всё уже внутри.</li>
+      <li><strong>Запуск кампании.</strong> В любом чате внутри проекта написать: <em>«Придумай рекламную кампанию для продукта [название], которая состоит из 3 Reels на одну неделю»</em>. Claude возьмёт все ценности бренда из Knowledge автоматически.</li>
+    </ol>
+
+    <div class="card" style="margin-top:18px;">
+      <span class="badge gold">ключевой принцип</span>
+      <h3>Чем больше контекста — тем точнее выход</h3>
+      <p>AI даёт множество вариантов, максимально близких к запросу. Ваша работа — сортировка, а не слепое принятие. Хорошая идея — та, которую вы видите и решаете довести до зрелости, а не первая же выданная.</p>
+    </div>
+  </section>
+
+  <div class="div"></div>
+
+  <!-- THREE STAGES -->
+  <section id="stages">
+    <div class="sec-head">
+      <span class="tag green">методология</span>
+      <h2>Три этапа AI-производства</h2>
+    </div>
+    <p class="intro">Одинаковые весовые категории. Не перепрыгивать этапы — слабое начало не компенсируется хорошей генерацией.</p>
+    <div class="stages">
+      <div class="stage">
+        <div class="s-pct">30%</div>
+        <div class="s-label">от общего времени</div>
+        <div class="s-name">Подготовка</div>
+        <div class="s-tools">Сценарий · Раскадровка · Промты</div>
+      </div>
+      <div class="stage" style="background:var(--surface2);">
+        <div class="s-pct" style="color:var(--green);">40%</div>
+        <div class="s-label">от общего времени</div>
+        <div class="s-name">Генерация</div>
+        <div class="s-tools">Weavy · Seedance · Kling</div>
+      </div>
+      <div class="stage">
+        <div class="s-pct" style="color:var(--blue);">30%</div>
+        <div class="s-label">от общего времени</div>
+        <div class="s-name">Монтаж</div>
+        <div class="s-tools">Склейка · Звук · Финал</div>
+      </div>
+    </div>
+    <blockquote>«Инвестируйте в прохолащивание самой текстовой идеи — это фундамент. Сегодня мы занимаемся только подготовкой промтов.»</blockquote>
+  </section>
+
+  <div class="div"></div>
+
+  <!-- WHISPER FLOW -->
+  <section id="whisper">
+    <div class="sec-head">
+      <span class="tag blue">инструмент</span>
+      <h2>Whisper Flow — голос вместо набора</h2>
+    </div>
+    <p class="intro">Браузерный транскрайбер. Ускоряет работу с промтами и инструкциями в 2–3 раза — никакого ручного набора.</p>
+    <div class="g2">
+      <div class="card">
+        <span class="badge blue">как использовать</span>
+        <h3>Одна кнопка</h3>
+        <p>Зажать пробел (или настроить любую другую клавишу в настройках) → надиктовать промт → отпустить → текст появляется прямо в поле ввода.</p>
+      </div>
+      <div class="card">
+        <span class="badge blue">для чего</span>
+        <h3>Любой ввод текста</h3>
+        <p>Project Instructions, сценарий, промт для ChatGPT, задача для Claude — диктуется быстрее, чем набирается. Особенно для длинных описаний сцен.</p>
+      </div>
+    </div>
+  </section>
+
+  <div class="div"></div>
+
+  <!-- CHARACTER CREATION -->
+  <section id="character">
+    <div class="sec-head">
+      <span class="tag gold">weavy</span>
+      <h2>Создание персонажа в Weavy</h2>
+    </div>
+    <p class="intro">В Weavy есть готовый конструктор героя — блоки с параметрами. Не рисовать с нуля, а менять значения в ячейках.</p>
+
+    <ol class="steps">
+      <li><strong>Открыть готовую структуру.</strong> Использовать существующий шаблон с параметрами персонажа. Копируется для каждого нового героя — не делать с нуля каждый раз.</li>
+      <li><strong>Заполнить параметры.</strong> Возраст, тип телосложения, стиль одежды (home casual / casual), цвет волос, особые черты. Пример для HimaChim: мужчина, 30 лет, атлетическое тело, домашняя одежда, обычная короткая причёска.</li>
+      <li><strong>LLM-модуль Step 2.</strong> Нажать <code>Run LLM Module</code> — система собирает текстовое описание героя из всех параметров автоматически.</li>
+      <li><strong>Генерация в Nano Banana Pro.</strong> Формат <strong>9:16, 2K</strong> — для соцсетей. Nano Banana Pro стоит 1 кредит (обычный — 3 кредита) и лучше держит элементы.</li>
+      <li><strong>Сохранить лучшую версию.</strong> Выбрать кандидата → сохранить. Он становится входным элементом Image 1 во всех последующих кадрах.</li>
+    </ol>
+
+    <div class="card">
+      <span class="badge gold">про Nano Banana Pro</span>
+      <h3>1 кредит vs 3 кредита</h3>
+      <p>Nano Banana Pro — 1 кредит за генерацию. Обычный Nano Banana — 3 кредита. Pro лучше понимает входные референсы и стабильнее держит идентичность. Всегда использовать Pro.</p>
+    </div>
+  </section>
+
+  <div class="div"></div>
+
+  <!-- NODES -->
+  <section id="nodes">
+    <div class="sec-head">
+      <span class="tag green">weavy · nodes</span>
+      <h2>Структура ноды для кадра</h2>
+    </div>
+    <p class="intro">Каждый кадр = три входных элемента, подключённых к одной ноде Nano Banana Pro. Логика связей важнее самого промта.</p>
+
+    <div class="node-diagram">
+      <div class="nd-title">базовая структура кадра (3 ноды → 1 генерация)</div>
+      <div class="nd-row">
+        <div class="nd-inputs">
+          <div class="nd-inp">
+            <span class="ni-num">image 1</span>
+            <span class="ni-name">Персонаж</span>
+            <span class="ni-sub">character sheet героя</span>
+          </div>
+          <div class="nd-inp">
+            <span class="ni-num">image 2</span>
+            <span class="ni-name">Локация</span>
+            <span class="ni-sub">гостиная / студия</span>
+          </div>
+          <div class="nd-inp">
+            <span class="ni-num">image 3</span>
+            <span class="ni-name">Продукт</span>
+            <span class="ni-sub">HimaChim на столе</span>
+          </div>
+        </div>
+        <div class="nd-connector"></div>
+        <div class="nd-center">
+          <div class="nc-icon">⬡</div>
+          <div class="nc-name">Nano Banana Pro</div>
+          <div class="nc-sub">9:16 · 2K · 1 кредит</div>
+        </div>
+        <div class="nd-connector"></div>
+        <div class="nd-out">
+          <div class="no-label">результат</div>
+          <div class="no-res">start frame</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <span class="badge green">image 4 — опционально</span>
+      <h3>Пространственный контекст сцены</h3>
+      <p>Добавить четвёртый нод — предыдущий сгенерированный кадр или схему расположения объектов. Описать его как <em>«image 4 — расположение и масштаб предметов в сцене»</em>. Это даёт модели понимание где что стоит, убирает дрейф объектов между кадрами и передаёт цветокор/атмосферу.</p>
+    </div>
+
+    <div class="card">
+      <span class="badge gold">правило промта</span>
+      <h3>Всегда писать промт на английском</h3>
+      <p>Nano Banana Pro работает на английском языке. Русский промт — хуже результат. ChatGPT или Claude используется для написания промта, который потом вставляется в Weavy.</p>
+    </div>
+  </section>
+
+  <div class="div"></div>
+
+  <!-- PROMPTS FOR FRAMES -->
+  <section id="prompts">
+    <div class="sec-head">
+      <span class="tag blue">промты</span>
+      <h2>Генерация промтов через ChatGPT</h2>
+    </div>
+    <p class="intro">ChatGPT настраивается специально как «писатель промтов для Weavy». Один запрос — промты для нескольких кадров сразу.</p>
+
+    <ol class="steps">
+      <li><strong>Настроить ChatGPT.</strong> Загрузить раскадровку → указать, что чат пишет промты для Weavy с тремя нодами (image 1 = герой, image 2 = локация, image 3 = продукт).</li>
+      <li><strong>Запросить пачку промтов.</strong> Например: <em>«Напиши промты для кадров 1, 2, 6. В Image 1 — персонаж, Image 2 — гостиная, Image 3 — продукт HimaChim на столе»</em>.</li>
+      <li><strong>Проверить выход.</strong> Хороший промт содержит прямые указания на ноды: <code>use image 1 as character</code>, <code>use image 2 as living room environment</code>. Без этого модель угадывает.</li>
+      <li><strong>Вставить в Weavy.</strong> Скопировать промт → вставить в текстовое поле ноды Nano Banana Pro → подключить изображения → Run Module.</li>
+      <li><strong>Негативный промт — для нежеланных элементов.</strong> Если появились книги, лишние предметы — попросить ChatGPT: <em>«Добавь негативный промт: убери книги из кадра»</em>. Вставить отдельно.</li>
+    </ol>
+
+    <blockquote>«ChatGPT — очень исполнительный человек, которого нужно хорошо настраивать. Если что-то там неправильно, он будет выдавать поверхностные, очевидные вещи.»</blockquote>
+  </section>
+
+  <div class="div"></div>
+
+  <!-- CONTINUITY -->
+  <section id="continuity">
+    <div class="sec-head">
+      <span class="tag purple">консистентность</span>
+      <h2>Как удерживать атмосферу кадр-в-кадр</h2>
+    </div>
+    <p class="intro">Модель не помнит предыдущий кадр. Каждая генерация — новое событие. Нужно принудительно давать контекст.</p>
+
+    <div class="g2">
+      <div class="card">
+        <span class="badge purple">метод 1</span>
+        <h3>Предыдущий кадр как Image 4</h3>
+        <p>Готовый кадр N → подключить как Image 4 следующей генерации с описанием: «image 4 — пространственное расположение, масштаб объектов, атмосфера». Камера не сдвигается, цвет и свет сохраняются.</p>
+      </div>
+      <div class="card">
+        <span class="badge purple">метод 2</span>
+        <h3>Orbit shot</h3>
+        <p>Если кадр с одного угла повторяется — попросить ChatGPT: <em>«Измени промт: другой ракурс, отличный от Image 4»</em>. Камера обходит героя по дуге (против часовой, в сторону окна) — появляется движение без разрыва сцены.</p>
+      </div>
+    </div>
+
+    <div class="pair">
+      <div class="err"><span class="k">проблема</span>ChatGPT нарисовал продукт из интернета, хотя вы его не загружали — нашёл упаковку HimaChim сам.</div>
+      <div class="fix"><span class="k">решение</span>Загрузить фото продукта явно как Image 3. Когда визуал есть в ноде — модель берёт его, а не ищет в интернете. Если нет ноды — нет контроля.</div>
+    </div>
+  </section>
+
+  <div class="div"></div>
+
+  <!-- START FRAME -->
+  <section id="startframe">
+    <div class="sec-head">
+      <span class="tag green">видео</span>
+      <h2>Start Frame — мост от изображения к видео</h2>
+    </div>
+    <p class="intro">Weavy генерирует только изображения. Видео делается отдельно — в Seedance, Kling. Связующий элемент — start frame.</p>
+
+    <div class="card">
+      <span class="badge green">принцип</span>
+      <h3>Схема: фото → старт-фрейм → видеоклип</h3>
+      <p>Каждый кадр из Weavy — это начальный кадр (start frame) видеоклипа. 20 кадров в ролике = 20 start frames. Каждый клип ~3 секунды. Они склеиваются в монтаже. Weavy генерирует старт-фреймы, видеонейросеть продолжает движение из них.</p>
+    </div>
+
+    <div class="g2">
+      <div class="card">
+        <span class="badge blue">для ChatGPT</span>
+        <h3>2–3 кадра</h3>
+        <p>Для единичных кадров или быстрого теста. Потом всё равно надо тюнить в Weavy — менять элементы, добавлять ноды.</p>
+      </div>
+      <div class="card">
+        <span class="badge gold">для Weavy</span>
+        <h3>10+ кадров (30 сек ролик)</h3>
+        <p>Нодовый подход выгоднее когда кадров много. Поменял один параметр — пересчиталась вся серия. В чате это не масштабируется.</p>
+      </div>
+    </div>
+  </section>
+
+  <div class="div"></div>
+
+  <!-- FIXES -->
+  <section id="fixes">
+    <div class="sec-head">
+      <span class="tag red">ошибки</span>
+      <h2>Частые ошибки и как исправлять</h2>
+    </div>
+
+    <div class="pair">
+      <div class="err"><span class="k">ошибка</span>Неправильный промт в ноде — промт без указания ролей для каждого image. Модель угадывает что откуда.</div>
+      <div class="fix"><span class="k">фикс</span>Каждый нод должен быть явно подписан в промте: <code>use image 1 as character</code>, <code>use image 2 as background location</code>, <code>use image 3 as product on table</code>.</div>
+    </div>
+
+    <div class="pair">
+      <div class="err"><span class="k">ошибка</span>Книги и посторонние предметы появляются в кадре — модель «додумывает» интерьер гостиной из своих данных.</div>
+      <div class="fix"><span class="k">фикс</span>Добавить негативный промт: <em>no books, no decorative items</em>. Попросить ChatGPT переписать промт с явным запретом нежеланных элементов.</div>
+    </div>
+
+    <div class="pair">
+      <div class="err"><span class="k">ошибка</span>Камера «съезжает» между кадрами — угол, свет и масштаб отличаются от кадра к кадру, выглядит как киноляп.</div>
+      <div class="fix"><span class="k">фикс</span>Подключить предыдущий кадр как Image 4 и прописать в промте: <em>«image 4 is used as scene reference for camera position, lighting and object scale — do not change camera angle»</em>.</div>
+    </div>
+
+    <div class="pair">
+      <div class="err"><span class="k">ошибка</span>ChatGPT нарисовал вместо промта — начал генерировать, не сказали ему явно «напиши промт».</div>
+      <div class="fix"><span class="k">фикс</span>Всегда начинать запрос с глагола «напиши промт для Weavy» и дописать «не рисуй». Слово «промт» в задаче обязательно.</div>
+    </div>
+  </section>
+
+  <div class="div"></div>
+
+  <!-- HOMEWORK -->
+  <section id="hw">
+    <div class="hw">
+      <h3>🏠 Домашнее задание к следующей сессии</h3>
+      <ol>
+        <li><strong>Придумать идею ролика</strong> — найти референсы через RilsMaker или вручную. Выбрать продукт Atomi для рекламы.</li>
+        <li><strong>Создать персонажа в Weavy</strong> — использовать шаблон, заполнить параметры, сгенерировать character sheet в Nano Banana Pro (9:16, 2K).</li>
+        <li><strong>Собрать ноды</strong> — подключить hero + location + product как Image 1 / 2 / 3 к ноде Nano Banana Pro.</li>
+        <li><strong>Написать сценарий</strong> — хотя бы текстом, без иллюстраций. Прислать до следующей сессии вместе с референсами.</li>
+        <li><strong>Попробовать Whisper Flow</strong> — надиктовать хотя бы один промт голосом.</li>
+      </ol>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  ai bootcamp · 1-on-1 session 01 · atomi production pipeline
+</footer>
+
+<script>
+// highlight active nav on scroll
+const sections = document.querySelectorAll('section[id]');
+const navLinks = document.querySelectorAll('nav a');
+window.addEventListener('scroll', () => {
+  let current = '';
+  sections.forEach(s => {
+    if (window.scrollY >= s.offsetTop - 120) current = s.id;
+  });
+  navLinks.forEach(a => {
+    a.classList.toggle('active', a.getAttribute('href') === '#' + current);
+  });
+});
+</script>
+</body>
+</html>
