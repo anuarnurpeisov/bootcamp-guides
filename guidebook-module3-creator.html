@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Гайдбук — Модуль 3: Видео · Creator Track</title>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#0A0A0F;--surface:#11111C;--surface2:#161622;--border:#1C1C2E;--accent:#6B5CE7;--al:#9B8EF5;--ag:rgba(107,92,231,0.12);--ab:rgba(107,92,231,0.25);--green:#10B981;--gg:rgba(16,185,129,0.08);--gb:rgba(16,185,129,0.2);--yellow:#F59E0B;--yg:rgba(245,158,11,0.08);--yb:rgba(245,158,11,0.2);--text:#F0F0F8;--muted:#6B6B8A;--subtle:rgba(240,240,248,0.55)}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:'Manrope',sans-serif;font-size:16px;line-height:1.7}
+.container{max-width:860px;margin:0 auto;padding:0 32px 120px}
+.topbar{background:rgba(10,10,15,0.92);backdrop-filter:blur(16px);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:100;padding:14px 32px;display:flex;align-items:center;justify-content:space-between}
+.topbar-left{display:flex;align-items:center;gap:12px}
+.topbar-logo{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--al);font-weight:700;letter-spacing:.08em}
+.topbar-sep{color:var(--border)}
+.topbar-title{font-size:13px;color:var(--muted)}
+.topbar-badge{font-family:'JetBrains Mono',monospace;font-size:10px;background:var(--ag);border:1px solid var(--ab);color:var(--al);border-radius:100px;padding:3px 10px;letter-spacing:.06em}
+.hero{padding:72px 0 48px;border-bottom:1px solid var(--border);margin-bottom:56px}
+.hero-eyebrow{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--al);margin-bottom:16px;opacity:.9}
+.hero h1{font-size:clamp(32px,5vw,52px);font-weight:800;letter-spacing:-0.03em;line-height:1.08;margin-bottom:20px}
+.hero h1 span{color:var(--al)}
+.hero-lead{font-size:17px;color:var(--subtle);line-height:1.65;max-width:620px;margin-bottom:28px}
+.hero-meta{display:flex;flex-wrap:wrap;gap:10px}
+.meta-tag{display:flex;align-items:center;gap:6px;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:6px 12px;font-size:13px;color:var(--muted)}
+.meta-tag span{font-weight:600;color:var(--text)}
+.toc{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:28px 32px;margin-bottom:56px}
+.toc-title{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);margin-bottom:16px}
+.toc-list{list-style:none;display:flex;flex-direction:column;gap:2px}
+.toc-list li a{display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--subtle);font-size:14px;padding:6px 8px;border-radius:8px;transition:all .2s}
+.toc-list li a:hover{color:var(--text);background:var(--border)}
+.toc-num{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--al);min-width:24px}
+.section{margin-bottom:64px;scroll-margin-top:72px}
+.section-label{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--al);margin-bottom:10px;display:flex;align-items:center;gap:8px}
+.section-label::after{content:'';flex:1;height:1px;background:var(--border)}
+.section h2{font-size:clamp(22px,3vw,30px);font-weight:800;letter-spacing:-0.02em;line-height:1.2;margin-bottom:20px}
+.section h3{font-size:18px;font-weight:700;margin:28px 0 12px}
+.section p{color:var(--subtle);margin-bottom:16px;line-height:1.75}
+.section p strong{color:var(--text);font-weight:700}
+.steps{display:flex;flex-direction:column;gap:12px;margin:20px 0}
+.step{display:flex;gap:16px;background:var(--surface);border:1px solid var(--border);border-left:3px solid var(--accent);border-radius:14px;padding:18px 20px}
+.step-num{font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:700;color:var(--al);min-width:28px;padding-top:1px}
+.step-body h4{font-size:15px;font-weight:700;margin-bottom:4px}
+.step-body p{font-size:13px;color:var(--subtle);line-height:1.6;margin:0}
+.code-block{background:#080810;border:1px solid var(--border);border-left:3px solid var(--accent);border-radius:12px;padding:16px 20px;font-family:'JetBrains Mono',monospace;font-size:13px;color:var(--al);line-height:1.8;margin:16px 0;overflow-x:auto}
+.code-block .comment{color:var(--muted);font-size:11px}
+.code-block .key{color:var(--yellow)}
+.box{border-radius:14px;padding:18px 22px;margin:20px 0}
+.box-label{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.14em;margin-bottom:8px;font-weight:700}
+.box ul{list-style:none;display:flex;flex-direction:column;gap:6px;padding:0}
+.box ul li{padding-left:16px;position:relative;color:var(--subtle);font-size:14px;line-height:1.65}
+.box ul li::before{content:'→';position:absolute;left:0;font-size:12px}
+.box.purple{background:var(--ag);border:1px solid var(--ab)}
+.box.purple .box-label{color:var(--al)}
+.box.purple ul li::before{color:var(--al)}
+.box.green{background:var(--gg);border:1px solid var(--gb)}
+.box.green .box-label{color:var(--green)}
+.box.green ul li::before{color:var(--green)}
+.box.yellow{background:var(--yg);border:1px solid var(--yb)}
+.box.yellow .box-label{color:var(--yellow)}
+.box.yellow ul li::before{color:var(--yellow)}
+.compare{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin:20px 0}
+.tool-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:20px;position:relative;overflow:hidden}
+.tool-card::after{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--accent)}
+.tc-label{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--al);margin-bottom:8px;letter-spacing:.1em}
+.tc-title{font-size:16px;font-weight:800;margin-bottom:10px}
+.tc-list{list-style:none;display:flex;flex-direction:column;gap:5px}
+.tc-list li{font-size:12px;color:var(--subtle);padding-left:14px;position:relative;line-height:1.5}
+.tc-list li::before{content:'→';position:absolute;left:0;color:var(--al);font-size:11px}
+.flow{display:flex;align-items:center;flex-wrap:wrap;gap:8px;margin:20px 0;padding:20px;background:var(--surface);border:1px solid var(--border);border-radius:14px;justify-content:center}
+.flow-node{background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:10px 16px;font-size:13px;font-weight:600;color:var(--al)}
+.flow-arrow{color:var(--muted);font-size:18px}
+.quote{background:var(--surface);border-left:3px solid var(--accent);border-radius:0 12px 12px 0;padding:16px 20px;margin:20px 0}
+.quote p{font-size:15px;color:var(--text);font-style:italic;line-height:1.7;margin:0}
+.quote-author{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--muted);margin-top:8px}
+.divider{height:1px;background:var(--border);margin:48px 0}
+.homework{background:linear-gradient(135deg,rgba(107,92,231,.1),rgba(107,92,231,.03));border:1px solid var(--ab);border-radius:20px;padding:32px}
+.homework h3{font-size:22px;font-weight:800;margin-bottom:8px}
+.homework-sub{font-size:14px;color:var(--subtle);margin-bottom:24px}
+.hw-items{display:flex;flex-direction:column;gap:12px}
+.hw-item{display:flex;gap:14px;background:rgba(255,255,255,.03);border:1px solid rgba(107,92,231,.15);border-radius:12px;padding:16px 18px}
+.hw-check{width:22px;height:22px;border-radius:6px;border:2px solid var(--ab);flex-shrink:0;margin-top:1px}
+.hw-body h5{font-size:14px;font-weight:700;margin-bottom:3px}
+.hw-body p{font-size:12px;color:var(--subtle);line-height:1.55;margin:0}
+.footer{border-top:1px solid var(--border);padding:32px 0;text-align:center}
+.footer p{font-size:13px;color:var(--muted)}
+</style>
+</head>
+<body>
+<div class="topbar">
+  <div class="topbar-left">
+    <span class="topbar-logo">BOOTCAMP.KZ</span>
+    <span class="topbar-sep">/</span>
+    <span class="topbar-title">Creator Track · Модуль 3</span>
+  </div>
+  <span class="topbar-badge">🎬 CREATOR TRACK</span>
+</div>
+<div class="container">
+  <div class="hero">
+    <div class="hero-eyebrow">Модуль 3 · Гайдбук · Поток 15</div>
+    <h1>Видео:<br><span>Kling + Seedance + Veo</span></h1>
+    <p class="hero-lead">Оживляем персонажа. Физика движения, timeline prompting, motion control — полный pipeline от статичного кадра до готового видеоролика.</p>
+    <div class="hero-meta">
+      <div class="meta-tag">📅 <span>30 июня 2026</span></div>
+      <div class="meta-tag">⏱ <span>80 минут</span></div>
+      <div class="meta-tag">🛠 <span>Seedance 2.0 · Kling · Veo</span></div>
+    </div>
+  </div>
+
+  <div class="toc">
+    <div class="toc-title">Содержание</div>
+    <ul class="toc-list">
+      <li><a href="#physics"><span class="toc-num">01</span>Физика движения — почему аватар "плавает"</a></li>
+      <li><a href="#tools"><span class="toc-num">02</span>Три инструмента: когда что использовать</a></li>
+      <li><a href="#seedance"><span class="toc-num">03</span>Seedance 2.0 — Timeline Prompting</a></li>
+      <li><a href="#kling"><span class="toc-num">04</span>Kling — Motion Control</a></li>
+      <li><a href="#veo"><span class="toc-num">05</span>Veo — кинематографичный реализм</a></li>
+      <li><a href="#pipeline"><span class="toc-num">06</span>Production Pipeline + Chroma Key</a></li>
+      <li><a href="#homework"><span class="toc-num">07</span>Домашнее задание</a></li>
+    </ul>
+  </div>
+
+  <div class="section" id="physics">
+    <div class="section-label">01</div>
+    <h2>Физика движения — почему аватар "плавает"</h2>
+    <p>Главная проблема при переходе от изображения к видео — нейросети не понимают физику тела. Они анимируют пиксели, не суставы. Результат: лицо "плывёт", руки деформируются, пропорции меняются в движении.</p>
+    <div class="quote">
+      <p>Нельзя сделать хорошее видео из плохого кадра. Но можно испортить хороший кадр плохим промптом для анимации.</p>
+      <div class="quote-author">— Ануар Нурпеисов, занятие 30 июня 2026</div>
+    </div>
+    <h3>Как избежать артефактов движения</h3>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">01</div>
+        <div class="step-body">
+          <h4>Указывай темп движения в промпте</h4>
+          <p>Slow / natural / dynamic — нейросеть реагирует на скорость. Быстрые движения = больше артефактов. Начинай с slow или natural для тестирования.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">02</div>
+        <div class="step-body">
+          <h4>Избегай сложных жестов руками</h4>
+          <p>Руки — главная проблема всех video-моделей. Предпочитай движения тела (поворот, ходьба, лёгкий кивок) вместо сложных жестикуляций.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">03</div>
+        <div class="step-body">
+          <h4>Character Sheet с зелёным фоном как base</h4>
+          <p>Чистый зелёный фон + полный рост персонажа = лучший стартовый кадр для анимации. Нейросеть точнее понимает контуры тела.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">04</div>
+        <div class="step-body">
+          <h4>Тестируй короткими клипами</h4>
+          <p>Сначала 3-5 секунд чтобы проверить движение. Если выглядит правильно — генерируй полную сцену. Не трать кредиты на длинный клип с плохим движением.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="section" id="tools">
+    <div class="section-label">02</div>
+    <h2>Три инструмента: когда что использовать</h2>
+    <div class="compare">
+      <div class="tool-card">
+        <div class="tc-label">SEEDANCE 2.0</div>
+        <div class="tc-title">Многошотовые сцены</div>
+        <ul class="tc-list">
+          <li>10-14 шотов за один запуск</li>
+          <li>Timeline prompting — описываешь весь ролик</li>
+          <li>Лучший для Reels с историей</li>
+          <li>Хорошо держит персонажа</li>
+        </ul>
+      </div>
+      <div class="tool-card">
+        <div class="tc-label">KLING</div>
+        <div class="tc-title">Точное движение</div>
+        <ul class="tc-list">
+          <li>Motion control — задаёшь траекторию</li>
+          <li>Лучший для одного красивого шота</li>
+          <li>Skeleton/pose control для поз</li>
+          <li>Управление камерой</li>
+        </ul>
+      </div>
+      <div class="tool-card">
+        <div class="tc-label">VEO</div>
+        <div class="tc-title">Кинематографизм</div>
+        <ul class="tc-list">
+          <li>Максимальный реализм картинки</li>
+          <li>Для финального рендера</li>
+          <li>Лучшая работа со светом</li>
+          <li>Google Omni Flash под капотом</li>
+        </ul>
+      </div>
+    </div>
+    <div class="box purple">
+      <div class="box-label">ПРАВИЛО ВЫБОРА ИНСТРУМЕНТА</div>
+      <ul>
+        <li>Нужна серия шотов с историей → Seedance 2.0</li>
+        <li>Нужен один идеальный кадр с точным движением → Kling</li>
+        <li>Финальный рендер для публикации с кинематографичным качеством → Veo</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="section" id="seedance">
+    <div class="section-label">03</div>
+    <h2>Seedance 2.0 — Timeline Prompting</h2>
+    <p>Главная суперсила Seedance 2.0 — один запуск генерирует 10-14 шотов внутри 15-секундного ролика. Описываешь что происходит в каждый промежуток времени — модель сама строит монтажную последовательность.</p>
+    <div class="code-block">
+      <span class="comment">// Структура Timeline Prompt</span><br><br>
+      <span class="key">0-3 сек:</span> герой из image 1 стоит в локации, смотрит вдаль<br>
+      <span class="key">3-6 сек:</span> крупный план лица, лёгкий поворот головы<br>
+      <span class="key">6-9 сек:</span> средний план, герой делает шаг вперёд, natural pace<br>
+      <span class="key">9-12 сек:</span> общий план, камера медленно отъезжает назад<br>
+      <span class="key">12-15 сек:</span> финальный кадр, статика, кинематографичный свет
+    </div>
+    <h3>Ключевые принципы Timeline Prompting</h3>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">⏱</div>
+        <div class="step-body">
+          <h4>Каждый блок = отдельный шот</h4>
+          <p>Описывай конкретно: план (общий/средний/крупный), движение (если есть), темп, что происходит с персонажем. Нейросеть воспринимает каждый временной блок как инструкцию для отдельного шота.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">🎬</div>
+        <div class="step-body">
+          <h4>Монтажная логика важна</h4>
+          <p>Переходы между шотами должны быть логичными. Нельзя в 0-3 сек быть на улице, а в 3-6 уже в студии — нейросеть запутается и выдаст артефакты на стыке.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">👤</div>
+        <div class="step-body">
+          <h4>Указывай персонажа через image reference</h4>
+          <p>Всегда добавляй "герой из image 1" — не просто "персонаж". Без явной ссылки на загруженный референс Seedance может интерпретировать образ иначе от шота к шоту.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="section" id="kling">
+    <div class="section-label">04</div>
+    <h2>Kling — Motion Control</h2>
+    <p>Kling 3.0 — лидер по точности управления движением. Если тебе нужен конкретный жест, конкретный поворот камеры или конкретная поза — Kling справится лучше чем Seedance.</p>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">📷</div>
+        <div class="step-body">
+          <h4>Camera Motion Control</h4>
+          <p>Задаёшь движение камеры: pan left/right, tilt up/down, zoom in/out, orbit, dolly. Камера двигается точно как указано, персонаж остаётся в кадре.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">🦴</div>
+        <div class="step-body">
+          <h4>Skeleton / Pose Control</h4>
+          <p>Рисуешь или указываешь позу персонажа в начале и конце клипа. Kling анимирует переход между позами — плавно и с правильной физикой.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">🖼️</div>
+        <div class="step-body">
+          <h4>Start Frame + End Frame</h4>
+          <p>Загружаешь два кадра — начальный и конечный. Kling генерирует плавный переход между ними. Идеально для точных движений и контролируемых сцен.</p>
+        </div>
+      </div>
+    </div>
+    <div class="box yellow">
+      <div class="box-label">КОГДА KLING ЛУЧШЕ SEEDANCE</div>
+      <ul>
+        <li>Нужен один конкретный шот с точным движением — не серия</li>
+        <li>Важно управление камерой (орбита, наезд, отъезд)</li>
+        <li>Нужна конкретная поза в начале и конце</li>
+        <li>Start frame критично важен — Kling лучше держит исходный кадр</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="section" id="veo">
+    <div class="section-label">05</div>
+    <h2>Veo — кинематографичный реализм</h2>
+    <p>Veo от Google (Google Omni Flash под капотом) — модель для максимального фотореализма. Используй её когда нужен финальный кинематографичный вид, особенно в работе со светом и атмосферой.</p>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">🎥</div>
+        <div class="step-body">
+          <h4>Лучшая работа со светом</h4>
+          <p>Veo понимает сложные световые ситуации: золотой час, неоновое освещение ночного города, контровой свет. Там где Seedance даёт "хороший свет" — Veo даёт "кинематографичный свет".</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">🌍</div>
+        <div class="step-body">
+          <h4>Атмосфера и окружение</h4>
+          <p>Туман, дождь, блики, отражения — Veo генерирует окружение детально. Используй когда локация так же важна как персонаж.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">💰</div>
+        <div class="step-body">
+          <h4>Используй для финального рендера</h4>
+          <p>Veo дороже по кредитам. Стратегия: разрабатывай сцену в Seedance или Kling → добивай концепцию → финальный рендер в Veo для публикации.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="section" id="pipeline">
+    <div class="section-label">06</div>
+    <h2>Production Pipeline + Chroma Key</h2>
+    <p>Полный цикл от Character Sheet до готового видео для публикации.</p>
+    <div class="flow">
+      <div class="flow-node">Character Sheet</div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-node">Storyboard</div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-node">Seedance / Kling</div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-node">Veo (финал)</div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-node">Монтаж</div>
+    </div>
+    <h3>Chroma Key — наложение слоёв</h3>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">🟩</div>
+        <div class="step-body">
+          <h4>Зачем зелёный фон</h4>
+          <p>Character Sheet на зелёном фоне позволяет вырезать персонажа из фона и наложить на любую сгенерированную локацию. Контроль над сценой становится абсолютным.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">🎬</div>
+        <div class="step-body">
+          <h4>Compositing в CapCut</h4>
+          <p>Видео персонажа (зелёный фон) + отдельно сгенерированная локация → CapCut вырезает зелёный, накладывает слои. Финальный кадр выглядит как единое целое.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">✨</div>
+        <div class="step-body">
+          <h4>Когда это даёт преимущество</h4>
+          <p>Когда нужен точный контроль — персонаж в одном месте, локация в другом, можно менять фоны не перегенерируя персонажа. Экономит кредиты и время.</p>
+        </div>
+      </div>
+    </div>
+    <div class="box green">
+      <div class="box-label">ИТОГОВЫЙ СТЕК МОДУЛЯ 3</div>
+      <ul>
+        <li>Character Sheet (из Module 2) → стартовый кадр для всех сцен</li>
+        <li>Seedance 2.0 → серия шотов по Timeline</li>
+        <li>Kling → точные движения и camera control</li>
+        <li>Veo → финальный кинематографичный рендер</li>
+        <li>CapCut → монтаж и Chroma Key compositing</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="section" id="homework">
+    <div class="homework">
+      <h3>Домашнее задание</h3>
+      <p class="homework-sub">Три задачи — к следующему занятию нужны готовые видеосцены. Начни с короткого клипа, потом масштабируй.</p>
+      <div class="hw-items">
+        <div class="hw-item">
+          <div class="hw-check"></div>
+          <div class="hw-body">
+            <h5>Сделай минимум 2 видеосцены своего персонажа</h5>
+            <p>Одну через Seedance 2.0 (timeline prompt на 3+ шота), вторую через Kling (motion control). Лучшие скинь в чат группы.</p>
+          </div>
+        </div>
+        <div class="hw-item">
+          <div class="hw-check"></div>
+          <div class="hw-body">
+            <h5>Напиши timeline-промпт на 5 шотов</h5>
+            <p>Сценарий: герой просыпается, выходит из дома, садится в машину, едет по городу, приезжает на встречу. Опиши каждый 3-секундный блок с планом, темпом и движением камеры.</p>
+          </div>
+        </div>
+        <div class="hw-item">
+          <div class="hw-check"></div>
+          <div class="hw-body">
+            <h5>Сравни Kling и Seedance на одном кадре</h5>
+            <p>Возьми один и тот же стартовый кадр → запусти в Kling → запусти в Seedance → сравни качество движения. Скриншоты обоих результатов в чат.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer">
+    <p>AI Bootcamp · Поток 15 · Creator Track · Модуль 3 — Видео: Kling + Seedance 2.0 + Veo<br>30 июня 2026</p>
+  </div>
+</div>
+</body>
+</html>
