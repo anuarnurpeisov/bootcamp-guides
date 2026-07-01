@@ -1,0 +1,678 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Конвейер: сценарий → identity-lock → видеопромт</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0e1014;
+    --surface:#161920;
+    --surface-2:#1d212a;
+    --border:#2a2f3a;
+    --border-soft:#23272f;
+    --text:#e9e7e1;
+    --text-dim:#9aa0ac;
+    --text-faint:#5d636f;
+    --amber:#ff8a3d;
+    --amber-dim:#ff8a3d33;
+    --teal:#5ee6c5;
+    --teal-dim:#5ee6c533;
+    --red:#ff6b6b;
+    --red-dim:#ff6b6b22;
+  }
+
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:
+      radial-gradient(circle at 1px 1px, #ffffff0a 1px, transparent 0) 0 0/28px 28px,
+      var(--bg);
+    color:var(--text);
+    font-family:'Inter', system-ui, sans-serif;
+    line-height:1.6;
+    font-size:16px;
+  }
+
+  h1,h2,h3{
+    font-family:'Space Grotesk', sans-serif;
+    font-weight:600;
+    letter-spacing:-0.01em;
+    margin:0;
+  }
+
+  .mono{
+    font-family:'JetBrains Mono', monospace;
+  }
+
+  /* ===== HEADER ===== */
+  header{
+    padding:64px 24px 48px;
+    max-width:920px;
+    margin:0 auto;
+    border-bottom:1px solid var(--border-soft);
+  }
+  .eyebrow{
+    font-family:'JetBrains Mono', monospace;
+    font-size:12px;
+    letter-spacing:0.12em;
+    text-transform:uppercase;
+    color:var(--amber);
+    display:flex;
+    align-items:center;
+    gap:8px;
+    margin-bottom:18px;
+  }
+  .eyebrow::before{
+    content:"";
+    width:7px;height:7px;
+    border-radius:50%;
+    background:var(--amber);
+    box-shadow:0 0 10px var(--amber);
+  }
+  header h1{
+    font-size:40px;
+    line-height:1.15;
+    max-width:680px;
+  }
+  header p.lede{
+    margin-top:18px;
+    max-width:620px;
+    color:var(--text-dim);
+    font-size:16px;
+  }
+  header .meta{
+    margin-top:28px;
+    display:flex;
+    gap:18px;
+    flex-wrap:wrap;
+    font-family:'JetBrains Mono', monospace;
+    font-size:12px;
+    color:var(--text-faint);
+  }
+  header .meta span{
+    border:1px solid var(--border);
+    padding:5px 10px;
+    border-radius:5px;
+  }
+
+  /* ===== PIPELINE DIAGRAM ===== */
+  .pipeline-wrap{
+    max-width:1040px;
+    margin:0 auto;
+    padding:56px 24px 8px;
+  }
+  .pipeline-wrap > .label{
+    font-family:'JetBrains Mono', monospace;
+    font-size:12px;
+    color:var(--text-faint);
+    letter-spacing:0.08em;
+    text-transform:uppercase;
+    margin-bottom:18px;
+  }
+  .pipeline{
+    display:flex;
+    align-items:stretch;
+    gap:0;
+    overflow-x:auto;
+    padding-bottom:18px;
+  }
+  .node{
+    flex:0 0 152px;
+    background:var(--surface);
+    border:1px solid var(--border);
+    border-radius:10px;
+    padding:14px 12px;
+    position:relative;
+  }
+  .node .n-num{
+    font-family:'JetBrains Mono', monospace;
+    font-size:11px;
+    color:var(--amber);
+  }
+  .node .n-title{
+    font-family:'Space Grotesk', sans-serif;
+    font-weight:600;
+    font-size:14px;
+    margin-top:6px;
+    line-height:1.25;
+  }
+  .node .n-sub{
+    font-family:'JetBrains Mono', monospace;
+    font-size:10.5px;
+    color:var(--text-faint);
+    margin-top:8px;
+  }
+  .node::after{
+    content:"";
+    position:absolute;
+    right:-7px; top:50%;
+    width:7px; height:7px;
+    border-radius:50%;
+    background:var(--teal);
+    box-shadow:0 0 6px var(--teal);
+    transform:translateY(-50%);
+  }
+  .connector{
+    flex:0 0 28px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+  }
+  .connector svg{display:block;}
+
+  /* ===== MAIN ===== */
+  main{
+    max-width:920px;
+    margin:0 auto;
+    padding:24px 24px 100px;
+  }
+
+  section.block{
+    margin-top:64px;
+    padding-top:8px;
+  }
+  .block-head{
+    display:flex;
+    align-items:baseline;
+    gap:14px;
+    margin-bottom:22px;
+  }
+  .block-head .tag{
+    font-family:'JetBrains Mono', monospace;
+    font-size:11px;
+    color:var(--bg);
+    background:var(--amber);
+    padding:3px 8px;
+    border-radius:4px;
+    font-weight:600;
+    letter-spacing:0.03em;
+    white-space:nowrap;
+  }
+  .block-head h2{
+    font-size:24px;
+  }
+  .block-intro{
+    color:var(--text-dim);
+    margin-bottom:24px;
+    max-width:680px;
+  }
+
+  /* error/fix cards */
+  .pair{
+    display:grid;
+    grid-template-columns:1fr;
+    gap:10px;
+    margin-bottom:22px;
+    border-left:2px solid var(--border);
+    padding-left:18px;
+  }
+  .pair .err, .pair .fix{
+    padding:14px 16px;
+    border-radius:8px;
+    font-size:14.5px;
+  }
+  .pair .err{
+    background:var(--red-dim);
+    border:1px solid #ff6b6b3a;
+  }
+  .pair .fix{
+    background:var(--teal-dim);
+    border:1px solid #5ee6c53a;
+  }
+  .pair .err .k, .pair .fix .k{
+    font-family:'JetBrains Mono', monospace;
+    font-size:11px;
+    text-transform:uppercase;
+    letter-spacing:0.08em;
+    display:block;
+    margin-bottom:6px;
+  }
+  .pair .err .k{color:var(--red);}
+  .pair .fix .k{color:var(--teal);}
+
+  /* generic info card */
+  .card{
+    background:var(--surface);
+    border:1px solid var(--border);
+    border-radius:10px;
+    padding:18px 20px;
+    margin-bottom:14px;
+  }
+  .card h3{
+    font-size:15.5px;
+    margin-bottom:8px;
+  }
+  .card p{margin:0; color:var(--text-dim); font-size:14.5px;}
+  .card .badge{
+    display:inline-block;
+    font-family:'JetBrains Mono', monospace;
+    font-size:10.5px;
+    color:var(--amber);
+    border:1px solid var(--amber-dim);
+    background:var(--amber-dim);
+    padding:2px 7px;
+    border-radius:4px;
+    margin-bottom:8px;
+  }
+
+  /* comparison table */
+  table{
+    width:100%;
+    border-collapse:collapse;
+    margin:18px 0 8px;
+    font-size:14.5px;
+  }
+  thead th{
+    text-align:left;
+    font-family:'JetBrains Mono', monospace;
+    font-size:11px;
+    text-transform:uppercase;
+    letter-spacing:0.05em;
+    color:var(--text-faint);
+    padding:0 14px 10px;
+    border-bottom:1px solid var(--border);
+  }
+  tbody td{
+    padding:13px 14px;
+    border-bottom:1px solid var(--border-soft);
+    color:var(--text-dim);
+    vertical-align:top;
+  }
+  tbody tr td:first-child{
+    color:var(--text);
+    font-weight:600;
+    white-space:nowrap;
+  }
+  .pill{
+    display:inline-block;
+    font-family:'JetBrains Mono', monospace;
+    font-size:11px;
+    padding:2px 8px;
+    border-radius:20px;
+    margin-top:2px;
+  }
+  .pill.good{background:var(--teal-dim); color:var(--teal);}
+  .pill.bad{background:var(--red-dim); color:var(--red);}
+  .pill.mid{background:var(--amber-dim); color:var(--amber);}
+
+  /* steps */
+  ol.steps{
+    counter-reset:step;
+    list-style:none;
+    margin:0; padding:0;
+  }
+  ol.steps li{
+    counter-increment:step;
+    position:relative;
+    padding:0 0 22px 40px;
+    border-left:1px solid var(--border);
+    margin-left:13px;
+  }
+  ol.steps li:last-child{border-left:1px solid transparent; padding-bottom:0;}
+  ol.steps li::before{
+    content:counter(step);
+    position:absolute;
+    left:-14px; top:-2px;
+    width:26px; height:26px;
+    background:var(--surface-2);
+    border:1px solid var(--amber);
+    color:var(--amber);
+    font-family:'JetBrains Mono', monospace;
+    font-size:12px;
+    font-weight:600;
+    border-radius:50%;
+    display:flex; align-items:center; justify-content:center;
+  }
+  ol.steps li strong{color:var(--text); font-weight:600;}
+  ol.steps li{color:var(--text-dim); font-size:14.5px;}
+  ol.steps li code{
+    background:var(--surface-2);
+    border:1px solid var(--border);
+    padding:1px 6px;
+    border-radius:4px;
+    color:var(--teal);
+    font-size:13px;
+  }
+
+  /* quote */
+  blockquote{
+    margin:18px 0;
+    padding:14px 18px;
+    border-left:2px solid var(--amber);
+    background:var(--surface);
+    color:var(--text-dim);
+    font-size:14.5px;
+    font-style:italic;
+  }
+
+  /* checklist */
+  .checklist{
+    background:var(--surface);
+    border:1px solid var(--border);
+    border-radius:10px;
+    padding:10px 22px;
+  }
+  .checklist label{
+    display:flex;
+    align-items:flex-start;
+    gap:12px;
+    padding:14px 0;
+    border-bottom:1px solid var(--border-soft);
+    font-size:14.5px;
+    color:var(--text-dim);
+    cursor:pointer;
+  }
+  .checklist label:last-child{border-bottom:none;}
+  .checklist input{
+    margin-top:3px;
+    accent-color:var(--amber);
+    width:16px; height:16px;
+    flex:0 0 16px;
+  }
+  .checklist label span strong{color:var(--text);}
+
+  footer{
+    max-width:920px;
+    margin:0 auto;
+    padding:0 24px 60px;
+    color:var(--text-faint);
+    font-family:'JetBrains Mono', monospace;
+    font-size:12px;
+    border-top:1px solid var(--border-soft);
+    padding-top:24px;
+    margin-top:20px;
+  }
+
+  @media (max-width:640px){
+    header{padding:44px 18px 36px;}
+    header h1{font-size:30px;}
+    main{padding:18px 18px 80px;}
+    .pipeline-wrap{padding:40px 18px 8px;}
+  }
+
+  @media print{
+    body{background:#fff; color:#000;}
+    .pipeline-wrap{display:none;}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="eyebrow">ai bootcamp · production pipeline</div>
+  <h1>Identity-lock в Weavy и конвейер «сценарий → видеопромт» на Claude Skills</h1>
+  <p class="lede">Разбор рабочей сессии один-на-один: где обычно теряется сходство персонажа в нодовом редакторе, как собрать паспорт сценария автоматически и как довести его до промта для Seedance / Kling без ручной пересборки на каждом шаге.</p>
+  <div class="meta">
+    <span>Weavy · Nano Banana</span>
+    <span>Claude Skills + Projects</span>
+    <span>Filmcheck · CinemaDirector</span>
+  </div>
+</header>
+
+<div class="pipeline-wrap">
+  <div class="label">конвейер целиком</div>
+  <div class="pipeline">
+    <div class="node">
+      <div class="n-num">01</div>
+      <div class="n-title">Сценарий</div>
+      <div class="n-sub">текст, .md</div>
+    </div>
+    <div class="connector"><svg width="28" height="14"><line x1="0" y1="7" x2="28" y2="7" stroke="#3a4150" stroke-width="1.5" stroke-dasharray="3 3"/></svg></div>
+    <div class="node">
+      <div class="n-num">02</div>
+      <div class="n-title">Раскадровка</div>
+      <div class="n-sub">storyboard / shotlist</div>
+    </div>
+    <div class="connector"><svg width="28" height="14"><line x1="0" y1="7" x2="28" y2="7" stroke="#3a4150" stroke-width="1.5" stroke-dasharray="3 3"/></svg></div>
+    <div class="node">
+      <div class="n-num">03</div>
+      <div class="n-title">Filmcheck</div>
+      <div class="n-sub">паспорт сцены</div>
+    </div>
+    <div class="connector"><svg width="28" height="14"><line x1="0" y1="7" x2="28" y2="7" stroke="#3a4150" stroke-width="1.5" stroke-dasharray="3 3"/></svg></div>
+    <div class="node">
+      <div class="n-num">04</div>
+      <div class="n-title">Character Sheet</div>
+      <div class="n-sub">Weavy / identity-lock</div>
+    </div>
+    <div class="connector"><svg width="28" height="14"><line x1="0" y1="7" x2="28" y2="7" stroke="#3a4150" stroke-width="1.5" stroke-dasharray="3 3"/></svg></div>
+    <div class="node">
+      <div class="n-num">05</div>
+      <div class="n-title">CinemaDirector</div>
+      <div class="n-sub">видеопромт</div>
+    </div>
+    <div class="connector"><svg width="28" height="14"><line x1="0" y1="7" x2="28" y2="7" stroke="#3a4150" stroke-width="1.5" stroke-dasharray="3 3"/></svg></div>
+    <div class="node">
+      <div class="n-num">06</div>
+      <div class="n-title">Видео-генерация</div>
+      <div class="n-sub">720p тест → 2K финал</div>
+    </div>
+  </div>
+</div>
+
+<main>
+
+  <!-- A: Identity-lock errors -->
+  <section class="block" id="identity-lock">
+    <div class="block-head">
+      <span class="tag">node 04</span>
+      <h2>Identity-lock: три ошибки, которые ломают сходство</h2>
+    </div>
+    <p class="block-intro">Все три обнаруживаются на одном и том же кейсе: персонаж генерируется похожим на сборную «смесь» из референсов, а не на конкретного человека.</p>
+
+    <div class="pair">
+      <div class="err"><span class="k">ошибка · батч в одном ноде</span>Все референсные фото загружены пачкой в один input-image. Модель использует только одно фото из пачки — то, что выбрано по умолчанию, остальные игнорируются.</div>
+      <div class="fix"><span class="k">фикс</span>Каждое фото — отдельный нод: <span class="mono">image 1</span>, <span class="mono">image 2</span>, <span class="mono">image 3</span>… В промте текстом описать, что брать с какого: «крупный план — image 1, анфас — image 2, ¾ — image 3».</div>
+    </div>
+
+    <div class="pair">
+      <div class="err"><span class="k">ошибка · разнородные референсы</span>Фото сделаны в разном свете, на разную оптику, с разным фоном. Тени и геометрия лица плывут между кадрами — модель не может закрепить форму.</div>
+      <div class="fix"><span class="k">фикс</span>Одна съёмочная сессия, один нейтральный фон (белый/зелёный), один источник света. Развороты: анфас + ¾ влево + ¾ вправо + профиль при возможности — лицо несимметрично, нужны обе стороны. Снимать на портретный/телефото объектив, не на широкий угол (GoPro и подобная оптика сжимает пропорции и искажает черты).</div>
+    </div>
+
+    <div class="pair">
+      <div class="err"><span class="k">ошибка · костюм тянет за собой чужую внешность</span>При похожем типаже модель смешивает лицо референса одежды с лицом героя — получается «дочь» или «сестра» персонажа, а не он сам.</div>
+      <div class="fix"><span class="k">фикс</span>Вырезать костюм отдельно, без человека, на нейтральном/зелёном фоне → отдельный нод → добавлять в генерацию как ингредиент одежды, а не как референс внешности. Альтернатива: character sheet героя в нейтральной одежде с нескольких ракурсов + отдельный нод с костюмом, который накладывается уже в финальной сцене.</div>
+    </div>
+
+    <blockquote>«У нас лица несимметричные — рабочая сторона не любая. Поэтому делай развороты на обе стороны, а не просто анфас.»</blockquote>
+  </section>
+
+  <!-- B: model comparison -->
+  <section class="block" id="models">
+    <div class="block-head">
+      <span class="tag">сравнение</span>
+      <h2>Какая модель держит идентичность</h2>
+    </div>
+    <p class="block-intro">Правило: дорогую модель не трогать, пока промт не обкатан на дешёвой. Тестировать логику промта на бюджетных моделях, финал собирать на топовой.</p>
+
+    <table>
+      <thead>
+        <tr><th>Модель</th><th>Сходство / реализм</th><th>Когда использовать</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Nano Banana Pro<br><span class="mono" style="font-size:11px;color:var(--text-faint)">Gemini 3 Pro Image</span></td>
+          <td><span class="pill good">высокое</span><br>лучшая логика композиции и расстановки объектов</td>
+          <td>Финальная генерация character sheet и ключевых кадров</td>
+        </tr>
+        <tr>
+          <td>Imagen 3 / Nano Banana 1</td>
+          <td><span class="pill bad">низкое</span><br>картинка красивая, но лицо почти не совпадает</td>
+          <td>Не использовать для персонажей с закреплённой внешностью</td>
+        </tr>
+        <tr>
+          <td>GPT Image 2.0</td>
+          <td><span class="pill mid">среднее</span><br>стабильно путает одежду референса с лицом</td>
+          <td>Черновая проверка композиции / общая раскадровка</td>
+        </tr>
+        <tr>
+          <td>Бюджетные модели<br><span class="mono" style="font-size:11px;color:var(--text-faint)">Hailuo и аналоги</span></td>
+          <td><span class="pill bad">низкое</span></td>
+          <td>Только для проверки «работает / не работает» сама идея промта</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- C: technical settings -->
+  <section class="block" id="settings">
+    <div class="block-head">
+      <span class="tag">настройки</span>
+      <h2>Технические параметры нодов</h2>
+    </div>
+    <div class="card">
+      <span class="badge">вес файла</span>
+      <h3>Входные фото ≤ 2 МБ</h3>
+      <p>Файлы по 10 МБ перегружают граф и заметно тормозят генерацию. Экспортировать референсы с более низким качеством — для крупного плана 2 МБ достаточно.</p>
+    </div>
+    <div class="card">
+      <span class="badge">формат вывода</span>
+      <h3>2K, 16:9 вместо auto</h3>
+      <p>Цена одинаковая что для базового разрешения, что для 2K — качество в этом случае примерно вдвое выше при той же стоимости. Ставить 2K по умолчанию.</p>
+    </div>
+    <div class="card">
+      <span class="badge">роутер</span>
+      <h3>Размножение через Router-нод</h3>
+      <p>Чтобы один и тот же элемент (например, итоговый character sheet) подавать одновременно в несколько следующих нодов — между ними ставится router, а не дублируется загрузка фото вручную.</p>
+    </div>
+  </section>
+
+  <!-- D: claude skills setup -->
+  <section class="block" id="skills-setup">
+    <div class="block-head">
+      <span class="tag">claude · skills</span>
+      <h2>Skill vs Project — разделение контекста</h2>
+    </div>
+    <p class="block-intro"><strong style="color:var(--text)">Skill</strong> — это навык, переиспользуется в любом количестве проектов (как «умею пилить дерево» — применимо и к стройке дома, и к скворечнику). <strong style="color:var(--text)">Project</strong> — контекст конкретного фильма: сценарий, паспорт сцены, гонорары. Один и тот же skill подключается в разных проектах, проекты друг с другом не пересекаются.</p>
+
+    <ol class="steps">
+      <li><strong>Установка скилла.</strong> Settings → Customize → Skills → справа кнопка <code>+</code> → <code>Create / Upload skill</code> → выбрать скачанный файл скилла. Включить тумблер активности справа от названия.</li>
+      <li><strong>Вызов в чате.</strong> Набрать символ <code>/</code> → внизу появится список подключённых скиллов → выбрать нужный → Enter.</li>
+      <li><strong>Порядок скиллов в этом конвейере:</strong> <code>weavy-nano-banana-node-prompts</code> (промты для нодов) → <code>storyboard</code> (раскадровка) → <code>filmcheck</code> (паспорт сценария) → <code>shotlister</code> (покадровая разбивка) → <code>cinemadirector</code> (финальный видеопромт).</li>
+      <li><strong>Не редактировать уже отправленное сообщение</strong> для вызова скилла повторно — это иногда блокирует ввод. Писать новое сообщение.</li>
+    </ol>
+  </section>
+
+  <!-- E: storyboard -->
+  <section class="block" id="storyboard">
+    <div class="block-head">
+      <span class="tag">node 02</span>
+      <h2>Сценарий ≠ раскадровка</h2>
+    </div>
+    <p class="block-intro">Литературный сценарий описывает «что происходит». Раскадровка — это разбивка на конкретные планы с киноязыком, готовая к генерации кадр за кадром.</p>
+    <div class="card">
+      <h3>Запрос модели</h3>
+      <p>Явно просить: «распиши storyboard» — модель раскладывает сцену на общий план → средний план → крупный план, с маркировкой WS / MS / CU и т.д., в порядке, уже выстроенном под монтаж.</p>
+    </div>
+    <div class="card">
+      <h3>Плотность кадров</h3>
+      <p>На 30 секунд ролика — минимум 10–12 кадров, не 5. Меньшее количество означает резкие, «грубые» склейки без промежуточных планов.</p>
+    </div>
+  </section>
+
+  <!-- F: filmcheck -->
+  <section class="block" id="filmcheck">
+    <div class="block-head">
+      <span class="tag">node 03</span>
+      <h2>Filmcheck — паспорт сценария</h2>
+    </div>
+    <p class="block-intro">Стартовый пакет перед началом любых генераций: полная инвентаризация фильма, выполненная автоматически вместо ручного разбора по сценам.</p>
+    <ol class="steps">
+      <li>Сценарий грузится в чат <strong>целиком, одним текстовым блоком</strong> — формат .md, не PDF (экономия токенов и кредитов).</li>
+      <li>Вызов: <code>/filmcheck</code> → указать язык вывода → выбрать режим: полный отчёт или только тоталы.</li>
+      <li>На выходе — документ с разбивкой по сценам: герои, реквизит, локации, костюмы, нужные ракурсы. То, что раньше собиралось вручную.</li>
+      <li>Формат вывода — markdown-документ, не PDF: компактнее, меньше токенов на дальнейшую обработку.</li>
+    </ol>
+  </section>
+
+  <!-- G: project structure -->
+  <section class="block" id="project">
+    <div class="block-head">
+      <span class="tag">claude · project</span>
+      <h2>Сборка проекта под конкретный ролик</h2>
+    </div>
+    <ol class="steps">
+      <li><code>New Project</code> → название по ролику (например <code>tomi_01</code>) → краткое описание обязательно.</li>
+      <li>В <strong>Knowledge</strong> загрузить: полный текст сценария + готовый файл filmcheck.</li>
+      <li>Project Instructions для этого случая не обязательны — модель уже опирается на файлы Knowledge.</li>
+      <li>Скиллы (filmcheck, cinemadirector, shotlister) подключаются в любом проекте — они не привязаны к конкретному фильму.</li>
+    </ol>
+    <div class="pair" style="margin-top:8px;">
+      <div class="err"><span class="k">ошибка</span>Сценарий разбит на отдельные подписи «Сцена 1 / Сцена 2 / Сцена 3» при загрузке. Модель путает текстовые метки со сценами фильма и не достраивает кадры между ними.</div>
+      <div class="fix"><span class="k">фикс</span>Грузить сценарий цельным текстом, без собственной разметки на сцены — разбивку по сценам делает сам скилл (filmcheck / storyboard), а не пользователь вручную.</div>
+    </div>
+  </section>
+
+  <!-- H: cinemadirector -->
+  <section class="block" id="cinemadirector">
+    <div class="block-head">
+      <span class="tag">node 05</span>
+      <h2>CinemaDirector — финальный видеопромт</h2>
+    </div>
+    <p class="block-intro">Когда в проекте уже лежит сценарий и filmcheck, скилл собирает таймлайн-промт под Seedance 2.0 (формат, совместимый с генерацией внутри Higgsfield) по запросу «распиши сцену N».</p>
+    <div class="card">
+      <h3>Зависимость от предыдущих шагов</h3>
+      <p>Качество промта на этом шаге напрямую зависит от того, насколько точно прошёл этап filmcheck — реквизит, ракурсы и состояние героя по сценам берутся именно оттуда, а не придумываются заново.</p>
+    </div>
+  </section>
+
+  <!-- I: providers -->
+  <section class="block" id="providers">
+    <div class="block-head">
+      <span class="tag">node 06</span>
+      <h2>Провайдер генерации видео</h2>
+    </div>
+    <table>
+      <thead><tr><th>Вариант</th><th>Плюс</th><th>Минус</th></tr></thead>
+      <tbody>
+        <tr>
+          <td>Higgsfield</td>
+          <td>Все модели в одном месте, единый интерфейс нодов</td>
+          <td>Дороже прямых подписок у поставщиков</td>
+        </tr>
+        <tr>
+          <td>Прямые подписки<br><span class="mono" style="font-size:11px;color:var(--text-faint)">Kling, ByteDance/Seedance, Veo</span></td>
+          <td>Дешевле на объёме</td>
+          <td>Разрозненные интерфейсы, нет единого графа нодов</td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="card" style="margin-top:14px;">
+      <span class="badge">правило тестов</span>
+      <h3>Сначала 720p, потом 2K/4K</h3>
+      <p>Промт обязательно проверяется на низком/дешёвом разрешении перед запуском в высоком — апскейл сразу на 4K без проверки логики промта сжигает кредиты впустую.</p>
+    </div>
+  </section>
+
+  <!-- J: checklist -->
+  <section class="block" id="checklist">
+    <div class="block-head">
+      <span class="tag">чек-лист</span>
+      <h2>Перед стартом генерации</h2>
+    </div>
+    <div class="checklist">
+      <label><input type="checkbox"><span>Каждое референсное фото — в отдельном <strong>image-ноде</strong>, не пачкой в одном</span></label>
+      <label><input type="checkbox"><span>Все референсы сняты на <strong>одном фоне, одном свете, одной оптике</strong></span></label>
+      <label><input type="checkbox"><span>Костюм вырезан отдельно и подаётся <strong>отдельным нодом</strong>, не как референс лица</span></label>
+      <label><input type="checkbox"><span>Финальная генерация — на <strong>Nano Banana Pro</strong>, черновики промтов — на дешёвых моделях</span></label>
+      <label><input type="checkbox"><span>Входные фото ≤ <strong>2 МБ</strong>, вывод — <strong>2K 16:9</strong></span></label>
+      <label><input type="checkbox"><span>Сценарий в Knowledge проекта загружен <strong>целиком</strong>, без ручной разметки «Сцена 1/2/3»</span></label>
+      <label><input type="checkbox"><span><strong>Filmcheck</strong> прогнан до начала генераций сцен</span></label>
+      <label><input type="checkbox"><span>Видеопромт протестирован в <strong>720p</strong> перед апскейлом в финал</span></label>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  ai bootcamp · production pipeline guide — based on a 1:1 mentoring session
+</footer>
+
+</body>
+</html>
