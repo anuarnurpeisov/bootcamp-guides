@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Гайдбук — Модуль 3: Claude · Бизнес-трек</title>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#0A0A0F;--surface:#11111C;--surface2:#161622;--border:#1C1C2E;--accent:#6B5CE7;--al:#9B8EF5;--ag:rgba(107,92,231,0.12);--ab:rgba(107,92,231,0.25);--green:#10B981;--gg:rgba(16,185,129,0.08);--gb:rgba(16,185,129,0.2);--yellow:#F59E0B;--yg:rgba(245,158,11,0.08);--yb:rgba(245,158,11,0.2);--text:#F0F0F8;--muted:#6B6B8A;--subtle:rgba(240,240,248,0.55)}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:'Manrope',sans-serif;font-size:16px;line-height:1.7}
+.container{max-width:860px;margin:0 auto;padding:0 32px 120px}
+.topbar{background:rgba(10,10,15,0.92);backdrop-filter:blur(16px);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:100;padding:14px 32px;display:flex;align-items:center;justify-content:space-between}
+.topbar-left{display:flex;align-items:center;gap:12px}
+.topbar-logo{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--green);font-weight:700;letter-spacing:.08em}
+.topbar-sep{color:var(--border)}
+.topbar-title{font-size:13px;color:var(--muted)}
+.topbar-badge{font-family:'JetBrains Mono',monospace;font-size:10px;background:var(--gg);border:1px solid var(--gb);color:var(--green);border-radius:100px;padding:3px 10px;letter-spacing:.06em}
+.hero{padding:72px 0 48px;border-bottom:1px solid var(--border);margin-bottom:56px}
+.hero-eyebrow{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--green);margin-bottom:16px;opacity:.9}
+.hero h1{font-size:clamp(32px,5vw,52px);font-weight:800;letter-spacing:-0.03em;line-height:1.08;margin-bottom:20px}
+.hero h1 span{color:var(--green)}
+.hero-lead{font-size:17px;color:var(--subtle);line-height:1.65;max-width:620px;margin-bottom:28px}
+.hero-meta{display:flex;flex-wrap:wrap;gap:10px}
+.meta-tag{display:flex;align-items:center;gap:6px;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:6px 12px;font-size:13px;color:var(--muted)}
+.meta-tag span{font-weight:600;color:var(--text)}
+.toc{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:28px 32px;margin-bottom:56px}
+.toc-title{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);margin-bottom:16px}
+.toc-list{list-style:none;display:flex;flex-direction:column;gap:2px}
+.toc-list li a{display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--subtle);font-size:14px;padding:6px 8px;border-radius:8px;transition:all .2s}
+.toc-list li a:hover{color:var(--text);background:var(--border)}
+.toc-num{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--green);min-width:24px}
+.section{margin-bottom:64px;scroll-margin-top:72px}
+.section-label{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--green);margin-bottom:10px;display:flex;align-items:center;gap:8px}
+.section-label::after{content:'';flex:1;height:1px;background:var(--border)}
+.section h2{font-size:clamp(22px,3vw,30px);font-weight:800;letter-spacing:-0.02em;line-height:1.2;margin-bottom:20px}
+.section h3{font-size:18px;font-weight:700;margin:28px 0 12px}
+.section p{color:var(--subtle);margin-bottom:16px;line-height:1.75}
+.section p strong{color:var(--text);font-weight:700}
+.steps{display:flex;flex-direction:column;gap:12px;margin:20px 0}
+.step{display:flex;gap:16px;background:var(--surface);border:1px solid var(--border);border-left:3px solid var(--green);border-radius:14px;padding:18px 20px}
+.step-num{font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:700;color:var(--green);min-width:28px;padding-top:1px}
+.step-body h4{font-size:15px;font-weight:700;margin-bottom:4px}
+.step-body p{font-size:13px;color:var(--subtle);line-height:1.6;margin:0}
+.code-block{background:#080810;border:1px solid var(--border);border-left:3px solid var(--green);border-radius:12px;padding:16px 20px;font-family:'JetBrains Mono',monospace;font-size:13px;color:var(--green);line-height:1.8;margin:16px 0;overflow-x:auto}
+.code-block .comment{color:var(--muted);font-size:11px}
+.code-block .key{color:var(--yellow)}
+.box{border-radius:14px;padding:18px 22px;margin:20px 0}
+.box-label{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.14em;margin-bottom:8px;font-weight:700}
+.box ul{list-style:none;display:flex;flex-direction:column;gap:6px;padding:0}
+.box ul li{padding-left:16px;position:relative;color:var(--subtle);font-size:14px;line-height:1.65}
+.box ul li::before{content:'→';position:absolute;left:0;font-size:12px}
+.box.green{background:var(--gg);border:1px solid var(--gb)}
+.box.green .box-label{color:var(--green)}
+.box.green ul li::before{color:var(--green)}
+.box.yellow{background:var(--yg);border:1px solid var(--yb)}
+.box.yellow .box-label{color:var(--yellow)}
+.box.yellow ul li::before{color:var(--yellow)}
+.box.purple{background:var(--ag);border:1px solid var(--ab)}
+.box.purple .box-label{color:var(--al)}
+.box.purple ul li::before{color:var(--al)}
+.concepts{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin:20px 0}
+.concept{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:20px}
+.concept-icon{font-size:22px;margin-bottom:10px}
+.concept h4{font-size:14px;font-weight:800;margin-bottom:6px;color:var(--green)}
+.concept p{font-size:13px;color:var(--subtle);line-height:1.6;margin:0}
+.compare{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:20px 0}
+.compare-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:20px}
+.compare-card.a{border-top:2px solid var(--yellow)}
+.compare-card.b{border-top:2px solid var(--green)}
+.compare-label{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.12em;margin-bottom:10px;font-weight:700}
+.compare-card.a .compare-label{color:var(--yellow)}
+.compare-card.b .compare-label{color:var(--green)}
+.compare-card ul{list-style:none;display:flex;flex-direction:column;gap:6px}
+.compare-card ul li{font-size:13px;color:var(--subtle);padding-left:16px;position:relative;line-height:1.5}
+.compare-card.a ul li::before{content:'○';position:absolute;left:0;color:var(--yellow);font-size:10px;top:3px}
+.compare-card.b ul li::before{content:'●';position:absolute;left:0;color:var(--green);font-size:10px;top:3px}
+.divider{height:1px;background:var(--border);margin:48px 0}
+.homework{background:linear-gradient(135deg,rgba(16,185,129,.08),rgba(16,185,129,.03));border:1px solid rgba(16,185,129,.25);border-radius:20px;padding:32px}
+.homework h3{font-size:22px;font-weight:800;margin-bottom:8px}
+.homework-sub{font-size:14px;color:var(--subtle);margin-bottom:24px}
+.hw-items{display:flex;flex-direction:column;gap:12px}
+.hw-item{display:flex;gap:14px;background:rgba(255,255,255,.03);border:1px solid rgba(16,185,129,.12);border-radius:12px;padding:16px 18px}
+.hw-check{width:22px;height:22px;border-radius:6px;border:2px solid rgba(16,185,129,.4);flex-shrink:0;margin-top:1px}
+.hw-body h5{font-size:14px;font-weight:700;margin-bottom:3px}
+.hw-body p{font-size:12px;color:var(--subtle);line-height:1.55;margin:0}
+.footer{border-top:1px solid var(--border);padding:32px 0;text-align:center}
+.footer p{font-size:13px;color:var(--muted)}
+</style>
+</head>
+<body>
+<div class="topbar">
+  <div class="topbar-left">
+    <span class="topbar-logo">BOOTCAMP.KZ</span>
+    <span class="topbar-sep">/</span>
+    <span class="topbar-title">Бизнес-трек · Модуль 3</span>
+  </div>
+  <span class="topbar-badge">⚙️ БИЗНЕС-ТРЕК</span>
+</div>
+<div class="container">
+  <div class="hero">
+    <div class="hero-eyebrow">Модуль 3 · Гайдбук · Поток 15</div>
+    <h1>Claude:<br><span>от чата к ассистенту</span></h1>
+    <p class="hero-lead">Projects, Skills, Goals и разница между помощником и агентом. После этого занятия у тебя будет настроенный личный ассистент который знает твой бизнес.</p>
+    <div class="hero-meta">
+      <div class="meta-tag">📅 <span>30 июня 2026</span></div>
+      <div class="meta-tag">⏱ <span>80 минут</span></div>
+      <div class="meta-tag">🛠 <span>Claude · Projects · Skills</span></div>
+    </div>
+  </div>
+
+  <div class="toc">
+    <div class="toc-title">Содержание</div>
+    <ul class="toc-list">
+      <li><a href="#why"><span class="toc-num">01</span>Почему обычный чат с Claude не работает</a></li>
+      <li><a href="#projects"><span class="toc-num">02</span>Projects — постоянная память бизнеса</a></li>
+      <li><a href="#dosye"><span class="toc-num">03</span>Как составить досье для Project</a></li>
+      <li><a href="#skills"><span class="toc-num">04</span>Skills — обученные навыки через /команду</a></li>
+      <li><a href="#goals"><span class="toc-num">05</span>Goals и Custom Instructions</a></li>
+      <li><a href="#agents"><span class="toc-num">06</span>Помощник vs AI-агент: в чём разница</a></li>
+      <li><a href="#homework"><span class="toc-num">07</span>Домашнее задание</a></li>
+    </ul>
+  </div>
+
+  <div class="section" id="why">
+    <div class="section-label">01</div>
+    <h2>Почему обычный чат с Claude не работает</h2>
+    <p>Когда открываешь новый чат и пишешь "напиши мне текст для клиента" — Claude не знает кто ты, что продаёшь, кто твои клиенты и какой у тебя тон. Каждый раз объяснять заново — потеря времени и получение обобщённых ответов.</p>
+    <p>Разница между <strong>ChatGPT без настройки и Claude с Projects</strong> — это разница между незнакомцем и сотрудником который с тобой уже полгода. Один знает контекст, второй приходится объяснять с нуля каждый раз.</p>
+    <div class="box yellow">
+      <div class="box-label">ПРОБЛЕМА КОТОРУЮ РЕШАЕМ СЕГОДНЯ</div>
+      <ul>
+        <li>Claude не помнит предыдущие чаты — каждый диалог начинается с нуля</li>
+        <li>Без контекста ответы общие, не под твою нишу</li>
+        <li>Повторяешь одно и то же описание бизнеса в каждом запросе</li>
+        <li>Нет единого стиля и тона — каждый ответ звучит по-разному</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="section" id="projects">
+    <div class="section-label">02</div>
+    <h2>Projects — постоянная память бизнеса</h2>
+    <p>Project в Claude — это рабочее пространство с постоянной памятью. Один раз загружаешь контекст бизнеса → все чаты внутри проекта автоматически знают кто ты и что тебе нужно.</p>
+    <div class="concepts">
+      <div class="concept">
+        <div class="concept-icon">📁</div>
+        <h4>Project Knowledge</h4>
+        <p>Файлы и тексты которые Claude читает перед каждым чатом. Загружаешь один раз — работает всегда.</p>
+      </div>
+      <div class="concept">
+        <div class="concept-icon">💬</div>
+        <h4>Чаты внутри проекта</h4>
+        <p>Все диалоги создаются внутри проекта. Каждый новый чат автоматически знает твой контекст.</p>
+      </div>
+      <div class="concept">
+        <div class="concept-icon">🎯</div>
+        <h4>Custom Instructions</h4>
+        <p>Правила поведения Claude именно в этом проекте: тон, роль, формат ответов.</p>
+      </div>
+      <div class="concept">
+        <div class="concept-icon">⚡</div>
+        <h4>Skills внутри проекта</h4>
+        <p>Специализированные навыки вызываемые через / — прямо в чате проекта.</p>
+      </div>
+    </div>
+    <h3>Как создать Project</h3>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">01</div>
+        <div class="step-body">
+          <h4>Claude → Projects → + New Project</h4>
+          <p>В левом меню Claude нажимаешь Projects → создаёшь новый. Называешь под бизнес, например "Мой бизнес-ассистент".</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">02</div>
+        <div class="step-body">
+          <h4>Project Knowledge → Add content</h4>
+          <p>Внутри проекта находишь раздел Project Knowledge → добавляешь файл или текст с досье бизнеса.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">03</div>
+        <div class="step-body">
+          <h4>Настраиваешь Custom Instructions</h4>
+          <p>Там же добавляешь правила: как Claude должен отвечать, какой тон использовать, что всегда учитывать.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">04</div>
+        <div class="step-body">
+          <h4>Создаёшь чат внутри проекта</h4>
+          <p>Нажимаешь + New Chat внутри проекта (не в общем меню). Этот чат уже знает твой контекст.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="section" id="dosye">
+    <div class="section-label">03</div>
+    <h2>Как составить досье для Project</h2>
+    <p>Досье — текстовый файл который ты загружаешь в Project Knowledge. Чем точнее написано — тем точнее ответы Claude.</p>
+    <div class="code-block">
+      <span class="comment">// Шаблон досье для Project Knowledge</span><br><br>
+      <span class="key">КТО Я:</span><br>
+      [Имя, профессия, город]<br><br>
+      <span class="key">МОЙ ПРОДУКТ / УСЛУГА:</span><br>
+      [Что именно продаёшь, как это работает, цена]<br><br>
+      <span class="key">МОЯ АУДИТОРИЯ:</span><br>
+      [Кто клиенты, их боли, почему покупают]<br><br>
+      <span class="key">МОЙ СТИЛЬ ОБЩЕНИЯ:</span><br>
+      [Тон, подача, что нельзя использовать]<br><br>
+      <span class="key">МОИ ЦЕЛИ:</span><br>
+      [Что хочу от AI, какие задачи решаю чаще всего]<br><br>
+      <span class="key">ВАЖНЫЙ КОНТЕКСТ:</span><br>
+      [Специфика ниши, термины, конкуренты, ключевые факты]
+    </div>
+    <div class="box green">
+      <div class="box-label">ВАЖНО — ЧЕМ КОНКРЕТНЕЕ, ТЕМ ЛУЧШЕ</div>
+      <ul>
+        <li>Не "продаю курсы" → "продаю 2-недельный AI-буктемп за 69 900 тенге"</li>
+        <li>Не "пишу по-дружески" → "короткие фразы, без канцелярита, иногда матный юмор"</li>
+        <li>Не "аудитория предприниматели" → "малый бизнес Казахстана, 25-45 лет, Инстаграм"</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="section" id="skills">
+    <div class="section-label">04</div>
+    <h2>Skills — обученные навыки через /команду</h2>
+    <p>Skill — это сохранённая детальная инструкция для конкретной задачи. Вызывается символом / в чате. Claude применяет точную методику без отклонений — каждый раз одинаково качественно.</p>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">📌</div>
+        <div class="step-body">
+          <h4>Что такое Skill на практике</h4>
+          <p>Не просто промпт — целая система инструкций с примерами, структурой, запрещёнными приёмами. Один раз написал правильно — пользуешься постоянно. Пример: Skill "Weavy Nano Banana" который использовали на Creator-треке пишет промпты в точном формате платформы.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">💼</div>
+        <div class="step-body">
+          <h4>Skills для бизнеса</h4>
+          <p>Скрипт ответа клиенту с зафиксированной структурой. Шаблон КП. Формат еженедельного отчёта по продажам. Тон бренда который сохраняется в каждом ответе.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">⚡</div>
+        <div class="step-body">
+          <h4>Как создать Skill</h4>
+          <p>Внутри Project → раздел Skills → New Skill. Пишешь название (то что будет командой), затем детальную инструкцию: что делать, как делать, примеры входа и выхода. Сохраняешь — Skill готов, вызывается через /название.</p>
+        </div>
+      </div>
+    </div>
+    <div class="box purple">
+      <div class="box-label">ПРИМЕР ГОТОВОГО SKILL ДЛЯ БИЗНЕСА</div>
+      <ul>
+        <li><strong>/ответ-клиенту</strong> — отвечает на входящий запрос по шаблону: приветствие → понимание боли → решение → следующий шаг</li>
+        <li><strong>/кп</strong> — генерирует коммерческое предложение с нужной структурой под заданную нишу</li>
+        <li><strong>/отчёт</strong> — форматирует данные о продажах в еженедельный дайджест</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="section" id="goals">
+    <div class="section-label">05</div>
+    <h2>Goals и Custom Instructions</h2>
+    <p>Custom Instructions — правила по умолчанию для каждого ответа в проекте. Настраиваешь один раз, работают всегда без явных указаний в каждом сообщении.</p>
+    <div class="code-block">
+      <span class="comment">// Пример Custom Instructions для бизнес-ассистента</span><br><br>
+      Роль: ты мой ассистент по продажам и маркетингу<br>
+      Тон: дружелюбный, прямой, без канцелярита<br>
+      Формат: краткий ответ + конкретный следующий шаг<br>
+      Никогда: не используй слово "синергия" и "экосистема"<br>
+      Всегда: адаптируй под казахстанский контекст<br>
+      Цель: помогать закрывать сделки быстрее
+    </div>
+    <div class="concepts">
+      <div class="concept">
+        <div class="concept-icon">🌍</div>
+        <h4>Глобальные Instructions</h4>
+        <p>Settings → Custom Instructions — работают во всех чатах вне проектов. Базовый уровень настройки.</p>
+      </div>
+      <div class="concept">
+        <div class="concept-icon">🎯</div>
+        <h4>Instructions проекта</h4>
+        <p>Внутри Project → Instructions — перекрывают глобальные. Используй для специфики конкретного проекта.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="section" id="agents">
+    <div class="section-label">06</div>
+    <h2>Помощник vs AI-агент: в чём разница</h2>
+    <p>Это терминологическая путаница которая встречается повсюду — важно понимать разницу чтобы правильно выбирать инструмент под задачу.</p>
+    <div class="compare">
+      <div class="compare-card a">
+        <div class="compare-label">ПОМОЩНИК (Custom GPT / Claude)</div>
+        <ul>
+          <li>Один шаг: вопрос — ответ</li>
+          <li>Ты задаёшь направление каждый раз</li>
+          <li>Не выполняет действий за пределами чата</li>
+          <li>Примеры: пишет тексты, генерит промпты, анализирует</li>
+          <li>Настраивается через Skills и Instructions</li>
+        </ul>
+      </div>
+      <div class="compare-card b">
+        <div class="compare-label">AI-АГЕНТ (Make.com + AI)</div>
+        <ul>
+          <li>Многошаговая автономная система</li>
+          <li>Сам решает что делать дальше</li>
+          <li>Использует инструменты, API, внешние сервисы</li>
+          <li>Пример: анализирует заявку → классифицирует → отвечает → пишет в CRM</li>
+          <li>Настраивается через Make.com, Zapier, n8n</li>
+        </ul>
+      </div>
+    </div>
+    <div class="box yellow">
+      <div class="box-label">КЛЮЧЕВОЕ ПРАВИЛО ТЕРМИНОЛОГИИ</div>
+      <ul>
+        <li>Custom GPT / Claude Skills = специализированный помощник, НЕ агент</li>
+        <li>AI-агент = автономная многошаговая система которая действует сама</li>
+        <li>Агенты живут в Make.com, Claude Projects — это помощник с памятью</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="section" id="homework">
+    <div class="homework">
+      <h3>Домашнее задание</h3>
+      <p class="homework-sub">Три задачи — каждая занимает не больше 15 минут. Сделай сегодня пока всё свежо в голове.</p>
+      <div class="hw-items">
+        <div class="hw-item">
+          <div class="hw-check"></div>
+          <div class="hw-body">
+            <h5>Создай Project с досье своего бизнеса</h5>
+            <p>Заполни шаблон досье (Кто я / Продукт / Аудитория / Стиль / Цели) → создай Project → загрузи в Project Knowledge → скриншот в чат группы.</p>
+          </div>
+        </div>
+        <div class="hw-item">
+          <div class="hw-check"></div>
+          <div class="hw-body">
+            <h5>Создай один Skill под рутинную задачу</h5>
+            <p>Возьми любое повторяющееся действие (ответ клиенту, написание поста, формат отчёта) → напиши Skill → протестируй через /команду → скриншот результата.</p>
+          </div>
+        </div>
+        <div class="hw-item">
+          <div class="hw-check"></div>
+          <div class="hw-body">
+            <h5>Протестируй разницу с Instructions и без</h5>
+            <p>Задай один и тот же вопрос в обычном чате и в чате проекта с заполненными Instructions. Зафиксируй разницу — что изменилось в ответах.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer">
+    <p>AI Bootcamp · Поток 15 · Бизнес-трек · Модуль 3 — Claude Projects, Skills, Goals<br>30 июня 2026</p>
+  </div>
+</div>
+</body>
+</html>
