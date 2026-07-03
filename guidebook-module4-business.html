@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Модуль 4 · Автоматизация в Make.com — Бизнес-трек</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0A0A0F; --bg2:#101018; --card:#13131D; --line:#232334;
+  --purple:#6B5CE7; --purple-soft:#8C7FF0; --green:#3DDC97; --amber:#FFB454;
+  --text:#E8E8F2; --muted:#9494AC; --dim:#6A6A82;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--bg);color:var(--text);font-family:'Manrope',sans-serif;line-height:1.65;font-size:16px}
+.wrap{max-width:860px;margin:0 auto;padding:0 24px 120px}
+.mono{font-family:'JetBrains Mono',monospace}
+
+/* hero */
+.hero{padding:80px 0 56px;border-bottom:1px solid var(--line)}
+.eyebrow{font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:.18em;text-transform:uppercase;color:var(--green);margin-bottom:20px}
+.hero h1{font-size:clamp(30px,5vw,46px);font-weight:800;line-height:1.15;letter-spacing:-.02em}
+.hero h1 span{color:var(--purple-soft)}
+.hero .sub{margin-top:18px;color:var(--muted);font-size:17px;max-width:640px}
+.result{margin-top:32px;background:linear-gradient(135deg,rgba(107,92,231,.14),rgba(61,220,151,.08));border:1px solid rgba(107,92,231,.35);border-radius:14px;padding:22px 26px}
+.result .label{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--green);margin-bottom:8px}
+.result p{font-size:17px;font-weight:600}
+
+/* sections */
+section{padding:56px 0 8px}
+h2{font-size:26px;font-weight:800;letter-spacing:-.01em;margin-bottom:8px;display:flex;align-items:baseline;gap:14px}
+h2 .num{font-family:'JetBrains Mono',monospace;font-size:15px;color:var(--purple-soft);font-weight:500}
+.lede{color:var(--muted);margin-bottom:28px;max-width:680px}
+h3{font-size:18px;font-weight:700;margin:32px 0 12px;color:var(--text)}
+p{margin-bottom:14px}
+p.note{color:var(--muted)}
+
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:24px 26px;margin:18px 0}
+.card h4{font-size:15px;font-weight:700;margin-bottom:10px}
+.card p{color:var(--muted);margin-bottom:8px}
+.card p:last-child{margin-bottom:0}
+
+/* steps */
+.step{display:flex;gap:18px;padding:20px 0;border-bottom:1px solid var(--line)}
+.step:last-child{border-bottom:none}
+.step .n{flex:0 0 34px;height:34px;border-radius:10px;background:rgba(107,92,231,.15);border:1px solid rgba(107,92,231,.4);color:var(--purple-soft);font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:600;display:flex;align-items:center;justify-content:center}
+.step .body{flex:1}
+.step .body b{display:block;font-size:16px;margin-bottom:4px}
+.step .body p{color:var(--muted);margin-bottom:6px;font-size:15px}
+.step .body p:last-child{margin-bottom:0}
+
+code{font-family:'JetBrains Mono',monospace;font-size:13.5px;background:rgba(107,92,231,.12);border:1px solid rgba(107,92,231,.25);border-radius:6px;padding:2px 7px;color:#C9C2FF;white-space:nowrap}
+.kbd{color:var(--green)}
+
+/* table */
+table{width:100%;border-collapse:collapse;margin:16px 0;font-size:15px}
+th{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--dim);text-align:left;padding:10px 14px;border-bottom:1px solid var(--line)}
+td{padding:12px 14px;border-bottom:1px solid var(--line);color:var(--muted);vertical-align:top}
+td:first-child{color:var(--text);font-weight:600}
+
+/* callouts */
+.callout{border-radius:14px;padding:20px 24px;margin:22px 0;border:1px solid}
+.callout .t{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.16em;text-transform:uppercase;margin-bottom:8px}
+.callout p{margin-bottom:6px;font-size:15px}
+.callout p:last-child{margin-bottom:0}
+.warn{background:rgba(255,180,84,.07);border-color:rgba(255,180,84,.3)}
+.warn .t{color:var(--amber)}
+.tip{background:rgba(61,220,151,.07);border-color:rgba(61,220,151,.3)}
+.tip .t{color:var(--green)}
+
+/* flow diagram */
+.flow{display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin:24px 0;font-family:'JetBrains Mono',monospace;font-size:13px}
+.flow .node{background:var(--card);border:1px solid var(--purple);border-radius:10px;padding:10px 16px;color:var(--text)}
+.flow .node.g{border-color:var(--green)}
+.flow .arr{color:var(--dim)}
+
+ul.plain{list-style:none;margin:12px 0}
+ul.plain li{padding:8px 0 8px 26px;position:relative;color:var(--muted)}
+ul.plain li::before{content:"→";position:absolute;left:0;color:var(--green);font-family:'JetBrains Mono',monospace}
+ul.plain li b{color:var(--text)}
+
+/* homework */
+.hw{background:linear-gradient(135deg,rgba(61,220,151,.1),rgba(107,92,231,.08));border:1px solid rgba(61,220,151,.35);border-radius:16px;padding:28px 30px;margin-top:48px}
+.hw h2{margin-bottom:16px}
+.hw ol{margin:0 0 0 22px}
+.hw li{margin-bottom:10px;color:var(--text)}
+.hw li span{color:var(--muted)}
+
+footer{margin-top:64px;padding-top:28px;border-top:1px solid var(--line);color:var(--dim);font-size:13px;font-family:'JetBrains Mono',monospace;display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px}
+@media(max-width:600px){.hero{padding:56px 0 40px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<div class="hero">
+  <div class="eyebrow">AI Bootcamp · Бизнес-трек · Модуль 4 · 02.07.2026</div>
+  <h1>Автоматизация в Make.com:<br>Telegram → Airtable → <span>OpenAI</span></h1>
+  <p class="sub">Заключительный теоретический модуль. Собираем рабочую связку: Telegram-бот принимает сообщения, Make их разбирает, Airtable сохраняет как CRM-базу, а ChatGPT отвечает клиентам за вас.</p>
+  <div class="result">
+    <div class="label">Результат занятия</div>
+    <p>Собственный Telegram-бот, подключённый к Make, который записывает каждое входящее сообщение в базу Airtable: имя, username, chat ID и текст.</p>
+  </div>
+</div>
+
+<section>
+  <h2><span class="num">01</span>Что такое Make и зачем он нужен</h2>
+  <p class="lede">Make — не нейросеть. Это агрегатор-«курьер»: получает информацию из любого источника, упаковывает её и передаёт дальше по сценарию.</p>
+  <div class="flow">
+    <div class="node">Триггер / Webhook</div><span class="arr">→</span>
+    <div class="node">Router</div><span class="arr">→</span>
+    <div class="node">Telegram Bot</div><span class="arr">→</span>
+    <div class="node g">Airtable</div><span class="arr">→</span>
+    <div class="node g">OpenAI</div>
+  </div>
+  <ul class="plain">
+    <li><b>Нодовая система.</b> Сценарий состоит из блоков (модулей), соединённых логикой. Между блоками ходят <b>пакеты данных</b> — сообщение плюс все его метаданные: кто написал, ID, время, откуда.</li>
+    <li><b>Webhook</b> — самый частый инструмент. Уникальный URL, на который «прилетает» любое настроенное событие: заявка с сайта, сообщение в боте, обновление таблицы. Событие пришло — сценарий запустился.</li>
+    <li><b>Router</b> — развилка для продвинутых. Определяет, куда передать данные: если человек идёт по кнопкам — дальше по сценарию, если пишет свободный вопрос — в блок OpenAI, где ChatGPT отвечает по вашей инструкции.</li>
+    <li><b>Google Sheets vs Airtable.</b> Для одной простой таблицы хватит Google Sheets. Если таблиц несколько и они должны обмениваться данными — берём Airtable: это «Excel на стероидах» со связанными базами.</li>
+  </ul>
+</section>
+
+<section>
+  <h2><span class="num">02</span>Шаг 1 — создаём Telegram-бота</h2>
+  <p class="lede">Бот — входная точка всей системы. Создаётся за две минуты через BotFather.</p>
+  <div class="step"><div class="n">1</div><div class="body"><b>Находим BotFather</b><p>В поиске Telegram пишем <code>BotFather</code> — официальный бот с галочкой.</p></div></div>
+  <div class="step"><div class="n">2</div><div class="body"><b>Команда /newbot</b><p>Жмём <code>/</code>, выбираем <code class="kbd">/newbot</code>. Сначала бот просит имя (любое, например «Лизинг-бот»), затем username латиницей — он обязан заканчиваться на <code>bot</code>. Если имя занято, добавьте цифры перед словом bot: <code>lizing123bot</code>.</p></div></div>
+  <div class="step"><div class="n">3</div><div class="body"><b>Копируем API-токен</b><p>BotFather выдаст сообщение с <code>HTTP API token</code>. Это «ДНК» бота — его уникальный ключ. Он понадобится везде, где вы будете подключать бота. Один клик по токену — он скопирован.</p></div></div>
+  <div class="callout tip"><div class="t">Лайфхак</div><p>Не понимаете, что бот или сервис от вас хочет? Скриншот → в Gemini. Он переведёт и объяснит следующий шаг.</p></div>
+</section>
+
+<section>
+  <h2><span class="num">03</span>Шаг 2 — подключаем бота к Make</h2>
+  <div class="step"><div class="n">1</div><div class="body"><b>Новый сценарий</b><p>В Make создаём сценарий, первый модуль — <b>Telegram Bot → Watch Updates</b> (в русском интерфейсе «Смотреть обновления»).</p></div></div>
+  <div class="step"><div class="n">2</div><div class="body"><b>Создаём webhook</b><p>Add hook → название (например, <code>test1</code>) → Create connection → вставляем скопированный токен от BotFather → Save.</p></div></div>
+  <div class="step"><div class="n">3</div><div class="body"><b>Тестируем через Run Once</b><p>Жмём <code class="kbd">Run once</code> слева внизу — модуль переходит в режим ожидания (крутится — это нормально). Пишем боту любое сообщение в Telegram. В модуле появляется цифра входящего пакета — значит, данные пришли: ID, имя, username, текст.</p></div></div>
+  <div class="callout warn"><div class="t">Частая ошибка</div><p>Ничего не приходит? Проверьте: (1) нажат ли Save в настройках модуля, (2) запущен ли Run Once <em>до</em> отправки сообщения, (3) тот ли бот открыт в Telegram. Run Once подтягивает и «застрявшие» старые сообщения — не пугайтесь старых дат.</p></div>
+</section>
+
+<section>
+  <h2><span class="num">04</span>Шаг 3 — база в Airtable</h2>
+  <p class="lede">Airtable станет вашей CRM: каждая колонка — это отдельное «поле» со своим типом данных, а не просто ячейка Excel.</p>
+  <h3>Создаём токен доступа</h3>
+  <div class="step"><div class="n">1</div><div class="body"><b>Builder Hub → Create token</b><p>В Airtable: настройки → Builder Hub (раздел для разработчиков) → <code>Create token</code>. Название — любое, например имя компании.</p></div></div>
+  <div class="step"><div class="n">2</div><div class="body"><b>Выдаём права (scopes)</b><p>Обязательно три: <code>data.records:read</code>, <code>data.records:write</code>, <code>schema.bases:read</code>. Затем в разделе Access выбираем доступ к воркспейсу. Копируем токен.</p></div></div>
+  <h3>Создаём воркспейс и таблицу</h3>
+  <div class="step"><div class="n">1</div><div class="body"><b>Workspace → Create → Build an app on your own</b><p>Выбираем пустой лист (Start from scratch), а не готовые шаблоны.</p></div></div>
+  <div class="step"><div class="n">2</div><div class="body"><b>Удаляем стандартные поля</b><p>Клик по колонке → <code>Delete field</code>. Важно удалять именно поле целиком, а не очищать данные — каждая колонка в Airtable это отдельная программа со своим типом.</p></div></div>
+  <div class="step"><div class="n">3</div><div class="body"><b>Создаём четыре поля</b><p>Плюсик → выбираем тип для каждого:</p>
+  <table>
+    <tr><th>Поле</th><th>Тип</th><th>Что хранит</th></tr>
+    <tr><td>Name</td><td>Single line text</td><td>Имя пользователя из Telegram</td></tr>
+    <tr><td>Username</td><td>Single line text</td><td>@юзернейм</td></tr>
+    <tr><td>Chat ID</td><td>Single line text</td><td>ID чата — чтобы потом отправлять ответы этому человеку</td></tr>
+    <tr><td>Message</td><td>Long text</td><td>Текст сообщения (может быть в несколько абзацев)</td></tr>
+  </table>
+  <p>Набор полей — ваш выбор: сюда же можно собирать email и телефон, как в data collect из ManyChat.</p></div></div>
+</section>
+
+<section>
+  <h2><span class="num">05</span>Шаг 4 — связываем Telegram и Airtable</h2>
+  <div class="step"><div class="n">1</div><div class="body"><b>Добавляем модуль Airtable → Create a Record</b><p>Плюсик после Telegram-модуля → Airtable → <b>Create a Record</b> («Создать запись»). Именно Create, не Get и не Search — мы <em>заносим</em> новые данные.</p></div></div>
+  <div class="step"><div class="n">2</div><div class="body"><b>Подключаем аккаунт</b><p>Create connection → вставляем токен Airtable. Затем выбираем Base и Table, которые только что создали.</p></div></div>
+  <div class="step"><div class="n">3</div><div class="body"><b>Маппим переменные</b><p>Кликаем в пустое поле каждой колонки — открывается панель переменных из Telegram. Ключевой момент всей связки: <b>какие данные в какую колонку заходят.</b></p>
+  <ul class="plain">
+    <li><b>Name</b> ← Message → From → First Name</li>
+    <li><b>Username</b> ← Message → From → Username</li>
+    <li><b>Chat ID</b> ← Message → Chat → ID <span style="color:var(--amber)">(не Message ID!)</span></li>
+    <li><b>Message</b> ← Message → Text</li>
+  </ul></div></div>
+  <div class="step"><div class="n">4</div><div class="body"><b>Финальный тест</b><p>Save → Run Once → пишем боту сообщение → открываем Airtable. Новая строка с четырьмя заполненными полями появилась — автоматизация работает. Чтобы она крутилась без вас, включаем тумблер сценария (Scheduling ON).</p></div></div>
+  <div class="callout warn"><div class="t">Разбор ошибок с занятия</div>
+    <p><b>Перепутан модуль:</b> Search Records ищет существующие записи, Get Record тянет одну по ID. Для записи входящих нужен только Create a Record.</p>
+    <p><b>Chat ID vs Message ID:</b> Message ID — номер сообщения, Chat ID — адрес человека. Для будущих ответов нужен именно Chat ID.</p>
+    <p><b>Запись не появляется:</b> обновите таблицу и проверьте в Make историю выполнения — если пакет прошёл, данные точно в базе.</p>
+  </div>
+</section>
+
+<section>
+  <h2><span class="num">06</span>Что дальше: блок OpenAI</h2>
+  <p class="lede">Следующий уровень — бот отвечает сам, даже когда вас нет: Telegram → Airtable → OpenAI → ответ в Telegram. Разбираем на дополнительном занятии.</p>
+  <div class="card">
+    <h4>Подготовка к вторнику</h4>
+    <p>Для блока OpenAI нужен <b>API-ключ</b> — он покупается отдельно от подписки ChatGPT Plus: <span class="mono" style="color:var(--purple-soft)">platform.openai.com → Billing</span>, минимальное пополнение $5.</p>
+    <p>В блоке OpenAI мы пропишем инструкцию (как в Custom GPT) — скрипт вашей компании, по которому ChatGPT будет отвечать клиентам в боте.</p>
+  </div>
+</section>
+
+<div class="hw">
+  <h2>Домашнее задание</h2>
+  <ol>
+    <li>Создать своего Telegram-бота через BotFather и сохранить API-токен.</li>
+    <li>Зарегистрироваться в Make и Airtable (оба работают через браузер).</li>
+    <li>Собрать связку Telegram Bot → Airtable по пошаговому видео <span>(придёт в группу)</span> — база из четырёх полей должна наполняться из бота.</li>
+    <li>Пополнить баланс OpenAI API на $5 <span>(platform.openai.com → Billing) — понадобится во вторник.</span></li>
+    <li>Вопросы и скриншоты — в Telegram-группу в любое время.</li>
+  </ol>
+</div>
+
+<footer>
+  <span>AI BOOTCAMP · АНУАР НУРПЕИСОВ</span>
+  <span>БИЗНЕС-ТРЕК · МОДУЛЬ 4</span>
+</footer>
+
+</div>
+</body>
+</html>
