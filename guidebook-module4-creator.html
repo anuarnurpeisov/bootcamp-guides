@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Модуль 4 · Звук, аватары и монетизация — Креатор-трек</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#050423; --bg2:#0B0A2E; --card:#100F38; --line:#242254;
+  --purple:#6B5CE7; --purple-soft:#8C7FF0; --green:#3DDC97; --amber:#FFB454;
+  --text:#EAE9F6; --muted:#9A98BC; --dim:#6D6B92;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--bg);color:var(--text);font-family:'Manrope',sans-serif;line-height:1.65;font-size:16px}
+.wrap{max-width:860px;margin:0 auto;padding:0 24px 120px}
+.mono{font-family:'JetBrains Mono',monospace}
+
+.hero{padding:80px 0 56px;border-bottom:1px solid var(--line)}
+.eyebrow{font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:.18em;text-transform:uppercase;color:var(--green);margin-bottom:20px}
+.hero h1{font-size:clamp(30px,5vw,46px);font-weight:800;line-height:1.15;letter-spacing:-.02em}
+.hero h1 span{color:var(--purple-soft)}
+.hero .sub{margin-top:18px;color:var(--muted);font-size:17px;max-width:660px}
+.result{margin-top:32px;background:linear-gradient(135deg,rgba(107,92,231,.16),rgba(61,220,151,.08));border:1px solid rgba(107,92,231,.4);border-radius:14px;padding:22px 26px}
+.result .label{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--green);margin-bottom:8px}
+.result p{font-size:17px;font-weight:600}
+
+section{padding:56px 0 8px}
+h2{font-size:26px;font-weight:800;letter-spacing:-.01em;margin-bottom:8px;display:flex;align-items:baseline;gap:14px}
+h2 .num{font-family:'JetBrains Mono',monospace;font-size:15px;color:var(--purple-soft);font-weight:500}
+.lede{color:var(--muted);margin-bottom:28px;max-width:680px}
+h3{font-size:18px;font-weight:700;margin:32px 0 12px}
+p{margin-bottom:14px}
+
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:24px 26px;margin:18px 0}
+.card h4{font-size:15px;font-weight:700;margin-bottom:10px;color:var(--text)}
+.card p{color:var(--muted);margin-bottom:8px;font-size:15px}
+.card p:last-child{margin-bottom:0}
+
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media(max-width:640px){.grid2{grid-template-columns:1fr}}
+
+code{font-family:'JetBrains Mono',monospace;font-size:13.5px;background:rgba(107,92,231,.14);border:1px solid rgba(107,92,231,.3);border-radius:6px;padding:2px 7px;color:#C9C2FF;white-space:nowrap}
+
+table{width:100%;border-collapse:collapse;margin:16px 0;font-size:15px}
+th{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--dim);text-align:left;padding:10px 14px;border-bottom:1px solid var(--line)}
+td{padding:12px 14px;border-bottom:1px solid var(--line);color:var(--muted);vertical-align:top}
+td:first-child{color:var(--text);font-weight:600;white-space:nowrap}
+
+.callout{border-radius:14px;padding:20px 24px;margin:22px 0;border:1px solid}
+.callout .t{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.16em;text-transform:uppercase;margin-bottom:8px}
+.callout p{margin-bottom:6px;font-size:15px}
+.callout p:last-child{margin-bottom:0}
+.warn{background:rgba(255,180,84,.08);border-color:rgba(255,180,84,.32)}
+.warn .t{color:var(--amber)}
+.tip{background:rgba(61,220,151,.08);border-color:rgba(61,220,151,.32)}
+.tip .t{color:var(--green)}
+
+ul.plain{list-style:none;margin:12px 0}
+ul.plain li{padding:8px 0 8px 26px;position:relative;color:var(--muted)}
+ul.plain li::before{content:"→";position:absolute;left:0;color:var(--green);font-family:'JetBrains Mono',monospace}
+ul.plain li b{color:var(--text)}
+
+.step{display:flex;gap:18px;padding:18px 0;border-bottom:1px solid var(--line)}
+.step:last-child{border-bottom:none}
+.step .n{flex:0 0 34px;height:34px;border-radius:10px;background:rgba(107,92,231,.18);border:1px solid rgba(107,92,231,.45);color:var(--purple-soft);font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:600;display:flex;align-items:center;justify-content:center}
+.step .body{flex:1}
+.step .body b{display:block;font-size:16px;margin-bottom:4px}
+.step .body p{color:var(--muted);margin-bottom:6px;font-size:15px}
+.step .body p:last-child{margin-bottom:0}
+
+.price{display:flex;flex-wrap:wrap;gap:14px;margin:20px 0}
+.price .chip{flex:1;min-width:180px;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px}
+.price .chip .v{font-family:'JetBrains Mono',monospace;font-size:22px;font-weight:600;color:var(--green)}
+.price .chip .l{color:var(--muted);font-size:14px;margin-top:6px}
+
+.hw{background:linear-gradient(135deg,rgba(61,220,151,.12),rgba(107,92,231,.1));border:1px solid rgba(61,220,151,.38);border-radius:16px;padding:28px 30px;margin-top:48px}
+.hw h2{margin-bottom:16px}
+.hw ol{margin:0 0 0 22px}
+.hw li{margin-bottom:10px}
+.hw li span{color:var(--muted)}
+
+footer{margin-top:64px;padding-top:28px;border-top:1px solid var(--line);color:var(--dim);font-size:13px;font-family:'JetBrains Mono',monospace;display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px}
+@media(max-width:600px){.hero{padding:56px 0 40px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<div class="hero">
+  <div class="eyebrow">AI Bootcamp · Креатор-трек · Модуль 4 · 02.07.2026</div>
+  <h1>Звук, цифровые аватары<br>и <span>монетизация контента</span></h1>
+  <p class="sub">Завершающий модуль творческой программы: генерация музыки в Suno, голоса и очистка звука в ElevenLabs, говорящий аватар в HeyGen, свои GPT-ассистенты — и рабочие способы на этом зарабатывать.</p>
+  <div class="result">
+    <div class="label">Результат занятия</div>
+    <p>Вы умеете озвучить любой проект: саундтрек, голос диктора, клон собственного голоса и цифровой аватар, который говорит за вас в кадре.</p>
+  </div>
+</div>
+
+<section>
+  <h2><span class="num">01</span>Suno — генерация музыки</h2>
+  <p class="lede">Топовая нейросеть в музыкальном жанре: suno.com. Бесплатно — 50 кредитов в день, каждая генерация (10 кредитов) выдаёт два варианта трека.</p>
+  <h3>Три режима работы</h3>
+  <table>
+    <tr><th>Режим</th><th>Что делает</th></tr>
+    <tr><td>Simple</td><td>Инструментальная музыка без текста — саундтреки, фоны. Только описание (Song Description).</td></tr>
+    <tr><td>Advanced</td><td>Песни с текстом: появляются окна Lyrics и Styles. Включается автоматически при нажатии Lyrics.</td></tr>
+    <tr><td>Sounds</td><td>Отдельные звуки: природа, животные, техника. Доступен на подписке Pro.</td></tr>
+  </table>
+  <h3>Как писать треки</h3>
+  <div class="step"><div class="n">1</div><div class="body"><b>Промт через GPT-помощник</b><p>Не пишите описание вручную — используйте Custom GPT «Suno Prompt Maker»: он знает ограничения Suno и выдаёт готовый промт с жанром, BPM и инструментами, плюс альтернативные варианты. Правило прежнее: чем детальнее промт, тем лучше результат.</p></div></div>
+  <div class="step"><div class="n">2</div><div class="body"><b>Разметка текста песни</b><p>Структура: куплет — припев — куплет — припев. Все командные слова — на английском и <b>в квадратных скобках</b>, иначе нейросеть их споёт: <code>[Verse 1]</code>, <code>[Chorus]</code>, <code>[Verse 2]</code>. Скобки — международный «айтишный» язык: всё внутри них — команда, а не текст.</p></div></div>
+  <div class="step"><div class="n">3</div><div class="body"><b>Настройки в More Options</b><p><b>Weirdness</b> — степень импровизации исполнителя: к 100 — джазовая непредсказуемость, к 0 — безопасная предсказуемость. Старт — 50. <b>Style Influence</b> — насколько жёстко трек следует прописанному стилю: ближе к 100 — строго по промту, ближе к 0 — больше манёвра. Плюс выбор мужского/женского голоса.</p></div></div>
+  <div class="callout tip"><div class="t">Своя персона</div><p>Понравился голос из удачной генерации — сохраните его (Voice/Persona) и используйте во всех следующих треках. Так у вашего «AI-артиста» появляется консистентность, как у настоящего исполнителя. Можно и записать свой вокал (~30 секунд) и генерировать треки своим голосом.</p></div>
+  <p class="mono" style="color:var(--dim);font-size:13px">Studio — для профессионалов: разделение трека на дорожки (вокал/инструментал), минусовки. Explore — внутреннее комьюнити для вдохновения.</p>
+</section>
+
+<section>
+  <h2><span class="num">02</span>ElevenLabs — голоса и работа со звуком</h2>
+  <p class="lede">Платформа №1 для генерации речи: text-to-speech, клонирование голоса, очистка записи и транскрибация. Есть бесплатный тариф — обязательно пощупайте всё.</p>
+  <h3>Ключевые функции</h3>
+  <table>
+    <tr><th>Функция</th><th>Что делает</th></tr>
+    <tr><td>Voices</td><td>Библиотека готовых голосов на 70 языках. Две модели: v2 и v3. Берите <b>v3</b> — чётче актёрская подача, поддержка эмоций.</td></tr>
+    <tr><td>Voice Design</td><td>Создание голоса из текстового промта (пишем его в ChatGPT: «русскоязычный мужчина 50 лет, баритон, картавит»). Генерируются два варианта на выбор.</td></tr>
+    <tr><td>Instant Voice Clone</td><td>Клон вашего голоса из аудио от 10 секунд. Критично: запись должна быть чистой — любой шум станет частью «тембра».</td></tr>
+    <tr><td>Voice Changer</td><td>Замена голоса в записи с сохранением интонации: записали реплику собой — переозвучили голосом героя. Рабочая схема для озвучки нескольких персонажей одним актёром.</td></tr>
+    <tr><td>Voice Isolator</td><td>Очистка шумной записи — «возвращает жизнь» плохому звуку. Осторожно: если запись почти чистая, инструмент начинает пережимать сам голос.</td></tr>
+    <tr><td>Speech to Text</td><td>Транскрибация аудио/видео до 1000 МБ или по ссылке на YouTube. Часовые записи — без проблем. Текст экспортируется в документ.</td></tr>
+    <tr><td>Sound Effects</td><td>Генерация звуковых эффектов. Если ничего не выходит ни тут, ни в Suno — готовая бесплатная библиотека: <b>pixabay.com → Sound Effects</b>.</td></tr>
+  </table>
+  <h3>Эмоции в модели v3</h3>
+  <p>В текст вставляются команды в квадратных скобках, на английском: <code>[whispering]</code>, <code>[laughing]</code>, <code>[sighs]</code>, <code>[angry]</code>. Полный список доступных эмоций можно спросить у ChatGPT. Работает не всегда со всеми командами — тестируйте.</p>
+  <div class="callout tip"><div class="t">Практика</div><p>Транскрибированные записи (интервью, лекции, свои голосовые) загружайте в NotebookLM как базу знаний — и обращайтесь к ним вопросами.</p></div>
+</section>
+
+<section>
+  <h2><span class="num">03</span>HeyGen — цифровой аватар</h2>
+  <p class="lede">Самая продвинутая платформа для «говорящих голов»: аватар ведёт блог за вас, вы тратите на съёмку ноль минут. Год назад это выглядело кринжово — сейчас стало нормой: людям важно содержание, а не способ съёмки.</p>
+  <div class="step"><div class="n">1</div><div class="body"><b>Создаём аватара</b><p>Manage Avatars → New Avatar. Два пути: <b>клон реального человека</b> (записываете ~2 минуты видео по суфлёру — система считывает внешность и голос) или <b>виртуальный персонаж</b> из фото либо промта.</p></div></div>
+  <div class="step"><div class="n">2</div><div class="body"><b>Меняем образы</b><p>У одного аватара — разные луки: костюмы, локации, стили. Задаются промтом («make person as a teacher in school») или выбираются из готовых. Нужны, чтобы кадры не повторялись из ролика в ролик.</p></div></div>
+  <div class="step"><div class="n">3</div><div class="body"><b>Генерируем ролик</b><p>Create Video → выбираем аватара → пишем скрипт → выбираем модель (последняя, Avatar V, лучше всего держит физику персонажа) → подключаем голос, в том числе клон из ElevenLabs → Generate.</p></div></div>
+  <div class="callout warn"><div class="t">Нюансы с занятия</div>
+    <p><b>Зубы.</b> Если исходное фото с закрытым ртом — модель дорисует «идеальные» зубы, и прикус не совпадёт. Фотографируйтесь с лёгкой улыбкой.</p>
+    <p><b>Голос клона</b> похож лишь отчасти — интонации могут подводить. Для важных роликов озвучивайте через ElevenLabs.</p>
+    <p><b>Бесплатный тариф</b> позволяет генерировать на третьей модели — достаточно, чтобы попробовать и «поставить галочку».</p>
+  </div>
+  <p>Дополнительно внутри: перевод любого видео на 125 языков, плагины улучшения качества и замены лица, Brand System — аватар в вашей фирменной айдентике.</p>
+</section>
+
+<section>
+  <h2><span class="num">04</span>Свои AI-ассистенты: Custom GPT и Gems</h2>
+  <p class="lede">Ассистент — преднастроенный чат, который знает свою задачу. Раскадровщик, генератор промтов, «Характер-шит» — всё это собирается за 10 минут.</p>
+  <div class="step"><div class="n">1</div><div class="body"><b>Инструкцию пишет Gemini</b><p>Идём в Gemini и жалуемся на рутину: «напиши инструкцию для GPT, который …». Gemini знает «общее» — он выдаст алгоритм и готовую инструкцию.</p></div></div>
+  <div class="step"><div class="n">2</div><div class="body"><b>Собираем GPT</b><p>ChatGPT (нужна подписка Plus) → Explore GPTs → Create → Configure: название + вставляем инструкцию. Для простых задач этого достаточно. Для сложных — добавляем Knowledge: файлы-методички, референсы стиля, гайдбуки, на которые GPT будет опираться.</p></div></div>
+  <div class="step"><div class="n">3</div><div class="body"><b>Доступ</b><p>Только мне / по ссылке / публичный в GPT Store. Обучать людей своим GPT — тоже способ заработка.</p></div></div>
+  <div class="callout tip"><div class="t">Бесплатная альтернатива</div><p>В Gemini тот же принцип один в один — <b>Gems</b>: создать Gem → название → та же инструкция. Работает на базовой подписке Google.</p></div>
+  <h3>Стратегия «Gemini → Claude → Gemini»</h3>
+  <ul class="plain">
+    <li><b>Gemini</b> — вход: жалуетесь на проблему, получаете общее решение и план.</li>
+    <li><b>Claude</b> — уникализация: он знает ваш контекст (Projects, файлы) и подстраивает решение под вас.</li>
+    <li><b>Gemini</b> — проверка: закидываете уникальную идею обратно и просите проверить на слабые места и применимость к реальному рынку.</li>
+  </ul>
+</section>
+
+<section>
+  <h2><span class="num">05</span>Монетизация: где брать деньги уже сейчас</h2>
+  <p class="lede">Вы вошли в очень небольшой круг людей, которые понимают, как это делается. 99% вашего окружения этого не умеет — и об этом нужно говорить вслух.</p>
+  <h3>1. Реклама для малого и среднего бизнеса</h3>
+  <p>В кризис бизнес ищет дешёвые альтернативы продакшену. Рабочий диапазон за качественный ролик со сценарием и проработкой:</p>
+  <div class="price">
+    <div class="chip"><div class="v">~100 000 ₸</div><div class="l">Сценарий и продумывание</div></div>
+    <div class="chip"><div class="v">~100 000 ₸</div><div class="l">Генерация</div></div>
+    <div class="chip"><div class="v">~100 000 ₸</div><div class="l">Финальная сборка</div></div>
+  </div>
+  <p class="mono" style="color:var(--dim);font-size:13px">Итого ~300 000 ₸ за ролик. Можно дробить по 50 000 за итерацию — тогда 150–300 тысяч.</p>
+  <h3>2. Набить руку — контент для мероприятий</h3>
+  <p>Свадьбы, юбилеи, корпоративы: нет строгого ценза по качеству, а клиенты — друзья и знакомые. Идея: видео-приглашение на свадьбу, где гостей «зовёт» известная личность.</p>
+  <h3>3. Где искать клиентов</h3>
+  <ul class="plain">
+    <li><b>OLX и Kaspi Объявления</b> — смотрите, что предлагают другие AI-креаторы: это карта ходовых задач и ценовой политики рынка.</li>
+    <li><b>Family & Friends</b> — заявите близким, что умеете делать видео и фото. Инстаграм, общие чаты, «приколдесы» с друзьями — так создаётся информационная волна вокруг вас.</li>
+    <li><b>Вирусный контент</b> — главная стратегия. Делается по принципам книги «Заразительный» (Йона Бергер): загрузите её в NotebookLM и просите переделывать ваши сценарии под её рекомендации.</li>
+    <li><b>Биржи</b> — Fiverr, Upwork, Envato; русскоязычные Kwork и freelance.ru. Конкуренция высокая, продукт должен быть уникальным — но знать точки сбыта нужно.</li>
+  </ul>
+  <h3>4. Образование и внедрение</h3>
+  <p>Как было с появлением Instagram: выросла целая индустрия «научу пользоваться». То же самое происходит с AI — обучение и консультации по внедрению искусственного интеллекта в бизнес станут одним из самых денежных направлений. Автоматизация + AI в бизнес-процессах — самая перспективная связка.</p>
+  <div class="callout tip"><div class="t">Главный принцип</div><p>Всё, что вы генерируете, — это продукт вашего промтинга. Искусство — писать правильные промты на правильных площадках. Первый маленький успешный заказ запускает все остальные процессы.</p></div>
+</section>
+
+<div class="hw">
+  <h2>Домашнее задание</h2>
+  <ol>
+    <li>Создать своего клона (или виртуального персонажа) в HeyGen.</li>
+    <li>Написать короткий текст и сгенерировать хотя бы один ролик с аватаром. <span>Этого достаточно, чтобы поставить галочку — вернуться можно в любой момент.</span></li>
+    <li>Попробовать бесплатные функции Suno и ElevenLabs: трек, голос, очистка звука. <span>Даже если сейчас не нужно — нейронная связь останется, и вы будете знать, куда идти.</span></li>
+    <li>Вопросы, результаты и скриншоты — в Telegram-группу. <span>Теоретическая часть закончилась, работа — нет.</span></li>
+  </ol>
+</div>
+
+<footer>
+  <span>AI BOOTCAMP · АНУАР НУРПЕИСОВ</span>
+  <span>КРЕАТОР-ТРЕК · МОДУЛЬ 4</span>
+</footer>
+
+</div>
+</body>
+</html>
