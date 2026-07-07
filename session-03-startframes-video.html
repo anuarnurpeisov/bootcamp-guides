@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Сессия 03 — Старт-фреймы, видео и кастомные скиллы</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#070a0f;
+  --s1:#0d1117;
+  --s2:#141920;
+  --s3:#1a2028;
+  --border:#1e2530;
+  --border2:#28303d;
+  --text:#dce1e9;
+  --dim:#8a95a5;
+  --faint:#3d4755;
+  --gold:#e6b84a;
+  --gd:#e6b84a22;
+  --teal:#42c99a;
+  --td:#42c99a20;
+  --blue:#5b9cf6;
+  --bd:#5b9cf620;
+  --purple:#b07ef8;
+  --pd:#b07ef820;
+  --red:#f06060;
+  --rd:#f0606020;
+  --orange:#f59042;
+  --od:#f5904220;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{
+  background:var(--bg);
+  color:var(--text);
+  font-family:'Inter',sans-serif;
+  font-size:15.5px;
+  line-height:1.65;
+}
+body::before{
+  content:"";position:fixed;inset:0;
+  background-image:radial-gradient(circle at 1px 1px,#ffffff06 1px,transparent 0);
+  background-size:24px 24px;pointer-events:none;z-index:0;
+}
+nav{
+  position:fixed;top:0;left:0;width:216px;height:100vh;
+  background:var(--s1);border-right:1px solid var(--border);
+  padding:26px 0;overflow-y:auto;z-index:10;
+}
+.nav-logo{padding:0 18px 20px;border-bottom:1px solid var(--border);margin-bottom:14px;}
+.nav-logo .s{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--gold);letter-spacing:.1em;text-transform:uppercase;display:block;margin-bottom:3px;}
+.nav-logo .t{font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:13px;color:var(--text);line-height:1.3;}
+nav a{
+  display:flex;align-items:center;gap:9px;padding:8px 18px;
+  color:var(--dim);font-size:12.5px;
+  border-left:2px solid transparent;transition:all .15s;
+}
+nav a:hover{color:var(--text);background:var(--s2);}
+nav a.active{color:var(--gold);border-left-color:var(--gold);}
+.dot{width:4px;height:4px;border-radius:50%;background:currentColor;opacity:.5;flex:0 0 4px;}
+
+main{margin-left:216px;max-width:880px;padding:56px 48px 120px;position:relative;z-index:1;}
+
+/* HERO */
+.hero{padding-bottom:40px;border-bottom:1px solid var(--border);margin-bottom:52px;}
+.eye{
+  font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--gold);
+  letter-spacing:.12em;text-transform:uppercase;
+  display:flex;align-items:center;gap:8px;margin-bottom:14px;
+}
+.eye::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--gold);box-shadow:0 0 8px var(--gold);}
+.hero h1{font-family:'Space Grotesk',sans-serif;font-size:36px;font-weight:700;line-height:1.15;letter-spacing:-.02em;max-width:640px;margin-bottom:14px;}
+.hero p{color:var(--dim);max-width:560px;font-size:15px;}
+.chips{display:flex;gap:8px;flex-wrap:wrap;margin-top:22px;}
+.chip{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--dim);border:1px solid var(--border2);padding:4px 10px;border-radius:4px;}
+
+/* SECTIONS */
+section{margin-bottom:60px;}
+.sh{display:flex;align-items:center;gap:12px;margin-bottom:18px;}
+.tag{font-family:'JetBrains Mono',monospace;font-size:10.5px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;padding:3px 8px;border-radius:4px;white-space:nowrap;}
+.tag.gold{background:var(--gd);color:var(--gold);}
+.tag.teal{background:var(--td);color:var(--teal);}
+.tag.blue{background:var(--bd);color:var(--blue);}
+.tag.purple{background:var(--pd);color:var(--purple);}
+.tag.orange{background:var(--od);color:var(--orange);}
+.tag.red{background:var(--rd);color:var(--red);}
+h2{font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:21px;letter-spacing:-.01em;}
+.intro{color:var(--dim);margin-bottom:20px;max-width:640px;font-size:14.5px;}
+
+/* CARDS */
+.card{background:var(--s1);border:1px solid var(--border);border-radius:10px;padding:17px 19px;margin-bottom:10px;}
+.card h3{font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:14.5px;margin-bottom:6px;}
+.card p{font-size:14px;color:var(--dim);}
+.badge{display:inline-block;font-family:'JetBrains Mono',monospace;font-size:10.5px;padding:2px 7px;border-radius:4px;margin-bottom:7px;}
+.badge.gold{background:var(--gd);color:var(--gold);}
+.badge.teal{background:var(--td);color:var(--teal);}
+.badge.blue{background:var(--bd);color:var(--blue);}
+.badge.purple{background:var(--pd);color:var(--purple);}
+.badge.orange{background:var(--od);color:var(--orange);}
+.badge.red{background:var(--rd);color:var(--red);}
+
+/* STEPS */
+ol.steps{counter-reset:s;list-style:none;padding-left:14px;border-left:1px solid var(--border);}
+ol.steps li{counter-increment:s;position:relative;padding:0 0 18px 26px;font-size:14.5px;color:var(--dim);}
+ol.steps li:last-child{padding-bottom:0;}
+ol.steps li::before{
+  content:counter(s);position:absolute;left:-14px;top:1px;
+  width:26px;height:26px;border-radius:50%;
+  background:var(--s2);border:1px solid var(--gold);
+  color:var(--gold);font-family:'JetBrains Mono',monospace;
+  font-size:11px;font-weight:600;
+  display:flex;align-items:center;justify-content:center;
+}
+ol.steps li strong{color:var(--text);}
+code{background:var(--s2);border:1px solid var(--border2);padding:1px 6px;border-radius:4px;color:var(--teal);font-family:'JetBrains Mono',monospace;font-size:12.5px;}
+
+/* GRID */
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;}
+
+/* PAIR FIX */
+.pair{border-left:2px solid var(--border2);padding-left:16px;margin-bottom:20px;}
+.pair .err,.pair .fix{border-radius:8px;padding:12px 16px;font-size:14px;margin-bottom:8px;}
+.pair .err{background:var(--rd);border:1px solid #f0606030;}
+.pair .fix{background:var(--td);border:1px solid #42c99a30;}
+.k{font-family:'JetBrains Mono',monospace;font-size:10.5px;text-transform:uppercase;letter-spacing:.08em;display:block;margin-bottom:4px;}
+.err .k{color:var(--red);}
+.fix .k{color:var(--teal);}
+
+/* QUOTE */
+blockquote{padding:13px 17px;border-left:2px solid var(--gold);background:var(--s1);color:var(--dim);font-size:14.5px;font-style:italic;margin:16px 0;border-radius:0 8px 8px 0;}
+
+/* TIMELINE */
+.timeline{display:flex;gap:0;margin-bottom:18px;overflow-x:auto;padding-bottom:4px;}
+.tl-step{
+  flex:1;min-width:110px;
+  background:var(--s1);border:1px solid var(--border);
+  padding:14px 12px;text-align:center;position:relative;
+}
+.tl-step:first-child{border-radius:10px 0 0 10px;}
+.tl-step:last-child{border-radius:0 10px 10px 0;}
+.tl-step:not(:last-child)::after{
+  content:"→";position:absolute;right:-12px;top:50%;
+  transform:translateY(-50%);color:var(--faint);font-size:16px;z-index:2;
+}
+.tl-num{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--faint);margin-bottom:5px;}
+.tl-name{font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:13px;}
+.tl-sub{font-size:11.5px;color:var(--dim);margin-top:4px;}
+
+/* TOOL ROW */
+.tool-row{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:18px;}
+.tool-badge{
+  background:var(--s2);border:1px solid var(--border2);
+  border-radius:8px;padding:9px 14px;
+  font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:13px;
+}
+.tool-badge span{display:block;font-family:'Inter',sans-serif;font-weight:400;font-size:11.5px;color:var(--dim);margin-top:2px;}
+
+/* HW */
+.hw{background:linear-gradient(135deg,var(--pd),var(--s1));border:1px solid var(--purple);border-radius:12px;padding:22px 24px;}
+.hw h3{font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:17px;color:var(--purple);margin-bottom:14px;}
+.hw ol{padding-left:18px;color:var(--dim);font-size:14.5px;}
+.hw ol li{margin-bottom:8px;}
+.hw ol li strong{color:var(--text);}
+
+/* DIVIDER */
+.div{height:1px;background:var(--border);margin:48px 0;}
+
+footer{
+  margin-left:216px;padding:20px 48px 40px;
+  color:var(--faint);font-family:'JetBrains Mono',monospace;font-size:11px;
+  border-top:1px solid var(--border);position:relative;z-index:1;
+}
+
+@media(max-width:800px){
+  nav{display:none;}main{margin-left:0;padding:28px 18px 80px;}
+  footer{margin-left:0;padding:20px;}
+  .g2,.g3{grid-template-columns:1fr;}
+  .tl-step{min-width:90px;}
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-logo">
+    <span class="s">Сессия 03</span>
+    <span class="t">Старт-фреймы, видео, кастомные скиллы</span>
+  </div>
+  <a href="#scale"><span class="dot"></span>Масштаб и поза</a>
+  <a href="#project-lock"><span class="dot"></span>Identity lock в Project</a>
+  <a href="#storyboard"><span class="dot"></span>Раскадровка</a>
+  <a href="#startframe"><span class="dot"></span>Start & End frame</a>
+  <a href="#skill-create"><span class="dot"></span>Создание скилла</a>
+  <a href="#whisper"><span class="dot"></span>Whisper Flow</a>
+  <a href="#video-gen"><span class="dot"></span>Google Flow / Veo</a>
+  <a href="#kling"><span class="dot"></span>Kling vs Veo</a>
+  <a href="#fixes"><span class="dot"></span>Частые ошибки</a>
+  <a href="#hw"><span class="dot"></span>Домашнее задание</a>
+</nav>
+
+<main>
+
+<div class="hero">
+  <div class="eye">ai bootcamp · 1-on-1</div>
+  <h1>Сессия 03: Старт-фреймы, видео и кастомные скиллы</h1>
+  <p>Как управлять масштабом объектов в промте, закрепить identity lock через инструкции проекта, собрать старт-фреймы и запустить первую видеогенерацию в Google Flow и Veo.</p>
+  <div class="chips">
+    <span class="chip">Weavy · Nano Banana Pro</span>
+    <span class="chip">Claude Projects</span>
+    <span class="chip">Claude Skills Custom</span>
+    <span class="chip">Google Flow · Veo 3.1</span>
+    <span class="chip">Whisper Flow</span>
+    <span class="chip">Kling 2.5</span>
+  </div>
+</div>
+
+<!-- SCALE + POSE -->
+<section id="scale">
+  <div class="sh"><span class="tag gold">масштаб и поза</span><h2>Управление размером объектов в кадре</h2></div>
+  <p class="intro">Модель не понимает «сделай на 30% больше» — это абстракция. Она понимает пространственные отношения между элементами кадра.</p>
+
+  <div class="pair">
+    <div class="err"><span class="k">не работает</span>«Сделай кресло больше», «увеличь на треть», «кресло должно быть крупным».</div>
+    <div class="fix"><span class="k">работает</span>Описывай соотношение через конкретную точку отсчёта: «человек сидит так, что слева и справа остаётся пространство в пол-человека», «расстояние между коленом и подлокотником — 10 сантиметров», «подлокотники кресла на уровне локтей».</div>
+  </div>
+
+  <div class="card">
+    <span class="badge gold">принцип</span>
+    <h3>Якорь — это человек, не кресло</h3>
+    <p>Размер человека в кадре модель держит стабильно. Кресло — нет. Поэтому описывай расположение кресла относительно человека, а не наоборот. Если человек стабилен — кресло «подтянется» под его пропорции.</p>
+  </div>
+
+  <div class="g2" style="margin-top:10px;">
+    <div class="card">
+      <span class="badge teal">поза из фильма</span>
+      <h3>Референс-скриншот как Image 3</h3>
+      <p>Нужна конкретная поза (например как у Шэрон Стоун в «Основном инстинкте»)? Не описывай словами — текст двусмысленный. Сделай скриншот именно того кадра → загрузи как Image 3 в Weavy → укажи в промте: <code>pose from image 3</code>.</p>
+    </div>
+    <div class="card">
+      <span class="badge teal">схема из линий</span>
+      <h3>Stick figure тоже работает</h3>
+      <p>Если нет готового референса — нарисуй от руки человечка из линий в нужной позе и загрузи как Image 3. Модель читает позиционирование тела из схемы. Не нужно рисовать красиво.</p>
+    </div>
+  </div>
+
+  <blockquote>«Иногда некорректно звучит "сделай на 30% больше". Вы можете описать расстояние — между ногой и подлокотником 10 сантиметров — и он примерно это оставит.»</blockquote>
+</section>
+
+<div class="div"></div>
+
+<!-- IDENTITY LOCK IN PROJECT -->
+<section id="project-lock">
+  <div class="sh"><span class="tag gold">claude · project</span><h2>Identity lock через Project Instructions</h2></div>
+  <p class="intro">Файлы в Knowledge работают — но модель обращается к ним по запросу. Если вшить описание героя прямо в Instructions, он будет применяться ко всем промтам автоматически, без явного упоминания.</p>
+
+  <ol class="steps">
+    <li><strong>В Project Files (Knowledge)</strong> — загружены: filmcheck, сценарий, character sheet. Это база.</li>
+    <li><strong>В Project Instructions</strong> — написать: <em>«Все промты пишутся для Weavy. Главная героиня всегда абсолютно идентична прикреплённому character sheet — одежда, украшения, причёска не меняются ни при каких условиях.»</em></li>
+    <li><strong>Почему это сильнее, чем файл</strong>. Instructions — это постоянно активная инструкция. Файл — это данные, которые читаются по мере необходимости. Сочетание двух уровней даёт двойную привязку.</li>
+    <li><strong>Новый чат для видеопромтов</strong>. Промты для изображений и промты для видео — разные задачи, разный контекст. Открывай отдельный чат внутри проекта под каждый тип задачи.</li>
+  </ol>
+
+  <div class="card" style="margin-top:14px;">
+    <span class="badge orange">проблема с украшениями</span>
+    <h3>Кольцо и часы — упрощай, не борись</h3>
+    <p>Nano Banana Pro плохо понимает «кольцо на безымянном пальце правой руки» — запутывается в лево/право. Решение: упростить — пусть все украшения на одной стороне, не прописывать пальцы детально. Время на доводку украшений не стоит потраченных кредитов.</p>
+  </div>
+</section>
+
+<div class="div"></div>
+
+<!-- STORYBOARD -->
+<section id="storyboard">
+  <div class="sh"><span class="tag blue">раскадровка</span><h2>Стори-борд: текст → кадры → проверка</h2></div>
+  <p class="intro">Раскадровка — это не иллюстрации, это текстовая карта кадров. Она нужна чтобы видеть план монтажа до начала генерации.</p>
+
+  <ol class="steps">
+    <li><strong>Скопируй сценарий целиком</strong> → вставь в ChatGPT (или Claude) → напиши: «Сделай стори-борд». Модель распишет каждый кадр: план (крупный / средний / общий), движение камеры, действие героя.</li>
+    <li><strong>Проверь логику через Gemini</strong>. Вставь раскадровку в Gemini → «Проверь, правильно ли выстроена последовательность кадров». Gemini смотрит на структуру в целом и указывает на несостыковки. AI всегда может ошибиться — проверка обязательна.</li>
+    <li><strong>Отредактируй текстом</strong>. Если кадр не нравится — напиши: «Измени кадр 1, сделай общий план вместо крупного». Не трать кредиты на генерацию пока раскадровка не устраивает в тексте.</li>
+    <li><strong>Минимум кадров на 30 секунд</strong> — 10–12. Меньше = грубые склейки без плавных переходов.</li>
+  </ol>
+
+  <blockquote>«Важно прежде чем снять — мы всегда представляем себе как это выглядит. Этот текст помогает увидеть кадр ещё до генерации.»</blockquote>
+</section>
+
+<div class="div"></div>
+
+<!-- START FRAME + END FRAME -->
+<section id="startframe">
+  <div class="sh"><span class="tag teal">видео</span><h2>Start Frame и End Frame</h2></div>
+  <p class="intro">Картинка из Weavy — это не готовый кадр видео. Это старт-фрейм: отправная точка, откуда начинается движение. Понять разницу — ключевой сдвиг в мышлении.</p>
+
+  <div class="timeline">
+    <div class="tl-step">
+      <div class="tl-num">Weavy</div>
+      <div class="tl-name">Start Frame</div>
+      <div class="tl-sub">крупный план, героиня сидит</div>
+    </div>
+    <div class="tl-step" style="background:var(--s2);">
+      <div class="tl-num">видеомодель</div>
+      <div class="tl-name">Движение</div>
+      <div class="tl-sub">камера отъезжает назад</div>
+    </div>
+    <div class="tl-step">
+      <div class="tl-num">Weavy</div>
+      <div class="tl-name">End Frame</div>
+      <div class="tl-sub">общий план, логотипы на стене</div>
+    </div>
+    <div class="tl-step" style="background:var(--s2);">
+      <div class="tl-num">монтаж</div>
+      <div class="tl-name">Склейка</div>
+      <div class="tl-sub">следующий клип</div>
+    </div>
+  </div>
+
+  <div class="g2">
+    <div class="card">
+      <span class="badge teal">start frame</span>
+      <h3>Начальное изображение клипа</h3>
+      <p>Первый кадр видеоклипа. Видеомодель «вырастает» из него — добавляет движение, анимирует. 20 кадров в ролике = нужно 20 start frames.</p>
+    </div>
+    <div class="card">
+      <span class="badge teal">end frame</span>
+      <h3>Завершающее изображение клипа</h3>
+      <p>Veo 3.1 поддерживает end frame — куда должен прийти клип. Ты задаёшь начало и конец, модель заполняет движение между ними. Загрузи оба как изображения и опиши в промте: «first image = start frame, second image = end frame».</p>
+    </div>
+  </div>
+
+  <div class="card" style="margin-top:4px;">
+    <span class="badge gold">правило очерёдности</span>
+    <h3>Weavy → видеомодель, не наоборот</h3>
+    <p>Weavy генерирует только изображения. Видео — в отдельном инструменте (Veo, Kling). Сначала делаешь все нужные старт-фреймы (и энд-фреймы) в Weavy, скачиваешь их → потом идёшь в видеомодель. Не пытаться делать видео без готовых старт-фреймов.</p>
+  </div>
+
+  <div class="card">
+    <span class="badge blue">идея перехода</span>
+    <h3>Камера отъезжает — логотипы появляются на стене</h3>
+    <p>Кадр: камера начинает с крупного плана героини → отъезжает назад (start frame = крупный план, end frame = общий план) → во время движения на стене за ней появляются/мигают логотипы люксовых брендов, как на проекторе. Описать в промте Veo/Kling: <em>«camera pulls back from close-up to wide shot; luxury brand logos projected on the wall behind appear and fade periodically»</em>.</p>
+  </div>
+</section>
+
+<div class="div"></div>
+
+<!-- SKILL CREATION -->
+<section id="skill-create">
+  <div class="sh"><span class="tag purple">claude · skills</span><h2>Создание кастомного скилла прямо в Claude</h2></div>
+  <p class="intro">Если нужного скилла нет в библиотеке — создай его сам через скилл-криэйтор. Занимает 2–3 минуты.</p>
+
+  <ol class="steps">
+    <li><strong>Открой Claude</strong> → в чате вызови встроенный skill-creator через <code>/</code>.</li>
+    <li><strong>Опиши задачу</strong>. Пример команды: <em>«Создай скилл для написания кинематографических промтов для видеомоделей Kling и Veo с использованием камеры ARRI, плавной лакшери студийной съёмкой»</em>.</li>
+    <li><strong>Claude генерирует .md файл</strong> — готовый скилл в формате, который принимает Claude.</li>
+    <li><strong>Скачай файл</strong> → иди в <strong>Customize → Skills → Create/Upload skill</strong> → загрузи .md.</li>
+    <li><strong>Готово</strong>. Скилл появляется в списке, вызывается через <code>/</code> в любом чате.</li>
+  </ol>
+
+  <div class="card" style="margin-top:14px;">
+    <span class="badge purple">когда создавать кастомный скилл</span>
+    <h3>Специфичная задача, которая будет повторяться</h3>
+    <p>Если тебе нужно что-то узкое — например, промты именно под твой проект с конкретным стилем съёмки, конкретным героем — бери туториалы и гайды по теме, делаешь выжимку ключевых правил, даёшь в Claude: «по этим правилам создай скилл». Получаешь персональный инструмент.</p>
+  </div>
+
+  <blockquote>«В нейросетях самое главное знать — не надо делать что-то, что ты не умеешь. Берёшь туториалы из которых понял принцип, делаешь выжимку — и отдаёшь в клод, чтобы он сделал из этого скилл.»</blockquote>
+</section>
+
+<div class="div"></div>
+
+<!-- WHISPER FLOW -->
+<section id="whisper">
+  <div class="sh"><span class="tag blue">инструмент</span><h2>Whisper Flow — установка и настройка</h2></div>
+  <p class="intro">Диктовка вместо набора текста. Работает в браузере, автоопределяет язык, умный транскрайбер (исправляет оговорки сам).</p>
+
+  <ol class="steps">
+    <li><strong>Установка</strong>. Сайт: набери в браузере <code>wflow</code> → найди сайт → кнопка Download → установить для своей системы.</li>
+    <li><strong>Настройки</strong>. После установки: Creator → разрешить доступ к микрофону (Allow) → Language: оставь Auto-detect → включи все тумблеры инструментов.</li>
+    <li><strong>Горячая клавиша</strong>. По умолчанию — пробел или Function. Если Function меняет раскладку клавиатуры → переназначь на <strong>Option / Alt</strong> (она ни к чему не привязана).</li>
+    <li><strong>Использование</strong>. Поставь курсор в поле ввода (промт, чат, документ) → зажми горячую клавишу → говори → отпусти → текст вставился.</li>
+    <li><strong>Важно</strong>. Если курсор не стоит в нужном поле — Whisper Flow всё равно запишет фразу и сохранит буфер. Можно вставить потом вручную.</li>
+  </ol>
+
+  <div class="g2" style="margin-top:10px;">
+    <div class="card">
+      <span class="badge blue">умный транскрайбер</span>
+      <h3>Исправляет оговорки сам</h3>
+      <p>Whisper Flow понимает контекст фразы. Если оговорился или сказал лишнее — он корректирует. Пунктуацию тоже ставит автоматически. Язык переключать не нужно — говори хоть по-русски, хоть по-английски в одном потоке.</p>
+    </div>
+    <div class="card">
+      <span class="badge blue">Continuum</span>
+      <h3>Режим постоянной записи</h3>
+      <p>Приложение должно быть всегда открыто (свёрнуто справа). В режиме Continuum — ждёт нажатия кнопки в любой момент, не нужно запускать заново каждый раз.</p>
+    </div>
+  </div>
+</section>
+
+<div class="div"></div>
+
+<!-- VIDEO GENERATION -->
+<section id="video-gen">
+  <div class="sh"><span class="tag teal">видеогенерация</span><h2>Google Flow + Veo 3.1 — старт-фрейм в видео</h2></div>
+  <p class="intro">Google Flow (vflow.google) — интерфейс для видеогенерации через Veo 3.1. Поддерживает start frame + end frame, что даёт точный контроль над движением камеры.</p>
+
+  <ol class="steps">
+    <li><strong>Открыть Google Flow</strong>. Набери в браузере <code>flow.google</code> → войди через Google-аккаунт. Если нет проекта — нажми «Создать» / Continue.</li>
+    <li><strong>Интерфейс изменился</strong> (июль 2026). Теперь справа — описание задачи, внизу — агент-меню. Напиши что хочешь создать → выбери <strong>Video</strong>.</li>
+    <li><strong>Загрузить старт- и энд-фреймы</strong>. Нажми <code>+</code> → загрузи два изображения из Weavy. В промте укажи: <em>«First image is start frame, second image is end frame»</em>.</li>
+    <li><strong>Написать видеопромт</strong>. Использовать синематический скилл в Claude → вставить результат в поле промта в Flow. Указать движение камеры, действие героини, атмосферу.</li>
+    <li><strong>Модель</strong>: Veo 3.1 (по умолчанию). Для липсинга + живая речь → <strong>Google Omni / Gemini 2.0</strong> — лучший речевой диапазон сейчас.</li>
+    <li><strong>Генерировать</strong>. Flow работает через агента — первые кредиты бесплатные. Продолжать (Continue) если спросит.</li>
+  </ol>
+
+  <div class="g2" style="margin-top:10px;">
+    <div class="card">
+      <span class="badge teal">Veo 3.1</span>
+      <h3>Кинематографичность + start/end frame</h3>
+      <p>Лучший вариант когда нужны точные движения камеры с контролем начального и конечного кадра. Русский язык понимает. Ограничения Google по авторским правам — не генерировать персонажей, похожих на известных людей.</p>
+    </div>
+    <div class="card">
+      <span class="badge gold">Gemini Omni</span>
+      <h3>Липсинг + живая речь</h3>
+      <p>Когда нужно чтобы героиня произносила реплику с попаданием в губы — выбирать Omni. Хороший речевой диапазон, естественная артикуляция. Загружать фото персонажа + старт-фрейм + промт с текстом реплики.</p>
+    </div>
+  </div>
+</section>
+
+<div class="div"></div>
+
+<!-- KLING VS VEO -->
+<section id="kling">
+  <div class="sh"><span class="tag orange">сравнение</span><h2>Kling vs Veo — что когда использовать</h2></div>
+
+  <div class="g2">
+    <div class="card">
+      <span class="badge teal">Veo 3.1 / Google Flow</span>
+      <h3>Когда нужен контроль и качество</h3>
+      <p>Start frame + end frame, кинематографичность, плавные движения камеры, русский язык. Ограничения по авторским правам — не будет генерировать сцены слишком жёсткие или персонажей похожих на реальных людей.</p>
+    </div>
+    <div class="card">
+      <span class="badge orange">Kling 2.5</span>
+      <h3>Когда нужна свобода контента</h3>
+      <p>Китайская платформа, менее строгие ограничения. Работает с различными типажами и сценами. Выбор для контента где Veo ставит блок — творческий монтаж, смешение лиц и персонажей. Нужна подписка.</p>
+    </div>
+  </div>
+
+  <div class="card" style="margin-top:10px;">
+    <span class="badge blue">общий принцип</span>
+    <h3>Начинать всегда с Veo</h3>
+    <p>Качество и управляемость выше. Kling — запасной вариант для конкретных задач где Veo не справляется или блокирует контент. Не нужно сразу платить за обе подписки — сначала исчерпать возможности Veo.</p>
+  </div>
+</section>
+
+<div class="div"></div>
+
+<!-- FIXES -->
+<section id="fixes">
+  <div class="sh"><span class="tag red">ошибки</span><h2>Частые ошибки этой сессии</h2></div>
+
+  <div class="pair">
+    <div class="err"><span class="k">ошибка</span>В промте не прописан тип плана — модель сделала общий вместо крупного потому что промт содержал описание позы, но не крупность.</div>
+    <div class="fix"><span class="k">фикс</span>Всегда явно прописывать тип плана в промте: <code>close-up</code>, <code>medium shot</code>, <code>wide shot</code>. Описание позы и описание крупности — это разные вещи, обе нужны.</div>
+  </div>
+
+  <div class="pair">
+    <div class="err"><span class="k">ошибка</span>Промт слишком длинный — модель начинает игнорировать часть инструкций, результат непредсказуемый.</div>
+    <div class="fix"><span class="k">фикс</span>Разбить на два промта: сначала проверить короткий базовый (герой + локация + поза), убедиться что работает, потом добавлять детали. Большой промт — не значит лучший результат.</div>
+  </div>
+
+  <div class="pair">
+    <div class="err"><span class="k">ошибка</span>Кресло рисуется маленьким потому что в промте написано только «большое кресло», без пространственной привязки.</div>
+    <div class="fix"><span class="k">фикс</span>Описать через человека: «героиня сидит в кресле, локти на подлокотниках, между коленом и подлокотником 10 см, по бокам свободное пространство». Модель выстроит масштаб через эти соотношения.</div>
+  </div>
+
+  <div class="pair">
+    <div class="err"><span class="k">ошибка</span>ChatGPT пытается нарисовать картинку вместо написания промта — не понял задачу.</div>
+    <div class="fix"><span class="k">фикс</span>Всегда начинать запрос словами «напиши промт» и добавить «не рисуй» — иначе после обновлений ChatGPT склонен генерировать изображение вместо текста.</div>
+  </div>
+</section>
+
+<div class="div"></div>
+
+<!-- HOMEWORK -->
+<section id="hw">
+  <div class="hw">
+    <h3>🏠 Домашнее задание к сессии 04</h3>
+    <ol>
+      <li><strong>Завершить все старт-фреймы</strong> — пройти по всем 10 кадрам раскадровки, сгенерировать каждый в Weavy. Это база для следующей сессии.</li>
+      <li><strong>Для кадров с переходом</strong> — сгенерировать и энд-фрейм (широкий план с логотипами на стене за героиней).</li>
+      <li><strong>Обновить Project Instructions</strong> — добавить строку про Weavy-промты и identity lock одежды героини.</li>
+      <li><strong>Настроить Whisper Flow</strong> — установить, назначить горячую клавишу Option/Alt, протестировать диктовку в промте.</li>
+      <li><strong>Создать кастомный скилл</strong> для кинематографических видеопромтов (Kling + Veo, ARRI, luxury) через skill-creator в Claude.</li>
+    </ol>
+    <p style="margin-top:14px;font-size:13.5px;color:var(--dim);">На сессии 04 — запускаем полную видеогенерацию: берём готовые старт-фреймы и делаем первые клипы в Google Flow / Veo.</p>
+  </div>
+</section>
+
+</main>
+
+<footer>ai bootcamp · 1-on-1 session 03 · start frames, video generation, custom skills</footer>
+
+<script>
+const secs = document.querySelectorAll('section[id]');
+const links = document.querySelectorAll('nav a');
+window.addEventListener('scroll', () => {
+  let cur = '';
+  secs.forEach(s => { if (window.scrollY >= s.offsetTop - 120) cur = s.id; });
+  links.forEach(a => a.classList.toggle('active', a.getAttribute('href') === '#' + cur));
+});
+</script>
+</body>
+</html>
