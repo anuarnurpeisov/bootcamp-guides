@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>День 1 · Гайдлайн студента — ChatGPT + Claude</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg: #0A0A0F;
+    --surface: #14141C;
+    --surface-2: #1B1B28;
+    --accent: #6B5CE7;
+    --accent-soft: #A79CFF;
+    --accent-tint: #1D1A33;
+    --ink: #F4F2FB;
+    --ink-muted: #9490AC;
+    --ink-dim: #6B667F;
+    --line: #232231;
+    --warn: #E8A23D;
+    --font-display: 'Manrope', sans-serif;
+    --font-mono: 'JetBrains Mono', monospace;
+  }
+  *{ box-sizing: border-box; margin: 0; padding: 0; }
+  html{ scroll-behavior: smooth; }
+  body{
+    background: var(--bg);
+    color: var(--ink);
+    font-family: var(--font-display);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+  .wrap{ max-width: 860px; margin: 0 auto; padding: 0 24px; }
+
+  /* ---------- hero ---------- */
+  header.hero{
+    background:
+      radial-gradient(ellipse 800px 500px at 85% 0%, rgba(107,92,231,0.14), transparent 60%),
+      var(--bg);
+    padding: clamp(56px,10vw,96px) 0 48px;
+    border-bottom: 1px solid var(--line);
+  }
+  .eyebrow{
+    font-family: var(--font-mono); font-size: 13px; font-weight: 500;
+    letter-spacing: 0.14em; text-transform: uppercase; color: var(--accent-soft);
+    margin-bottom: 16px;
+  }
+  h1{
+    font-size: clamp(32px,5.5vw,52px); font-weight: 800; line-height: 1.08;
+    letter-spacing: -0.02em; max-width: 18ch;
+  }
+  .hero-sub{
+    font-size: clamp(16px,2vw,19px); color: var(--ink-muted); margin-top: 16px;
+    max-width: 60ch;
+  }
+  .hero-meta{
+    display: flex; flex-wrap: wrap; gap: 10px 24px;
+    margin-top: 28px; padding-top: 20px; border-top: 1px solid var(--line);
+    font-family: var(--font-mono); font-size: 13px; color: var(--ink-dim);
+  }
+  .hero-meta span{ display:flex; align-items:center; gap:8px; }
+  .hero-meta .dot{ width:5px; height:5px; border-radius:50%; background: var(--accent); }
+
+  /* ---------- toc ---------- */
+  nav.toc{
+    background: var(--surface); border: 1px solid var(--line); border-radius: 14px;
+    padding: 22px 24px; margin: 40px 0;
+  }
+  nav.toc .toc-title{
+    font-family: var(--font-mono); font-size: 12px; letter-spacing: 0.1em;
+    text-transform: uppercase; color: var(--ink-dim); margin-bottom: 14px;
+  }
+  nav.toc ol{ list-style: none; display: grid; grid-template-columns: 1fr 1fr; gap: 6px 28px; }
+  nav.toc a{
+    color: var(--ink-muted); text-decoration: none; font-size: 14px;
+    display: flex; gap: 10px; padding: 4px 0; transition: color 0.15s;
+  }
+  nav.toc a:hover{ color: var(--accent-soft); }
+  nav.toc a .n{ font-family: var(--font-mono); color: var(--accent-soft); flex-shrink:0; width:20px; }
+  @media (max-width: 640px){ nav.toc ol{ grid-template-columns: 1fr; } }
+
+  /* ---------- sections ---------- */
+  main{ padding: 8px 0 80px; }
+  section{ padding: 56px 0; border-bottom: 1px solid var(--line); scroll-margin-top: 24px; }
+  section:last-of-type{ border-bottom: none; }
+  .sec-label{
+    font-family: var(--font-mono); font-size: 12.5px; letter-spacing: 0.1em;
+    text-transform: uppercase; color: var(--accent-soft); margin-bottom: 12px;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .sec-label .ico{ font-size: 16px; }
+  h2{ font-size: clamp(24px,3.4vw,34px); font-weight: 800; letter-spacing: -0.01em; max-width: 22ch; }
+  h3{ font-size: 18px; font-weight: 700; margin-top: 32px; margin-bottom: 10px; color: var(--ink); }
+  p{ color: var(--ink-muted); margin-top: 12px; max-width: 68ch; }
+  p.lead{ color: var(--ink); font-size: 17px; margin-top: 16px; }
+  strong{ color: var(--ink); font-weight: 700; }
+
+  ul.plain, ol.plain{ margin-top: 14px; padding-left: 0; list-style: none; max-width: 68ch; }
+  ul.plain li, ol.plain li{
+    position: relative; padding-left: 26px; margin-bottom: 10px;
+    color: var(--ink-muted); font-size: 15px;
+  }
+  ul.plain li::before{
+    content: '→'; position: absolute; left: 0; color: var(--accent-soft);
+  }
+  ol.steps{ counter-reset: step; margin-top: 16px; max-width: 68ch; }
+  ol.steps li{
+    counter-increment: step; position: relative; padding-left: 34px;
+    margin-bottom: 14px; color: var(--ink-muted); font-size: 15px;
+  }
+  ol.steps li::before{
+    content: counter(step); position: absolute; left: 0; top: -1px;
+    width: 22px; height: 22px; border-radius: 6px; background: var(--surface-2);
+    border: 1px solid var(--line); color: var(--accent-soft);
+    font-family: var(--font-mono); font-size: 12px; font-weight: 600;
+    display: flex; align-items: center; justify-content: center;
+  }
+
+  /* ---------- metaphor / callout boxes ---------- */
+  .box{
+    margin-top: 22px; padding: 20px 22px; border-radius: 12px;
+    border: 1px solid var(--line); background: var(--surface);
+    max-width: 68ch;
+  }
+  .box-label{
+    font-family: var(--font-mono); font-size: 11.5px; letter-spacing: 0.08em;
+    text-transform: uppercase; color: var(--accent-soft); margin-bottom: 8px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .box p{ margin-top: 0; color: var(--ink); font-size: 14.5px; }
+  .box.warn{ border-color: rgba(232,162,61,0.35); background: rgba(232,162,61,0.06); }
+  .box.warn .box-label{ color: var(--warn); }
+  .box.metaphor{ border-color: rgba(107,92,231,0.3); background: var(--accent-tint); }
+
+  /* ---------- prompt blocks ---------- */
+  .prompt{
+    margin-top: 16px; max-width: 68ch;
+    background: #0D0D14; border: 1px solid var(--line); border-radius: 10px;
+    overflow: hidden;
+  }
+  .prompt-label{
+    font-family: var(--font-mono); font-size: 11px; color: var(--ink-dim);
+    padding: 10px 16px; border-bottom: 1px solid var(--line);
+    text-transform: uppercase; letter-spacing: 0.06em;
+  }
+  .prompt pre{
+    padding: 16px; font-family: var(--font-mono); font-size: 13px;
+    color: var(--accent-soft); white-space: pre-wrap; line-height: 1.6;
+  }
+
+  /* ---------- tables ---------- */
+  .tbl-wrap{ margin-top: 20px; overflow-x: auto; max-width: 68ch; }
+  table{ border-collapse: collapse; width: 100%; min-width: 480px; }
+  th{
+    text-align: left; font-family: var(--font-mono); font-size: 11.5px;
+    letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink-dim);
+    padding: 0 14px 12px 0; font-weight: 500; border-bottom: 1px solid var(--line);
+  }
+  td{
+    padding: 13px 14px 13px 0; border-bottom: 1px solid var(--line); font-size: 14px;
+    color: var(--ink-muted);
+  }
+  td:first-child{ color: var(--ink); font-weight: 600; }
+
+  /* ---------- badge row ---------- */
+  .badges{ display: flex; flex-wrap: wrap; gap: 8px; margin-top: 18px; }
+  .badge{
+    font-family: var(--font-mono); font-size: 12px; color: var(--ink-muted);
+    border: 1px solid var(--line); border-radius: 20px; padding: 5px 14px;
+  }
+
+  /* ---------- homework ---------- */
+  .hw-list{ margin-top: 20px; display: flex; flex-direction: column; gap: 12px; max-width: 68ch; }
+  .hw-card{
+    display: flex; gap: 18px; align-items: flex-start;
+    background: var(--surface); border: 1px solid var(--line); border-radius: 12px;
+    padding: 18px 20px;
+  }
+  .hw-card .hnum{
+    font-family: var(--font-mono); font-size: 20px; font-weight: 600; color: var(--accent-soft);
+    flex-shrink: 0;
+  }
+  .hw-card strong{ display: block; font-size: 15.5px; margin-bottom: 4px; }
+  .hw-card span{ font-size: 13.5px; color: var(--ink-muted); }
+
+  /* ---------- cycle ---------- */
+  .cycle{ display: flex; flex-wrap: wrap; gap: 0; margin-top: 24px; max-width: 68ch; }
+  .cycle-node{ flex: 1; min-width: 140px; position: relative; padding-right: 16px; padding-bottom: 16px; }
+  .cycle-node .cdot{
+    width: 28px; height: 28px; border-radius: 50%; background: var(--surface);
+    border: 1px solid var(--accent); display: flex; align-items: center; justify-content: center;
+    font-family: var(--font-mono); font-size: 11px; color: var(--accent-soft); margin-bottom: 10px;
+  }
+  .cycle-node strong{ display: block; font-size: 14px; margin-bottom: 4px; }
+  .cycle-node span{ font-size: 12.5px; color: var(--ink-muted); }
+  .cycle-arrow{ display: flex; align-items: center; color: var(--ink-dim); padding: 0 4px; font-size: 14px; }
+  @media (max-width: 640px){ .cycle{ flex-direction: column; } .cycle-arrow{ display:none; } }
+
+  footer{
+    padding: 40px 0 60px; text-align: center; color: var(--ink-dim);
+    font-family: var(--font-mono); font-size: 12.5px;
+  }
+  footer a{ color: var(--accent-soft); text-decoration: none; }
+
+  ::selection{ background: var(--accent); color: var(--bg); }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="wrap">
+    <div class="eyebrow">AI BOOTCAMP 16 · LLM · ДЕНЬ 1</div>
+    <h1>ChatGPT + Claude как персональный репетитор</h1>
+    <p class="hero-sub">Гайдлайн по эфиру — опорный материал для самостоятельной практики. Тема курса: как использовать ИИ для самообразования, но методика ниже работает для любой задачи — бизнес, учёба, рутина.</p>
+    <div class="hero-meta">
+      <span><span class="dot"></span>8 июля 2026, среда</span>
+      <span><span class="dot"></span>Ведущий: Ануар Нурпеисов</span>
+      <span><span class="dot"></span>Часть 1 из 2 — Gemini + NotebookLM в пятницу</span>
+    </div>
+  </div>
+</header>
+
+<div class="wrap">
+  <nav class="toc">
+    <div class="toc-title">Содержание</div>
+    <ol>
+      <li><a href="#model"><span class="n">00</span>Главная идея</a></li>
+      <li><a href="#memory"><span class="n">01</span>ChatGPT · Память</a></li>
+      <li><a href="#dossier"><span class="n">02</span>ChatGPT · Досье</a></li>
+      <li><a href="#research"><span class="n">03</span>ChatGPT · Deep Research</a></li>
+      <li><a href="#projects-gpt"><span class="n">04</span>ChatGPT · Проекты</a></li>
+      <li><a href="#customgpt"><span class="n">05</span>ChatGPT · Помощник</a></li>
+      <li><a href="#claude-projects"><span class="n">06</span>Claude · Проекты</a></li>
+      <li><a href="#skills"><span class="n">07</span>Claude · Skills</a></li>
+      <li><a href="#hygiene"><span class="n">08</span>Файлы: MD, не PDF</a></li>
+      <li><a href="#cowork"><span class="n">09</span>Cowork и коннекторы</a></li>
+      <li><a href="#security"><span class="n">10</span>Безопасность данных</a></li>
+      <li><a href="#prompt"><span class="n">11</span>Промт vs мастер-промт</a></li>
+      <li><a href="#constitution"><span class="n">12</span>Бонус: личная конституция</a></li>
+      <li><a href="#cycle"><span class="n">13</span>Итоговый цикл</a></li>
+      <li><a href="#homework"><span class="n">14</span>Домашнее задание</a></li>
+    </ol>
+  </nav>
+</div>
+
+<main class="wrap">
+
+  <section id="model">
+    <div class="sec-label"><span class="ico">◆</span>ГЛАВНАЯ ИДЕЯ</div>
+    <h2>Нейросеть без контекста — умный профессор без памяти</h2>
+    <p class="lead">Любой чат ChatGPT, Claude, Gemini — если вы не загрузили туда контекст о себе, задаче, целях, — превращается в машину, которая выдаёт блестящий ответ в моменте, но не может связать его со следующим вопросом.</p>
+    <div class="box metaphor">
+      <div class="box-label">Метафора</div>
+      <p>Представьте очень умного профессора, у которого нет памяти о вас. В моменте — шикарные ответы. Но он не свяжет ваш сегодняшний вопрос с тем, что вы спрашивали вчера.</p>
+    </div>
+    <p>Сегодняшняя цель: настроить память и досье в ChatGPT, собрать первый проект с материалом в Claude, понять — для каких задач брать ChatGPT, а для каких Claude.</p>
+    <div class="badges">
+      <span class="badge">Память</span>
+      <span class="badge">Досье</span>
+      <span class="badge">Deep Research</span>
+      <span class="badge">Проекты</span>
+      <span class="badge">Custom GPT</span>
+      <span class="badge">Claude Skills</span>
+    </div>
+  </section>
+
+  <section id="memory">
+    <div class="sec-label"><span class="ico">01</span>CHATGPT</div>
+    <h2>Память</h2>
+    <p class="lead">Включается один раз — дальше работает в фоне на все чаты.</p>
+    <ol class="steps">
+      <li>Профиль → <strong>Personalization</strong> (Персонализация)</li>
+      <li>Найти блок <strong>Memory</strong> (Память)</li>
+      <li>Включить тумблер</li>
+    </ol>
+    <p>После включения модель сама решает, что запомнить из разговоров: тему, которую вы изучаете, повторяющиеся вопросы, стиль, который заходит лучше. Это накопительная память между чатами — не путать с контекстом внутри одного чата.</p>
+  </section>
+
+  <section id="dossier">
+    <div class="sec-label"><span class="ico">02</span>CHATGPT</div>
+    <h2>Досье — пользовательские инструкции</h2>
+    <p class="lead">Persomalization → Custom Instructions (Пользовательские инструкции). Это правила, которые применяются к каждому ответу автоматически.</p>
+    <p>Три опорных вопроса для инструкции:</p>
+    <ul class="plain">
+      <li>Кто вы и чем занимаетесь</li>
+      <li>Чему хотите научиться / какую задачу решаете</li>
+      <li>Как вам объяснять — сухо, с примерами, дружелюбно, формально</li>
+    </ul>
+    <div class="box metaphor">
+      <div class="box-label">Метафора</div>
+      <p>Custom Instructions — костюм, который вы надеваете на модель. Пошит по вашим меркам — сидит идеально. Пошит не по размеру — болтается и мешает. Настройка под себя — это как сделать стул по своей фигуре.</p>
+    </div>
+    <h3>Техника: диктовка + доработка</h3>
+    <p>Не обязательно печатать текст идеально с первого раза. Наговорите инструкцию простым языком голосом (например, через приложение <strong>Wisper Flow</strong> — распознаёт речь на смеси языков и сразу расставляет знаки препинания) — ChatGPT сам расширит черновик до грамотной формулировки. Дальше дорабатывайте точечно: не переписывайте всё заново, а просите «добавь в эту инструкцию, что…».</p>
+    <div class="prompt">
+      <div class="prompt-label">Пример добавления к инструкции</div>
+      <pre>Добавь в эту инструкцию: я занимаюсь развитием
+искусственного интеллекта, но также хочу изучать
+английский язык. Если я спрашиваю про английский —
+направляй ответы в эту сторону.</pre>
+    </div>
+    <p>Если инструкция выходит за лимит символов — попросите саму модель сжать её: «дай полную инструкцию с учётом лимита символов для пользовательской инструкции в ChatGPT» — модель знает лимит и сократит без потери смысла.</p>
+    <h3>Режимы ответа</h3>
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th>Режим</th><th>Когда использовать</th></tr></thead>
+        <tbody>
+          <tr><td>Instant</td><td>Быстрый короткий ответ на простой вопрос</td></tr>
+          <tr><td>Medium</td><td>Среднего объёма задача, баланс скорости и глубины</td></tr>
+          <tr><td>Thinking / High</td><td>Глубокая проработка, сложные многошаговые задачи</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section id="research">
+    <div class="sec-label"><span class="ico">03</span>CHATGPT</div>
+    <h2>Deep Research — создание базы знаний</h2>
+    <p class="lead">Самый дешёвый и быстрый способ собрать базу знаний по новой теме. До 20 источников, результат — за 10–15 минут.</p>
+    <div class="box metaphor">
+      <div class="box-label">Два способа искать информацию</div>
+      <p><strong>Удочка</strong> — точечный вопрос с единственным правильным ответом («какая налоговая ставка для МСБ в этом году»). <strong>Сеть</strong> — широкий охват целой темы: закинули сеть, подняли керн, затем отфильтровали, сжали до огранённого ответа. Для новой темы — всегда сеть, не удочка.</p>
+    </div>
+    <p>Формула промта для глубокого исследования: представьте себя новым стажёром, которому нужно разобраться в теме за месяц.</p>
+    <div class="prompt">
+      <div class="prompt-label">Пример — незнакомая профессиональная тема</div>
+      <pre>Проведи глубокое исследование на изучение темы
+[тема]. Я стажёр, которому за месяц нужно всё
+изучить. Дай полную базу лучших практик по этому
+направлению, чтобы я мог сделать из неё проект
+и специализированного помощника, который отвечает
+по рутинным задачам.</pre>
+    </div>
+    <div class="prompt">
+      <div class="prompt-label">Пример — изучение языка</div>
+      <pre>Найди лучшие методики изучения английского языка,
+чтобы потом сделать из этого skills и тренажёры.
+Проведи аналитику, как искусственный интеллект
+используется для изучения языка.</pre>
+    </div>
+    <div class="box warn">
+      <div class="box-label">⚠ Формат скачивания</div>
+      <p>Скачивайте результат в формате <strong>.md (Markdown)</strong>, не PDF. MD — текстовый файл, который нейросеть читает эффективно и который тратит меньше токенов при дальнейшей работе. PDF заставляет модель «сканировать» документ почти визуально — это дороже по ресурсам, особенно в Claude.</p>
+    </div>
+  </section>
+
+  <section id="projects-gpt">
+    <div class="sec-label"><span class="ico">04</span>CHATGPT</div>
+    <h2>Проекты — учебная папка по теме</h2>
+    <p class="lead">Обычные чаты не связаны между собой — даже соседние. Проект группирует чаты вокруг одной темы с общим контекстом.</p>
+    <ol class="steps">
+      <li>Нажать «+» → New Project → дать название (например, «Репетитор английского»)</li>
+      <li>Вкладка <strong>Chats</strong> — история чатов внутри проекта</li>
+      <li>Вкладка <strong>Sources</strong> (ресурсы) — сюда грузится скачанный .md-файл из Deep Research</li>
+      <li>Project instructions — инструкции уровня проекта, отдельно от общих Custom Instructions</li>
+    </ol>
+    <div class="box warn">
+      <div class="box-label">⚠ Критично: файл не читается сам</div>
+      <p>Загруженный файл по умолчанию хранится как архив — модель не обращается к нему, пока вы явно не скажете использовать его.</p>
+    </div>
+    <div class="prompt">
+      <div class="prompt-label">Обязательная строка в инструкции проекта</div>
+      <pre>Используй загруженный в проект файл как основной
+источник методологии. Если вопрос касается [тема],
+ищи ответ в этом файле.</pre>
+    </div>
+    <div class="box metaphor">
+      <div class="box-label">Метафора</div>
+      <p>Файлы — это библиотека. Инструкция — библиотекарь. Если библиотекарь не знает правил (куда идти, какая книга где лежит), он не найдёт нужную книгу, даже если она стоит на полке.</p>
+    </div>
+    <p>Важно: инструкции проекта — вторичны по отношению к тому, что вы буквально спрашиваете в чате в моменте («мастер-промт» всегда приоритетнее).</p>
+  </section>
+
+  <section id="customgpt">
+    <div class="sec-label"><span class="ico">05</span>CHATGPT</div>
+    <h2>Custom GPT — специализированный помощник</h2>
+    <p class="lead">В отличие от проекта, это не хранилище памяти между чатами, а преднастроенный чат под одну конкретную задачу.</p>
+    <ol class="steps">
+      <li>Explore GPTs → Create → Configure</li>
+      <li>Задать имя, инструкцию, при желании — загрузить файлы</li>
+      <li>Опубликовать (для себя или по ссылке)</li>
+    </ol>
+    <h3>Техника: пусть инструкцию напишет сама модель</h3>
+    <p>Находясь внутри проекта с уже загруженным исследованием, попросите ChatGPT составить инструкцию для GPT на основе этого материала — тогда помощник будет опираться на реальные данные, а не на общие знания модели.</p>
+    <div class="prompt">
+      <div class="prompt-label">Пример</div>
+      <pre>Напиши инструкции для GPT, который за 20 вопросов
+определит уровень моего английского языка и
+составит подробный план на месяц: 3 занятия в
+неделю по часу, чтобы закрыть пробелы до
+следующего уровня.</pre>
+    </div>
+    <p>Второй демо-пример с эфира — помощник по методу Фейнмана: объясняет сложные правила простыми метафорами и примерами вместо академических формулировок.</p>
+    <div class="box warn">
+      <div class="box-label">⚠ Ограничение бесплатного плана</div>
+      <p>На бесплатной подписке нельзя <em>создавать</em> Custom GPT, но можно <em>пользоваться</em> уже опубликованными чужими — они работают как маркетплейс готовых помощников.</p>
+    </div>
+  </section>
+
+  <section id="claude-projects">
+    <div class="sec-label"><span class="ico">06</span>CLAUDE</div>
+    <h2>Проекты — тот же принцип, другая глубина</h2>
+    <p class="lead">Projects → New Project. Внутри: <strong>Instructions</strong> (инструкции) и <strong>Context</strong> (файлы — аналог «ресурсов» в ChatGPT).</p>
+    <p>Ключевое отличие в поведении: Claude чаще задаёт уточняющие вопросы перед выполнением сложной задачи, вместо того чтобы сразу выполнять запрос буквально.</p>
+    <div class="box metaphor">
+      <div class="box-label">Метафора</div>
+      <p>ChatGPT — послушный стажёр: получил задачу, пошёл выполнять без лишних вопросов. Claude — спрашивает: «сколько часов в неделю реально готовы тратить? какой был последний официальный результат? есть ли доступ к живому собеседнику?» — и только потом строит план под реальные условия.</p>
+    </div>
+    <h3>Модели Claude — когда какую использовать</h3>
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th>Модель</th><th>Для чего</th></tr></thead>
+        <tbody>
+          <tr><td>Haiku</td><td>Быстрые ежедневные запросы, простые задачи</td></tr>
+          <tr><td>Sonnet</td><td>Более серьёзные задачи, есть варианты Hi / Medium / Max</td></tr>
+          <tr><td>Opus</td><td>Сложные математические и аналитические задачи</td></tr>
+          <tr><td>Fable</td><td>Самая мощная и дорогая модель на сегодня</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>Правило простое: чем сложнее задача, тем выше модель. Не открывайте самую дорогую модель на каждый мелкий вопрос — расход ресурсов растёт вместе с мощностью модели.</p>
+    <p>Ограничение по файлам в проекте — не количество (как в ChatGPT), а процент занятого пространства проекта.</p>
+  </section>
+
+  <section id="skills">
+    <div class="sec-label"><span class="ico">07</span>CLAUDE</div>
+    <h2>Skills — навык, а не разовый помощник</h2>
+    <p class="lead">Главное отличие от Custom GPT: skill работает сквозь любое количество проектов, а не привязан к одному контексту.</p>
+    <div class="box metaphor">
+      <div class="box-label">Метафора</div>
+      <p>Skill — как умение пилить дерево: применимо и при постройке дома, и при сборке скворечника. Один и тот же навык подключается в разных проектах, сами проекты друг с другом не пересекаются.</p>
+    </div>
+    <ol class="steps">
+      <li>Settings → Customize → Skills → «+» → Create skill</li>
+      <li>Описать, что должен делать навык — Claude сам соберёт структуру</li>
+      <li>Вызов в любом чате: набрать <strong>/</strong> → выбрать нужный skill из списка</li>
+    </ol>
+    <div class="prompt">
+      <div class="prompt-label">Пример создания навыка</div>
+      <pre>Создай навык, который считает аннуитетный кредит:
+при заданной сумме, ставке и сроке в месяцах
+выдаёт результат помесячно в виде таблицы.
+Назови навык "Кредитный калькулятор".</pre>
+    </div>
+    <h3>Главное практическое отличие — наследование контекста</h3>
+    <p>Один и тот же skill ведёт себя по-разному в зависимости от того, где вызван:</p>
+    <ul class="plain">
+      <li>В обычном чате без проекта — работает изолированно, знает только свою инструкцию</li>
+      <li>Внутри проекта — автоматически подхватывает контекст проекта (стиль, установленные данные, référence) без того, чтобы вы это озвучивали заново</li>
+    </ul>
+    <p>На эфире это было показано на примере: один и тот же skill генерации промтов для изображений давал общий результат вне проекта — и результат, точно учитывающий заранее заданную локацию и стиль сцены, будучи вызван внутри проекта с этим контекстом.</p>
+  </section>
+
+  <section id="hygiene">
+    <div class="sec-label"><span class="ico">08</span>ОБЩЕЕ ДЛЯ ОБЕИХ МОДЕЛЕЙ</div>
+    <h2>Гигиена файлов</h2>
+    <ul class="plain">
+      <li><strong>MD, не PDF.</strong> Markdown — текстовый формат, дешёвый по токенам. PDF заставляет модель обрабатывать документ почти как изображение — дороже и медленнее, особенно в Claude.</li>
+      <li><strong>Обновляйте контекстный файл.</strong> Если рабочий документ (сценарий, методология, план) изменился, а вы не перезалили новую версию в проект — модель продолжит отвечать по старой редакции.</li>
+    </ul>
+    <div class="box metaphor">
+      <div class="box-label">Метафора</div>
+      <p>Ваш ключевой файл в проекте — как конституция страны. Если правительство (вы) меняет законы, но не обновляет текст конституции — граждане (модель) продолжают жить по старым правилам.</p>
+    </div>
+  </section>
+
+  <section id="cowork">
+    <div class="sec-label"><span class="ico">09</span>CLAUDE</div>
+    <h2>Cowork и автоматизация внутри проекта</h2>
+    <h3>Cowork</h3>
+    <p>В отличие от обычного чата, Cowork работает с вашими реальными файлами и папками на компьютере (нужна десктоп-версия). Демо с эфира: на основе всех файлов сценария в папке проекта Claude в режиме Cowork собрал одностраничный promo-лендинг для фильма — с рабочей панелью процесса справа (что читает, что делает).</p>
+    <h3>Scheduled tasks (Skejul)</h3>
+    <p>Внутри проекта можно настроить повторяющуюся автоматическую задачу — по сути встроенный будильник с контекстом проекта.</p>
+    <div class="prompt">
+      <div class="prompt-label">Пример настройки</div>
+      <pre>Каждое утро в 10:00 задавай мне один вопрос по
+теме, на который я должен ответить 10
+предложениями. Оцени мой ответ как профессор
+английского языка.</pre>
+    </div>
+    <h3>Коннекторы</h3>
+    <p>Claude подключается к Gmail, Google Calendar, Google Drive, Notion, Spotify и другим сервисам — можно ставить задачи, которые сразу создают события или письма без выхода из чата.</p>
+  </section>
+
+  <section id="security">
+    <div class="sec-label"><span class="ico">10</span>ЧАСТЫЙ ВОПРОС</div>
+    <h2>Насколько безопасно загружать рабочие документы</h2>
+    <p>Вопрос с эфира: можно ли доверять загрузку финансовых и внутренних документов компании. Ответ: доверие строится так же, как к Gmail или банковскому приложению — на репутации и истории безопасности. Дополнительный фактор — код обеих платформ открыт публично (репозитории на GitHub), любой инженер может изучить его на уязвимости. Прецедентов утечки не было; при этом абсолютных гарантий, как и с любым облачным сервисом, никто не даёт.</p>
+  </section>
+
+  <section id="prompt">
+    <div class="sec-label"><span class="ico">11</span>СЛОВАРЬ</div>
+    <h2>Промт vs мастер-промт</h2>
+    <p><strong>Промт</strong> — любая команда или вопрос модели, даже самый простой («какой сейчас курс валюты»).</p>
+    <p><strong>Мастер-промт</strong> — расширенный, детально проработанный промт, который надёжно выдаёт сложный результат: с деталями света, камеры, композиции для изображений, или с полной структурой для текстовых задач. Собирается один раз, дальше переиспользуется и точечно дорабатывается, а не пишется заново каждый раз.</p>
+    <p>Направление, которое из этого выросло, называется <strong>промтинг</strong> — искусство создания промтов; соответствующая профессия — промт-инженер.</p>
+    <h3>Промты на английском</h3>
+    <p>Большинство моделей (кроме китайских) обучены преимущественно на английском тексте — промт на английском чуть точнее и экономит время модели на внутренний перевод. Разница сокращается с каждым обновлением моделей и сейчас не критична. Если промт на английском — обязательно укажите язык ответа явно, иначе модель может ответить тоже на английском.</p>
+  </section>
+
+  <section id="constitution">
+    <div class="sec-label"><span class="ico">12</span>БОНУС</div>
+    <h2>Личная конституция — проект на будущее</h2>
+    <p>Отдельный Claude-проект: «Личная конституция и цели [год]». Внутрь загружаются принципы, жизненная философия, цели, стратегия — свои или бизнеса.</p>
+    <p>Практическое применение: когда приходит новая возможность или предложение, спросите Claude, насколько она соответствует зафиксированным целям и принципам. Модель «приземляет» — показывает, где решение расходится с вашими приоритетами, а где действительно стоит рассмотреть. Полезно, чтобы не уходить в интересные, но не относящиеся к делу тангенты.</p>
+  </section>
+
+  <section id="cycle">
+    <div class="sec-label"><span class="ico">13</span>ИТОГ</div>
+    <h2>Полный цикл, который мы собрали</h2>
+    <div class="cycle">
+      <div class="cycle-node"><div class="cdot">01</div><strong>Deep Research</strong><span>Самый дешёвый способ собрать базу по новой теме</span></div>
+      <div class="cycle-arrow">→</div>
+      <div class="cycle-node"><div class="cdot">02</div><strong>Проект</strong><span>Папка, куда загружается эта база — в ChatGPT и в Claude</span></div>
+      <div class="cycle-arrow">→</div>
+      <div class="cycle-node"><div class="cdot">03</div><strong>GPT / Skill</strong><span>Быстрый инструмент, построенный на этой базе</span></div>
+    </div>
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th>Задача</th><th>ChatGPT</th><th>Claude</th></tr></thead>
+        <tbody>
+          <tr><td>Быстрая точная задача</td><td>сильнее</td><td>—</td></tr>
+          <tr><td>Объёмный материал целиком</td><td>—</td><td>сильнее</td></tr>
+          <tr><td>Повторяемый инструмент</td><td>Custom GPT (один чат)</td><td>Skill (сквозь все проекты)</td></tr>
+          <tr><td>Память между сессиями</td><td>Memory</td><td>Project Knowledge</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section id="homework">
+    <div class="sec-label"><span class="ico">✓</span>ДО СЛЕДУЮЩЕГО ЭФИРА</div>
+    <h2>Домашнее задание</h2>
+    <p>Тему можно взять учебную (как на эфире) или заменить на реальную рабочую задачу — методика не меняется.</p>
+    <div class="hw-list">
+      <div class="hw-card">
+        <div class="hnum">1</div>
+        <div><strong>Заверши досье в ChatGPT</strong><span>Память включена, Custom Instructions заполнены под свою тему</span></div>
+      </div>
+      <div class="hw-card">
+        <div class="hnum">2</div>
+        <div><strong>Собери один Custom GPT</strong><span>Под самую частую повторяющуюся задачу, на основе Deep Research по теме</span></div>
+      </div>
+      <div class="hw-card">
+        <div class="hnum">3</div>
+        <div><strong>Собери проект + Skill в Claude</strong><span>Загрузи ту же базу знаний, создай навык, который её использует</span></div>
+      </div>
+    </div>
+    <p style="margin-top:24px;">Пятница, 19:30 — День 2: Gemini + NotebookLM.</p>
+  </section>
+
+</main>
+
+<footer>
+  AI Bootcamp 16 · LLM — bootcamp.kz
+</footer>
+
+</body>
+</html>
