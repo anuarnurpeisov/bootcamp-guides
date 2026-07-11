@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Продвинутые техники Claude — Skills, конституция, монетизация</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg: #0A0A0F;
+    --surface: #14141C;
+    --surface-2: #1B1B28;
+    --accent: #6B5CE7;
+    --accent-soft: #A79CFF;
+    --accent-tint: #1D1A33;
+    --ink: #F4F2FB;
+    --ink-muted: #9490AC;
+    --ink-dim: #6B667F;
+    --line: #232231;
+    --warn: #E8A23D;
+    --font-display: 'Manrope', sans-serif;
+    --font-mono: 'JetBrains Mono', monospace;
+  }
+  *{ box-sizing: border-box; margin: 0; padding: 0; }
+  html{ scroll-behavior: smooth; }
+  body{
+    background: var(--bg);
+    color: var(--ink);
+    font-family: var(--font-display);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+  .wrap{ max-width: 860px; margin: 0 auto; padding: 0 24px; }
+
+  /* ---------- hero ---------- */
+  header.hero{
+    background:
+      radial-gradient(ellipse 800px 500px at 85% 0%, rgba(107,92,231,0.14), transparent 60%),
+      var(--bg);
+    padding: clamp(56px,10vw,96px) 0 48px;
+    border-bottom: 1px solid var(--line);
+  }
+  .eyebrow{
+    font-family: var(--font-mono); font-size: 13px; font-weight: 500;
+    letter-spacing: 0.14em; text-transform: uppercase; color: var(--accent-soft);
+    margin-bottom: 16px;
+  }
+  h1{
+    font-size: clamp(32px,5.5vw,52px); font-weight: 800; line-height: 1.08;
+    letter-spacing: -0.02em; max-width: 18ch;
+  }
+  .hero-sub{
+    font-size: clamp(16px,2vw,19px); color: var(--ink-muted); margin-top: 16px;
+    max-width: 60ch;
+  }
+  .hero-meta{
+    display: flex; flex-wrap: wrap; gap: 10px 24px;
+    margin-top: 28px; padding-top: 20px; border-top: 1px solid var(--line);
+    font-family: var(--font-mono); font-size: 13px; color: var(--ink-dim);
+  }
+  .hero-meta span{ display:flex; align-items:center; gap:8px; }
+  .hero-meta .dot{ width:5px; height:5px; border-radius:50%; background: var(--accent); }
+
+  /* ---------- toc ---------- */
+  nav.toc{
+    background: var(--surface); border: 1px solid var(--line); border-radius: 14px;
+    padding: 22px 24px; margin: 40px 0;
+  }
+  nav.toc .toc-title{
+    font-family: var(--font-mono); font-size: 12px; letter-spacing: 0.1em;
+    text-transform: uppercase; color: var(--ink-dim); margin-bottom: 14px;
+  }
+  nav.toc ol{ list-style: none; display: grid; grid-template-columns: 1fr 1fr; gap: 6px 28px; }
+  nav.toc a{
+    color: var(--ink-muted); text-decoration: none; font-size: 14px;
+    display: flex; gap: 10px; padding: 4px 0; transition: color 0.15s;
+  }
+  nav.toc a:hover{ color: var(--accent-soft); }
+  nav.toc a .n{ font-family: var(--font-mono); color: var(--accent-soft); flex-shrink:0; width:20px; }
+  @media (max-width: 640px){ nav.toc ol{ grid-template-columns: 1fr; } }
+
+  /* ---------- sections ---------- */
+  main{ padding: 8px 0 80px; }
+  section{ padding: 56px 0; border-bottom: 1px solid var(--line); scroll-margin-top: 24px; }
+  section:last-of-type{ border-bottom: none; }
+  .sec-label{
+    font-family: var(--font-mono); font-size: 12.5px; letter-spacing: 0.1em;
+    text-transform: uppercase; color: var(--accent-soft); margin-bottom: 12px;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .sec-label .ico{ font-size: 16px; }
+  h2{ font-size: clamp(24px,3.4vw,34px); font-weight: 800; letter-spacing: -0.01em; max-width: 22ch; }
+  h3{ font-size: 18px; font-weight: 700; margin-top: 32px; margin-bottom: 10px; color: var(--ink); }
+  p{ color: var(--ink-muted); margin-top: 12px; max-width: 68ch; }
+  p.lead{ color: var(--ink); font-size: 17px; margin-top: 16px; }
+  strong{ color: var(--ink); font-weight: 700; }
+
+  ul.plain, ol.plain{ margin-top: 14px; padding-left: 0; list-style: none; max-width: 68ch; }
+  ul.plain li, ol.plain li{
+    position: relative; padding-left: 26px; margin-bottom: 10px;
+    color: var(--ink-muted); font-size: 15px;
+  }
+  ul.plain li::before{
+    content: '→'; position: absolute; left: 0; color: var(--accent-soft);
+  }
+  ol.steps{ counter-reset: step; margin-top: 16px; max-width: 68ch; }
+  ol.steps li{
+    counter-increment: step; position: relative; padding-left: 34px;
+    margin-bottom: 14px; color: var(--ink-muted); font-size: 15px;
+  }
+  ol.steps li::before{
+    content: counter(step); position: absolute; left: 0; top: -1px;
+    width: 22px; height: 22px; border-radius: 6px; background: var(--surface-2);
+    border: 1px solid var(--line); color: var(--accent-soft);
+    font-family: var(--font-mono); font-size: 12px; font-weight: 600;
+    display: flex; align-items: center; justify-content: center;
+  }
+
+  /* ---------- metaphor / callout boxes ---------- */
+  .box{
+    margin-top: 22px; padding: 20px 22px; border-radius: 12px;
+    border: 1px solid var(--line); background: var(--surface);
+    max-width: 68ch;
+  }
+  .box-label{
+    font-family: var(--font-mono); font-size: 11.5px; letter-spacing: 0.08em;
+    text-transform: uppercase; color: var(--accent-soft); margin-bottom: 8px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .box p{ margin-top: 0; color: var(--ink); font-size: 14.5px; }
+  .box.warn{ border-color: rgba(232,162,61,0.35); background: rgba(232,162,61,0.06); }
+  .box.warn .box-label{ color: var(--warn); }
+  .box.metaphor{ border-color: rgba(107,92,231,0.3); background: var(--accent-tint); }
+
+  /* ---------- prompt blocks ---------- */
+  .prompt{
+    margin-top: 16px; max-width: 68ch;
+    background: #0D0D14; border: 1px solid var(--line); border-radius: 10px;
+    overflow: hidden;
+  }
+  .prompt-label{
+    font-family: var(--font-mono); font-size: 11px; color: var(--ink-dim);
+    padding: 10px 16px; border-bottom: 1px solid var(--line);
+    text-transform: uppercase; letter-spacing: 0.06em;
+  }
+  .prompt pre{
+    padding: 16px; font-family: var(--font-mono); font-size: 13px;
+    color: var(--accent-soft); white-space: pre-wrap; line-height: 1.6;
+  }
+
+  /* ---------- tables ---------- */
+  .tbl-wrap{ margin-top: 20px; overflow-x: auto; max-width: 68ch; }
+  table{ border-collapse: collapse; width: 100%; min-width: 480px; }
+  th{
+    text-align: left; font-family: var(--font-mono); font-size: 11.5px;
+    letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink-dim);
+    padding: 0 14px 12px 0; font-weight: 500; border-bottom: 1px solid var(--line);
+  }
+  td{
+    padding: 13px 14px 13px 0; border-bottom: 1px solid var(--line); font-size: 14px;
+    color: var(--ink-muted);
+  }
+  td:first-child{ color: var(--ink); font-weight: 600; }
+
+  /* ---------- badge row ---------- */
+  .badges{ display: flex; flex-wrap: wrap; gap: 8px; margin-top: 18px; }
+  .badge{
+    font-family: var(--font-mono); font-size: 12px; color: var(--ink-muted);
+    border: 1px solid var(--line); border-radius: 20px; padding: 5px 14px;
+  }
+
+  /* ---------- homework ---------- */
+  .hw-list{ margin-top: 20px; display: flex; flex-direction: column; gap: 12px; max-width: 68ch; }
+  .hw-card{
+    display: flex; gap: 18px; align-items: flex-start;
+    background: var(--surface); border: 1px solid var(--line); border-radius: 12px;
+    padding: 18px 20px;
+  }
+  .hw-card .hnum{
+    font-family: var(--font-mono); font-size: 20px; font-weight: 600; color: var(--accent-soft);
+    flex-shrink: 0;
+  }
+  .hw-card strong{ display: block; font-size: 15.5px; margin-bottom: 4px; }
+  .hw-card span{ font-size: 13.5px; color: var(--ink-muted); }
+
+  /* ---------- cycle ---------- */
+  .cycle{ display: flex; flex-wrap: wrap; gap: 0; margin-top: 24px; max-width: 68ch; }
+  .cycle-node{ flex: 1; min-width: 140px; position: relative; padding-right: 16px; padding-bottom: 16px; }
+  .cycle-node .cdot{
+    width: 28px; height: 28px; border-radius: 50%; background: var(--surface);
+    border: 1px solid var(--accent); display: flex; align-items: center; justify-content: center;
+    font-family: var(--font-mono); font-size: 11px; color: var(--accent-soft); margin-bottom: 10px;
+  }
+  .cycle-node strong{ display: block; font-size: 14px; margin-bottom: 4px; }
+  .cycle-node span{ font-size: 12.5px; color: var(--ink-muted); }
+  .cycle-arrow{ display: flex; align-items: center; color: var(--ink-dim); padding: 0 4px; font-size: 14px; }
+  @media (max-width: 640px){ .cycle{ flex-direction: column; } .cycle-arrow{ display:none; } }
+
+  footer{
+    padding: 40px 0 60px; text-align: center; color: var(--ink-dim);
+    font-family: var(--font-mono); font-size: 12.5px;
+  }
+  footer a{ color: var(--accent-soft); text-decoration: none; }
+
+  ::selection{ background: var(--accent); color: var(--bg); }
+</style>
+</head>
+<header class="hero">
+  <div class="wrap">
+    <div class="eyebrow">AI BOOTCAMP 16 · LLM · ДОПОЛНИТЕЛЬНЫЙ МАТЕРИАЛ</div>
+    <h1>Продвинутые техники Claude: Skills, конституция, монетизация</h1>
+    <p class="hero-sub">Гайдлайн по отдельной практической сессии — глубже базовой программы. Ничего из этого не звучало в гайдлайне Дня 1: новая философия промта, архитектура навыков, пошаговая конституция и рабочая рамка монетизации.</p>
+    <div class="hero-meta">
+      <span><span class="dot"></span>10 июля 2026</span>
+      <span><span class="dot"></span>Формат: практическая сессия один на один</span>
+    </div>
+  </div>
+</header>
+
+<div class="wrap">
+  <nav class="toc">
+    <div class="toc-title">Содержание</div>
+    <ol>
+      <li><a href="#rock"><span class="n">01</span>Камень в океане</a></li>
+      <li><a href="#model"><span class="n">02</span>Модель для skill</a></li>
+      <li><a href="#architecture"><span class="n">03</span>Сырьё и голос</a></li>
+      <li><a href="#isolation"><span class="n">04</span>Изоляция контекста</a></li>
+      <li><a href="#constitution"><span class="n">05</span>Личная конституция</a></li>
+      <li><a href="#lut"><span class="n">06</span>Три кита дня</a></li>
+      <li><a href="#tokens"><span class="n">07</span>Разгон и глубина</a></li>
+      <li><a href="#money"><span class="n">08</span>Монетизация навыков</a></li>
+      <li><a href="#niche"><span class="n">09</span>Узкая специализация</a></li>
+    </ol>
+  </nav>
+</div>
+
+<main class="wrap">
+
+  <section id="rock">
+    <div class="sec-label"><span class="ico">◆</span>НОВАЯ ФИЛОСОФИЯ ПРОМТА</div>
+    <h2>Камень в океане</h2>
+    <p class="lead">Дополнение к принципу «удочка vs сеть» из Дня 1 — конкретно про размер и детальность промта.</p>
+    <div class="box metaphor">
+      <div class="box-label">Метафора</div>
+      <p>ИИ — бескрайний океан знаний. Ваш промт — камень, который вы в него бросаете. Чем крупнее и детальнее камень, тем больше волн он поднимает и тем больше механизмов модели включается в работу. Из большого количества поднятой «воды» можно отфильтровать больше золота — как старатели: чем больше воды промывают, тем чище результат.</p>
+    </div>
+    <p>Практический вывод: не экономьте на деталях в промте, если задача сложная и важная. Указывайте контекст, роль, ограничения, конкретные примеры — не только саму просьбу. Короткий промт поднимает маленькую волну и затрагивает меньше релевантных знаний модели.</p>
+  </section>
+
+  <section id="model">
+    <div class="sec-label"><span class="ico">02</span>CLAUDE</div>
+    <h2>Модель для создания skill — Opus</h2>
+    <p class="lead">Для построения нового навыка (а не для повседневного использования) осознанно переключайтесь на модель глубже.</p>
+    <p>Opus лучше остальных анализирует и держит самое глубокое понимание задачи — это критично именно на этапе проектирования skill, где нужно продумать структуру, ограничения и логику один раз, чтобы дальше она стабильно работала. Для ежедневного использования уже готового навыка достаточно более лёгкой модели.</p>
+  </section>
+
+  <section id="architecture">
+    <div class="sec-label"><span class="ico">03</span>АРХИТЕКТУРА НАВЫКА</div>
+    <h2>Сырьё отдельно от голоса</h2>
+    <p class="lead">При сборке skill для творческой или текстовой задачи нужно минимум два разных файла контекста — и их нельзя смешивать.</p>
+    <ul class="plain">
+      <li><strong>Сырьё</strong> — материал конкретного проекта: сам текст книги, база вопросов-ответов, рабочие данные</li>
+      <li><strong>Голос</strong> — отдельный, переиспользуемый навык, обученный на ваших текстах: как вы пишете, ваш стиль, структура предложений</li>
+    </ul>
+    <div class="box warn">
+      <div class="box-label">⚠ Почему это важно</div>
+      <p>Если смешать голос с сырьём одного проекта, навык «голоса» перестаёт быть универсальным — он привязывается к конкретной теме и не переносится на другие задачи. Держите skill «голос» generic, а сырьё каждого проекта подгружайте отдельно на уровне проекта.</p>
+    </div>
+    <p>На практике это выглядело так: отдельный skill «редактор» знает общие правила редактуры (русская типографика, недопустимость выдумывания фактов, структура книги вопрос-ответ), а конкретная книга — её сырой текст и голос автора — загружается как материал проекта поверх этого навыка.</p>
+  </section>
+
+  <section id="isolation">
+    <div class="sec-label"><span class="ico">04</span>ГИГИЕНА ПРОЕКТОВ</div>
+    <h2>Изоляция контекста между задачами</h2>
+    <p class="lead">Если помогаете кому-то ещё (другу, клиенту) через свой аккаунт — явно указывайте модели не путать это с вашими проектами.</p>
+    <div class="prompt">
+      <div class="prompt-label">Пример формулировки</div>
+      <pre>Это отдельная задача для моего друга, не относится к
+моим текущим проектам. Не используй мой контекст и не
+смешивай с остальными файлами — рассматривай это
+изолированно.</pre>
+    </div>
+    <p>Без такой оговорки модель может непреднамеренно притянуть детали из вашего личного контекста туда, где это не нужно и не уместно.</p>
+  </section>
+
+  <section id="constitution">
+    <div class="sec-label"><span class="ico">05</span>ПОШАГОВО</div>
+    <h2>Личная конституция — как собрать на практике</h2>
+    <p class="lead">В Дне 1 это упоминалось как идея. Здесь — конкретный рабочий процесс из трёх файлов.</p>
+    <ol class="steps">
+      <li>Откройте новый чат в Claude, вставьте промт-интервью ниже</li>
+      <li>Отвечайте на вопросы честно и подробно — модель задаёт минимум 15–20 вопросов</li>
+      <li>Получите готовый файл конституции в формате .md — сохраните его</li>
+      <li>Загрузите этот файл в новый проект как Project Knowledge</li>
+      <li>Добавьте цели на текущий год отдельным файлом</li>
+      <li>Из конституции и целей соберите третий файл — стратегию (первое, второе, третье действие) и тоже загрузите в проект</li>
+    </ol>
+    <div class="prompt">
+      <div class="prompt-label">Промт-интервью для сборки конституции</div>
+      <pre>Проведи со мной интервью, чтобы построить мой личный
+конституционный документ: принципы, ценности, правила
+принятия решений и границы.
+
+Задавай мне вопросы по одному за раз, минимум 15-20
+вопросов, направленных на выявление противоречий. Если я
+отвечаю расплывчато — уточняй.
+
+Спрашивай в том числе:
+— На что я никогда не иду на компромисс
+— Как я принимаю решения под давлением или в
+  неопределённости
+— Какие партнёрства я принимаю, а какие отклоняю, и почему
+
+В конце сформируй документ целиком в формате markdown.</pre>
+    </div>
+    <div class="box metaphor">
+      <div class="box-label">Как использовать дальше</div>
+      <p>Когда приходит новое предложение или возможность — вставляете его текстом или файлом в этот проект и спрашиваете, насколько оно соответствует зафиксированным целям. Модель отвечает предметно: где риски, что противоречит философии, стоит ли вообще рассматривать.</p>
+    </div>
+  </section>
+
+  <section id="lut">
+    <div class="sec-label"><span class="ico">06</span>ЛИЧНАЯ ПРАКТИКА</div>
+    <h2>Три кита дня: научи, используй, расскажи</h2>
+    <p class="lead">Ежедневная рамка самообразования, которую ведущий использует лично, — подходит под тему всего курса.</p>
+    <ol class="steps">
+      <li><strong>Научись</strong> — маленький новый кусочек знания, необязательно масштабный</li>
+      <li><strong>Используй</strong> — сразу примени на практике, не просто прочитай</li>
+      <li><strong>Расскажи</strong> — поделись с кем-то ещё, даже коротко</li>
+    </ol>
+    <p>Третий пункт работает не только на закрепление — рассказывая, вы получаете обратную связь и иногда узнаёте о собственных ошибках от того, кому объясняете.</p>
+    <div class="prompt">
+      <div class="prompt-label">Три промта под этот цикл</div>
+      <pre>Научи меня [тема] — маленькими порциями.
+
+Дай мне задание, чтобы применить то, чему я только
+что научился.
+
+Напомни мне это знание коротко — так, чтобы я мог
+переслать это кому-то другому.</pre>
+    </div>
+  </section>
+
+  <section id="tokens">
+    <div class="sec-label"><span class="ico">07</span>ЭКОНОМИЯ ТОКЕНОВ</div>
+    <h2>Разгон в ChatGPT, глубина в Claude</h2>
+    <p class="lead">Практическая последовательность для брейншторма: не углубляться сразу в дорогой модели.</p>
+    <p>Соберите широкий пул идей (например, 20 вариантов) в ChatGPT — это быстро и дёшево. Затем перенесите отобранные лучшие идеи в Claude и углубляйтесь уже там. Так не тратите ресурсы дорогой модели на этап черновой генерации.</p>
+  </section>
+
+  <section id="money">
+    <div class="sec-label"><span class="ico">08</span>ПРИКЛАДНОЕ</div>
+    <h2>Монетизация навыков — 4 направления</h2>
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th>Направление</th><th>Суть</th></tr></thead>
+        <tbody>
+          <tr><td>Образование</td><td>Самый доступный вход — учите тому, что уже освоили сами</td></tr>
+          <tr><td>Консалтинг + внедрение</td><td>Настройка систем компании пакетом на месяц, с итерациями</td></tr>
+          <tr><td>Узкая боль</td><td>Найти конкретную рутину в своей нише и закрыть автоматизацией</td></tr>
+          <tr><td>Экосистема</td><td>Полный пакет: настройка + обучение + клиент становится самостоятельным</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>Пример с сессии: Telegram-бот, который по 5 введённым фактам о друге генерирует персональную шуточную песню — цена «чашка кофе», ценность в конкретности повода.</p>
+    <div class="box metaphor">
+      <div class="box-label">Почему узкое стреляет лучше общего</div>
+      <p>В общей нише все места заняты крупными игроками. Групповое занятие стоит дешевле индивидуального именно потому, что решает общую задачу — а не задачу конкретного человека. Чем уже ниша, тем больше готовы заплатить за специфичное решение.</p>
+    </div>
+  </section>
+
+  <section id="niche">
+    <div class="sec-label"><span class="ico">09</span>ПРИНЦИП</div>
+    <h2>Глубокая узкая специализация побеждает широкий охват</h2>
+    <p>Пример с сессии: мебельщик использовал Claude для расчёта органических, похожих на кость соединительных узлов для 3D-печатной мебели — минимизация материала через биомимикрию, а не типовое решение. Работает не потому, что это массовый спрос, а потому что решает реальную узкую задачу лучше любого готового варианта на рынке.</p>
+    <p>Смотрите на свою область не с позиции пользователя, а с позиции наблюдателя: на что чаще всего жалуются в вашей сфере, чего не хватает — и стройте решение оттуда, а не от общего интереса к ИИ.</p>
+  </section>
+
+</main>
+
+<footer>
+  AI Bootcamp 16 · LLM — bootcamp.kz
+</footer>
+
+</body>
+</html>
