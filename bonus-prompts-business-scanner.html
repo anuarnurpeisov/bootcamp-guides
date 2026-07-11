@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Бонус-пакет — Бизнес-сканер и промты</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg: #0A0A0F;
+    --surface: #14141C;
+    --surface-2: #1B1B28;
+    --accent: #6B5CE7;
+    --accent-soft: #A79CFF;
+    --accent-tint: #1D1A33;
+    --ink: #F4F2FB;
+    --ink-muted: #9490AC;
+    --ink-dim: #6B667F;
+    --line: #232231;
+    --warn: #E8A23D;
+    --font-display: 'Manrope', sans-serif;
+    --font-mono: 'JetBrains Mono', monospace;
+  }
+  *{ box-sizing: border-box; margin: 0; padding: 0; }
+  html{ scroll-behavior: smooth; }
+  body{
+    background: var(--bg);
+    color: var(--ink);
+    font-family: var(--font-display);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+  .wrap{ max-width: 860px; margin: 0 auto; padding: 0 24px; }
+
+  /* ---------- hero ---------- */
+  header.hero{
+    background:
+      radial-gradient(ellipse 800px 500px at 85% 0%, rgba(107,92,231,0.14), transparent 60%),
+      var(--bg);
+    padding: clamp(56px,10vw,96px) 0 48px;
+    border-bottom: 1px solid var(--line);
+  }
+  .eyebrow{
+    font-family: var(--font-mono); font-size: 13px; font-weight: 500;
+    letter-spacing: 0.14em; text-transform: uppercase; color: var(--accent-soft);
+    margin-bottom: 16px;
+  }
+  h1{
+    font-size: clamp(32px,5.5vw,52px); font-weight: 800; line-height: 1.08;
+    letter-spacing: -0.02em; max-width: 18ch;
+  }
+  .hero-sub{
+    font-size: clamp(16px,2vw,19px); color: var(--ink-muted); margin-top: 16px;
+    max-width: 60ch;
+  }
+  .hero-meta{
+    display: flex; flex-wrap: wrap; gap: 10px 24px;
+    margin-top: 28px; padding-top: 20px; border-top: 1px solid var(--line);
+    font-family: var(--font-mono); font-size: 13px; color: var(--ink-dim);
+  }
+  .hero-meta span{ display:flex; align-items:center; gap:8px; }
+  .hero-meta .dot{ width:5px; height:5px; border-radius:50%; background: var(--accent); }
+
+  /* ---------- toc ---------- */
+  nav.toc{
+    background: var(--surface); border: 1px solid var(--line); border-radius: 14px;
+    padding: 22px 24px; margin: 40px 0;
+  }
+  nav.toc .toc-title{
+    font-family: var(--font-mono); font-size: 12px; letter-spacing: 0.1em;
+    text-transform: uppercase; color: var(--ink-dim); margin-bottom: 14px;
+  }
+  nav.toc ol{ list-style: none; display: grid; grid-template-columns: 1fr 1fr; gap: 6px 28px; }
+  nav.toc a{
+    color: var(--ink-muted); text-decoration: none; font-size: 14px;
+    display: flex; gap: 10px; padding: 4px 0; transition: color 0.15s;
+  }
+  nav.toc a:hover{ color: var(--accent-soft); }
+  nav.toc a .n{ font-family: var(--font-mono); color: var(--accent-soft); flex-shrink:0; width:20px; }
+  @media (max-width: 640px){ nav.toc ol{ grid-template-columns: 1fr; } }
+
+  /* ---------- sections ---------- */
+  main{ padding: 8px 0 80px; }
+  section{ padding: 56px 0; border-bottom: 1px solid var(--line); scroll-margin-top: 24px; }
+  section:last-of-type{ border-bottom: none; }
+  .sec-label{
+    font-family: var(--font-mono); font-size: 12.5px; letter-spacing: 0.1em;
+    text-transform: uppercase; color: var(--accent-soft); margin-bottom: 12px;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .sec-label .ico{ font-size: 16px; }
+  h2{ font-size: clamp(24px,3.4vw,34px); font-weight: 800; letter-spacing: -0.01em; max-width: 22ch; }
+  h3{ font-size: 18px; font-weight: 700; margin-top: 32px; margin-bottom: 10px; color: var(--ink); }
+  p{ color: var(--ink-muted); margin-top: 12px; max-width: 68ch; }
+  p.lead{ color: var(--ink); font-size: 17px; margin-top: 16px; }
+  strong{ color: var(--ink); font-weight: 700; }
+
+  ul.plain, ol.plain{ margin-top: 14px; padding-left: 0; list-style: none; max-width: 68ch; }
+  ul.plain li, ol.plain li{
+    position: relative; padding-left: 26px; margin-bottom: 10px;
+    color: var(--ink-muted); font-size: 15px;
+  }
+  ul.plain li::before{
+    content: '→'; position: absolute; left: 0; color: var(--accent-soft);
+  }
+  ol.steps{ counter-reset: step; margin-top: 16px; max-width: 68ch; }
+  ol.steps li{
+    counter-increment: step; position: relative; padding-left: 34px;
+    margin-bottom: 14px; color: var(--ink-muted); font-size: 15px;
+  }
+  ol.steps li::before{
+    content: counter(step); position: absolute; left: 0; top: -1px;
+    width: 22px; height: 22px; border-radius: 6px; background: var(--surface-2);
+    border: 1px solid var(--line); color: var(--accent-soft);
+    font-family: var(--font-mono); font-size: 12px; font-weight: 600;
+    display: flex; align-items: center; justify-content: center;
+  }
+
+  /* ---------- metaphor / callout boxes ---------- */
+  .box{
+    margin-top: 22px; padding: 20px 22px; border-radius: 12px;
+    border: 1px solid var(--line); background: var(--surface);
+    max-width: 68ch;
+  }
+  .box-label{
+    font-family: var(--font-mono); font-size: 11.5px; letter-spacing: 0.08em;
+    text-transform: uppercase; color: var(--accent-soft); margin-bottom: 8px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .box p{ margin-top: 0; color: var(--ink); font-size: 14.5px; }
+  .box.warn{ border-color: rgba(232,162,61,0.35); background: rgba(232,162,61,0.06); }
+  .box.warn .box-label{ color: var(--warn); }
+  .box.metaphor{ border-color: rgba(107,92,231,0.3); background: var(--accent-tint); }
+
+  /* ---------- prompt blocks ---------- */
+  .prompt{
+    margin-top: 16px; max-width: 68ch;
+    background: #0D0D14; border: 1px solid var(--line); border-radius: 10px;
+    overflow: hidden;
+  }
+  .prompt-label{
+    font-family: var(--font-mono); font-size: 11px; color: var(--ink-dim);
+    padding: 10px 16px; border-bottom: 1px solid var(--line);
+    text-transform: uppercase; letter-spacing: 0.06em;
+  }
+  .prompt pre{
+    padding: 16px; font-family: var(--font-mono); font-size: 13px;
+    color: var(--accent-soft); white-space: pre-wrap; line-height: 1.6;
+  }
+
+  /* ---------- tables ---------- */
+  .tbl-wrap{ margin-top: 20px; overflow-x: auto; max-width: 68ch; }
+  table{ border-collapse: collapse; width: 100%; min-width: 480px; }
+  th{
+    text-align: left; font-family: var(--font-mono); font-size: 11.5px;
+    letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink-dim);
+    padding: 0 14px 12px 0; font-weight: 500; border-bottom: 1px solid var(--line);
+  }
+  td{
+    padding: 13px 14px 13px 0; border-bottom: 1px solid var(--line); font-size: 14px;
+    color: var(--ink-muted);
+  }
+  td:first-child{ color: var(--ink); font-weight: 600; }
+
+  /* ---------- badge row ---------- */
+  .badges{ display: flex; flex-wrap: wrap; gap: 8px; margin-top: 18px; }
+  .badge{
+    font-family: var(--font-mono); font-size: 12px; color: var(--ink-muted);
+    border: 1px solid var(--line); border-radius: 20px; padding: 5px 14px;
+  }
+
+  /* ---------- homework ---------- */
+  .hw-list{ margin-top: 20px; display: flex; flex-direction: column; gap: 12px; max-width: 68ch; }
+  .hw-card{
+    display: flex; gap: 18px; align-items: flex-start;
+    background: var(--surface); border: 1px solid var(--line); border-radius: 12px;
+    padding: 18px 20px;
+  }
+  .hw-card .hnum{
+    font-family: var(--font-mono); font-size: 20px; font-weight: 600; color: var(--accent-soft);
+    flex-shrink: 0;
+  }
+  .hw-card strong{ display: block; font-size: 15.5px; margin-bottom: 4px; }
+  .hw-card span{ font-size: 13.5px; color: var(--ink-muted); }
+
+  /* ---------- cycle ---------- */
+  .cycle{ display: flex; flex-wrap: wrap; gap: 0; margin-top: 24px; max-width: 68ch; }
+  .cycle-node{ flex: 1; min-width: 140px; position: relative; padding-right: 16px; padding-bottom: 16px; }
+  .cycle-node .cdot{
+    width: 28px; height: 28px; border-radius: 50%; background: var(--surface);
+    border: 1px solid var(--accent); display: flex; align-items: center; justify-content: center;
+    font-family: var(--font-mono); font-size: 11px; color: var(--accent-soft); margin-bottom: 10px;
+  }
+  .cycle-node strong{ display: block; font-size: 14px; margin-bottom: 4px; }
+  .cycle-node span{ font-size: 12.5px; color: var(--ink-muted); }
+  .cycle-arrow{ display: flex; align-items: center; color: var(--ink-dim); padding: 0 4px; font-size: 14px; }
+  @media (max-width: 640px){ .cycle{ flex-direction: column; } .cycle-arrow{ display:none; } }
+
+  footer{
+    padding: 40px 0 60px; text-align: center; color: var(--ink-dim);
+    font-family: var(--font-mono); font-size: 12.5px;
+  }
+  footer a{ color: var(--accent-soft); text-decoration: none; }
+
+  ::selection{ background: var(--accent); color: var(--bg); }
+</style>
+</head>
+<header class="hero">
+  <div class="wrap">
+    <div class="eyebrow">AI BOOTCAMP 16 · LLM · БОНУС-ПАКЕТ</div>
+    <h1>Бизнес-сканер и 10 ролевых промтов</h1>
+    <p class="hero-sub">Готовые промты из пакета буткемпа — копируешь целиком, вставляешь в ChatGPT или Claude, заполняешь поля в скобках своими данными. Ничего додумывать не нужно.</p>
+    <div class="hero-meta">
+      <span><span class="dot"></span>AI Bootcamp 16 · LLM</span>
+      <span><span class="dot"></span>Бонус к интенсиву</span>
+    </div>
+  </div>
+</header>
+
+<div class="wrap">
+  <nav class="toc">
+    <div class="toc-title">Содержание</div>
+    <ol>
+      <li><a href="#scanner"><span class="n">01</span>Бизнес-сканер</a></li>
+      <li><a href="#roles"><span class="n">02</span>10 ролевых промтов</a></li>
+      <li><a href="#notebook"><span class="n">03</span>Шаблон NotebookLM</a></li>
+    </ol>
+  </nav>
+</div>
+
+<main class="wrap">
+
+  <section id="scanner">
+    <div class="sec-label"><span class="ico">◆</span>ГЛАВНЫЙ ИНСТРУМЕНТ</div>
+    <h2>Бизнес-сканер — аудит по 6 блокам</h2>
+    <p class="lead">Заполни поля своими данными прямо внутри промта, вставь целиком в ChatGPT или Claude. Чем конкретнее данные — тем точнее разбор.</p>
+    <div class="prompt">
+      <div class="prompt-label">Промт целиком — скопировать и заполнить поля</div>
+      <pre>Ты — бизнес-консультант с опытом аудита малого и среднего
+бизнеса в СНГ. Я дам данные о своём бизнесе. Проведи разбор
+по 6 блокам ниже. Пиши конкретно, без общих фраз — только то,
+что применимо именно к этим данным.
+
+МОИ ДАННЫЕ:
+1. Ниша и продукт: [...]
+2. Средний чек: [...]
+3. Каналы привлечения клиентов: [...]
+4. Размер команды: [...]
+5. Текущая примерная выручка в месяц: [...]
+6. Главное узкое место (что мешает расти): [...]
+7. Сколько часов в неделю трачу на рутину лично: [...]
+8. Какие инструменты и сервисы уже использую: [...]
+9. Цель на ближайшие 3 месяца: [...]
+10. Что уже пробовал и не сработало: [...]
+
+СДЕЛАЙ РАЗБОР ПО 6 БЛОКАМ:
+
+1. УТЕЧКИ ДЕНЕГ
+Где бизнес теряет выручку прямо сейчас — конкретно по этим
+данным, не абстрактно.
+
+2. КАРТА АВТОМАТИЗАЦИИ
+Какие процессы автоматизировать в первую очередь: эффект
+против сложности внедрения, в порядке приоритета.
+
+3. КОНТЕНТ И ПРИВЛЕЧЕНИЕ
+Что генерировать нейросетями под указанные каналы привлечения.
+
+4. ЭКОНОМИЯ ВРЕМЕНИ ВЛАДЕЛЬЦА
+Какую рутину снять в первую неделю, чтобы освободить время
+на стратегию.
+
+5. ПЯТЬ БЫСТРЫХ ПОБЕД
+Конкретные действия на ближайшие 7 дней — с названием
+инструмента для каждого.
+
+6. ПЛАН НА 30 ДНЕЙ
+Последовательность внедрения от простого к сложному, по неделям.
+
+В конце — три уточняющих вопроса, если данных не хватает
+для точного разбора.</pre>
+    </div>
+    <div class="box metaphor">
+      <div class="box-label">Как использовать результат</div>
+      <p>Разбор из блока 6 (план на 30 дней) — готовый материал для проекта в ChatGPT или Claude: загрузи его как файл в новый проект и попроси модель напоминать о шагах по неделям.</p>
+    </div>
+  </section>
+
+  <section id="roles">
+    <div class="sec-label"><span class="ico">01</span>ГОТОВЫЕ ПОМОЩНИКИ</div>
+    <h2>10 ролевых промтов</h2>
+    <p class="lead">Каждый — готовая инструкция под Custom GPT, Gem или разовый промт в чат. Заполни поля своими данными.</p>
+
+    <h3>1. Маркетолог — контент-план на месяц</h3>
+    <div class="prompt"><pre>Ты — маркетолог с опытом продвижения малого бизнеса в
+Instagram и Telegram. Я дам нишу и целевую аудиторию —
+составь контент-план на 4 недели: для каждого дня публикации
+укажи формат (рилс/пост/сторис), тему, цепляющий заголовок
+и цель поста (продажа/вовлечение/доверие). Не используй общие
+темы вроде "5 лайфхаков" — привязывай темы к конкретным болям
+аудитории.
+
+Ниша: [...]
+Целевая аудитория: [...]
+Что продаём: [...]</pre></div>
+
+    <h3>2. Продажник — разбор переписки и дожим</h3>
+    <div class="prompt"><pre>Ты — руководитель отдела продаж с опытом закрытия сделок
+в переписке. Я скину переписку с клиентом. Разбери: на каком
+этапе воронки клиент сейчас, какие возражения не закрыты,
+что упущено. Дай 3 варианта следующего сообщения — мягкий
+дожим, прямой дожим, дожим через дедлайн.
+
+Переписка: [вставить]</pre></div>
+
+    <h3>3. HR — вакансия и скрининг откликов</h3>
+    <div class="prompt"><pre>Ты — HR-специалист, который пишет вакансии, привлекающие
+нужных людей, а не всех подряд. Составь текст вакансии по
+описанию роли ниже — с чётким списком обязанностей,
+требований и что мы предлагаем взамен. Дальше, когда я
+присылаю отклики, оценивай каждый по 5-балльной шкале
+соответствия и объясняй, что смущает.
+
+Роль: [...]
+Обязанности: [...]
+Что предлагаем: [...]</pre></div>
+
+    <h3>4. Финансист — юнит-экономика</h3>
+    <div class="prompt"><pre>Ты — финансовый аналитик, который считает юнит-экономику
+для малого бизнеса просто, без сложных терминов. По цифрам
+ниже посчитай: себестоимость единицы, маржу, точку
+безубыточности, сколько единиц нужно продать в месяц для
+целевой прибыли. Покажи расчёт пошагово, не только итог.
+
+Цена продажи: [...]
+Переменные затраты на единицу: [...]
+Постоянные затраты в месяц: [...]
+Целевая прибыль в месяц: [...]</pre></div>
+
+    <h3>5. SMM — 30 идей рилс</h3>
+    <div class="prompt"><pre>Ты — SMM-специалист, который генерирует вирусные форматы
+рилс для ниши ниже. Дай 30 идей на месяц: раздели на 4
+категории (польза, развлечение, вовлечение, продажа) — по
+7-8 идей в каждой. Для каждой идеи — рабочий заголовок и
+первая фраза видео (первые 3 секунды решают, досмотрят
+или нет).
+
+Ниша: [...]
+Тон бренда: [...]</pre></div>
+
+    <h3>6. Копирайтер — продающий пост по формуле</h3>
+    <div class="prompt"><pre>Ты — копирайтер, который пишет продающие тексты по
+классическим формулам (AIDA, PAS, 4U). Напиши продающий
+пост для товара/услуги ниже по формуле PAS
+(проблема-агитация-решение). Текст должен звучать как живой
+человек, а не рекламный шаблон — без превосходных степеней
+и штампов.
+
+Товар/услуга: [...]
+Целевая аудитория: [...]
+Главная выгода: [...]</pre></div>
+
+    <h3>7. Аналитик конкурентов — Deep Research</h3>
+    <div class="prompt"><pre>Проведи глубокое исследование трёх главных конкурентов в
+нише ниже: ценообразование, каналы привлечения,
+позиционирование, слабые места по отзывам. Дай таблицу
+сравнения и 3 конкретных вывода — что можно сделать лучше
+них уже сейчас.
+
+Ниша: [...]
+Известные конкуренты (если знаю): [...]
+Регион: [...]</pre></div>
+
+    <h3>8. Переговорщик — подготовка к встрече</h3>
+    <div class="prompt"><pre>Ты — переговорщик с опытом B2B-сделок. Помоги подготовиться
+к встрече ниже: какие вопросы задать, чтобы понять реальные
+интересы другой стороны, какие мои аргументы сильные, а
+какие слабые, на какие уступки можно пойти и в каком порядке
+их предлагать.
+
+С кем встреча и по какому поводу: [...]
+Моя цель: [...]
+Что знаю про другую сторону: [...]</pre></div>
+
+    <h3>9. Юрист-черновик — проверка договора на риски</h3>
+    <div class="box warn">
+      <div class="box-label">⚠ Не замена юристу</div>
+      <p>Этот промт — первичный разбор до передачи документа профессионалу, не юридическая консультация.</p>
+    </div>
+    <div class="prompt"><pre>Найди потенциальные риски в черновике договора ниже — не
+заменяй юриста, а дай первичный разбор до профессиональной
+проверки. Выдели: пункты в мою пользу, пункты не в мою
+пользу, отсутствующие пункты, которые обычно защищают мою
+сторону, формулировки, которые стоит отдельно уточнить
+у юриста.
+
+Договор: [вставить текст]</pre></div>
+
+    <h3>10. Личный ассистент — недельное планирование</h3>
+    <div class="prompt"><pre>Ты — личный ассистент, который помогает планировать неделю
+по приоритетам, а не по хронологии. Раздели задачи по
+матрице Эйзенхауэра: важное и срочное, важное не срочное,
+срочное не важное, не важное не срочное. Предложи, что
+делегировать или отменить.
+
+Задачи на неделю: [...]</pre></div>
+  </section>
+
+  <section id="notebook">
+    <div class="sec-label"><span class="ico">02</span>ДЛЯ ДНЯ 2</div>
+    <h2>Шаблон базы знаний NotebookLM</h2>
+    <p class="lead">Что загрузить в первый блокнот и какими запросами сразу начать работу.</p>
+    <h3>7 документов для загрузки</h3>
+    <ul class="plain">
+      <li>Прайс-лист или карта услуг</li>
+      <li>Скрипты продаж</li>
+      <li>Регламенты и внутренние инструкции</li>
+      <li>Отзывы клиентов — собранные в один файл</li>
+      <li>Шаблон договора</li>
+      <li>Описание продукта / услуги</li>
+      <li>FAQ — если уже есть, даже черновой</li>
+    </ul>
+    <h3>5 готовых запросов после загрузки</h3>
+    <div class="prompt"><pre>1. Составь единый FAQ для отдела продаж на основе всех
+   загруженных документов.
+
+2. Найди противоречия и устаревшие данные между документами —
+   где расходится цена или условия.
+
+3. Сделай выжимку для нового сотрудника: с чем нужно
+   ознакомиться в первую неделю.
+
+4. Сгенерируй тест из 10 вопросов на знание регламентов
+   компании.
+
+5. Собери аудио-обзор всей базы знаний — прожарка слабых
+   мест продукта по отзывам клиентов.</pre></div>
+    <div class="box metaphor">
+      <div class="box-label">Зачем "прожарка"</div>
+      <p>Формат подкаста в стиле критического разбора вскрывает слабые места продукта через реальные формулировки из отзывов — слышишь то, что обычно теряется при чтении по диагонали.</p>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  AI Bootcamp 16 · LLM — bootcamp.kz
+</footer>
+
+</body>
+</html>
